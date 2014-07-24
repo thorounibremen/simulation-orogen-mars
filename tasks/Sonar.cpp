@@ -99,7 +99,7 @@ bool Sonar::getSonarData(base::samples::SonarBeam &sonar_beam){
         return false;
     }
 
-    sonar_beam.time = base::Time::now();
+    sonar_beam.time = getTime();
     sonar_beam.speed_of_sound = sonar_config->speed_of_sound;
     sonar_beam.beamwidth_horizontal= sonar_config->beamwidth_horizontal;
     sonar_beam.beamwidth_vertical= sonar_config->beamwidth_vertical;

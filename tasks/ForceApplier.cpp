@@ -107,7 +107,7 @@ void ForceApplier::updateHook()
 
         /*// write actuator status
         base::actuators::Status status;
-        status.time = base::Time::now();
+        status.time = getTime();
         status.index = 0; //TODO: ?
         status.resize(amount_of_actuators);
         for (unsigned int i=0; i<amount_of_actuators; i++) {
