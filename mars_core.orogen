@@ -267,6 +267,26 @@ task_context "MarsLaserRangeFinder" do
 	doc('name of the sensor in the scene file')
 end
 
+# Can be used to simulate laser scanners with more than one vertical scan line
+# (e.g. Velodyne).
+task_context "MarsRotatingLaserRangeFinder" do
+    subclasses "MarsPlugin"
+
+    needs_configuration
+
+    property('name', '/std/string', 'unknown_ray_sensor').
+	    doc('Name of the RotatingRaySensor in the scene file')
+	    
+    property('min_range', 'double', 0.0).
+        doc("Minimum valid range of the laser range finder")
+        
+    property('max_range', 'double', 20.0).
+        doc("Maximum valid range of the laser range finder")
+
+    output_port('pointcloud', '/base/samples/Pointcloud').
+        doc 'Received distances converted to a pointcloud'
+end
+
 task_context "MarsIMU" do
     subclasses "MarsPlugin"
     
