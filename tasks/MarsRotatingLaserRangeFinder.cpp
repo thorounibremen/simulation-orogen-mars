@@ -65,17 +65,21 @@ void MarsRotatingLaserRangeFinder::updateHook()
     base::samples::Pointcloud pointcloud;
     pointcloud.time = getTime();
     
-    std::vector<double> data = mSensor->getPointCloud();
+    std::vector<mars::utils::Vector> data = mSensor->getPointcloud();
+    
+    std::cout << "Size pointcloud " << data.size() << std::endl;
     
     // Sensor sends empty pointcloud until 360 degrees are available.
     if(data.empty()) {
         return;
     } 
     
-    for(unsigned int i=0; i<data.size(); i+=4) {
-        if(data[i] >= _min_range.get() && data[i] <= _max_range.get()) {
-            base::Vector3d vec(data[i+1], data[i+2], data[i+3]);
-            pointcloud.points.push_back(vec.normalized() * data[i]);
+    std::vector<mars::utils::Vector>::iterator it = data.begin();
+    for(; it != data.end(); it++) {
+        int len_ray = it->norm();
+        if(len_ray >= _min_range.get() && len_ray <= _max_range.get()) {
+            base::Vector3d vec((*it)[0], (*it)[1], (*it)[2]);
+            pointcloud.points.push_back(vec);
         }
     }
     
