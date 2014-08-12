@@ -440,7 +440,6 @@ bool Mars::configureHook()
     //}
 
     // Startup of simulation
-    MarsArguments argument;
     argument.mars = this;
     argument.enable_gui = _enable_gui.get();
     argument.controller_port = _controller_port.get();

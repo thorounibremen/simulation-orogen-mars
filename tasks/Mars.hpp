@@ -135,7 +135,8 @@ namespace simulation {
 	static void* startMarsFunc(void *);
         static std::string configDir;
 	static bool marsRunning;
-
+        MarsArguments argument;
+        
 	pthread_t thread_info; 
 	static mars::lib_manager::LibManager* libManager;
 
