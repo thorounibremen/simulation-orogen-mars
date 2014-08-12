@@ -391,7 +391,7 @@ bool Mars::setReaction_to_physics_error(::std::string const & value)
 char** Mars::setOptions(const std::vector<Option>& options)
 {
     int count = getOptionCount(options)+ 1;
-    char** argv = (char**) calloc(count, sizeof(char**));
+    char** argv = (char**) calloc(count, sizeof(char*));
 
     // Set executable name to mars_core
     count = 0;
