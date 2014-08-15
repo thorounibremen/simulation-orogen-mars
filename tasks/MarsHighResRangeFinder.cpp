@@ -203,11 +203,10 @@ void MarsHighResRangeFinder::getData()
     double b_x = (width / 2.0) / tan(M_PI/4.0); 
     double b_y = (height / 2.0) / tan(M_PI/4.0); 
     
-    counter = 0;
-    
     // Run through the image horizontally.  
-    for(double horAngle = 0; horAngle < M_PI * 2; horAngle += stepHorizontal, curAngle += stepHorizontal) {
+    for(double horAngle = 0; horAngle < M_PI * 2; horAngle += stepHorizontal) {
         velodyne_lidar::MultilevelLaserScan::VerticalMultilevelScan vertical_multi_level_scan;
+        curAngle += stepHorizontal;
         
         if(curAngle > M_PI/2.0)
         {
@@ -226,11 +225,11 @@ void MarsHighResRangeFinder::getData()
         
         for(double verAngle = verticalStartAngle; verAngle < verticalOpeningAngle + verticalStartAngle; verAngle += stepVertical) {
 
-            int y = tan(verAngle) / cos(curAngle - M_PI / 4.0) * b_y + (height / 2.0);
+            int y = tan(verAngle) * b_y + (height / 2.0);
 //             std::cout << " X " << x << " Y " << y << std::endl; 
 
 //            distance = (*it)->image->data[y * width + x];
-//             std::cout << "distance foo " << distance << std::endl;
+            std::cout << "distance foo " << distance << std::endl;
             if((*it)->image->getScenePoint( x, y, scene_p ))
             {                
 // //                std::cout << "in Image " << scene_p.transpose()<<  std::endl;
@@ -248,7 +247,7 @@ void MarsHighResRangeFinder::getData()
         }            
         vertical_multi_level_scan.vertical_start_angle = base::Angle::fromRad(verticalStartAngle);
         vertical_multi_level_scan.vertical_angular_resolution = stepVertical;
-        vertical_multi_level_scan.horizontal_angle = base::Angle::fromRad((-horAngle + M_PI / 4.0));
+        vertical_multi_level_scan.horizontal_angle = base::Angle::fromRad(-horAngle + M_PI / 4.0);
 
         multi_level_scan.horizontal_scans.push_back(vertical_multi_level_scan);
     }
