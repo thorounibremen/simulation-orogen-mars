@@ -104,7 +104,7 @@ void* Mars::startMarsFunc(void* argument)
  
     // Prepare Qt Application Thread which is required  
     // for core simulation and gui
-    static int argc = count + 1;
+    int argc = count + 1;
     if(!Mars::getTaskInterface()->app){
         //Initialize Qapplication only once! and keep the instance
         Mars::getTaskInterface()->app = new QApplication(argc, argv);
