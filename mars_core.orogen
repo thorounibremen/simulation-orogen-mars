@@ -92,6 +92,11 @@ task_context "Mars" do
 
         input_port('control_action', '/simulation/Control')
 
+        #This operation moves a node to a specific position, simpliar to the positions property but can be used during runtime
+        operation("move_node").
+            argument("arg","/simulation/Positions")
+        
+
         output_port('time', 'double')
         output_port('simulated_time', '/base/Time')
 

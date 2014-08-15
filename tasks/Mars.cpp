@@ -501,53 +501,11 @@ bool Mars::configureHook()
     }
     
 
-	std::vector<Positions> positions = _positions.get();
+    std::vector<Positions> positions = _positions.get();
     if(!positions.empty()){
     	for (std::vector< Positions >::iterator offset = positions.begin(); offset != positions.end();offset++){
-    		printf("moving name: %s\n",offset->nodename.c_str());
-    		//simulatorInterface->loadScene(*scene, *scene,true,true);
-    		mars::interfaces::NodeManagerInterface* nodes = simulatorInterface->getControlCenter()->nodes;
-    		mars::interfaces::NodeId id = nodes->getID(offset->nodename);
-    		//mars::utils::Vector pos
-    		if (id){
-    			printf("found id : %li\n",id);
-				mars::interfaces::NodeData nodedata = nodes->getFullNode(id);
-
-				utils::Vector pos = nodes->getPosition(id);
-
-				printf("actual position %.2f %.2f %.2f\n", pos.x(),pos.y(),pos.z());
-				printf("offset position %.2f %.2f %.2f\n", offset->posx,offset->posy,offset->posz);
-
-				pos.x() = offset->posx;
-				pos.y() = offset->posy;
-				pos.z() = offset->posz;
-
-				mars::utils::Quaternion rot = nodes->getRotation(id);
-
-				mars::utils::Vector rotoff;
-
-				rotoff.x() =  offset->rotx;// * (M_PI/180.0);
-				rotoff.y() =  offset->roty;// * (M_PI/180.0);
-				rotoff.z() =  offset->rotz;// * (M_PI/180.0);
-
-				mars::utils::Quaternion newrot = mars::utils::eulerToQuaternion(rotoff);
-
-
-
-
-
-				printf("new position %.2f %.2f %.2f\n", pos.x(),pos.y(),pos.z());
-        nodedata.pos = pos;
-        nodedata.rot = newrot;
-
-				nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_POS | mars::interfaces::EDIT_NODE_MOVE_ALL);
-				nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_ROT | mars::interfaces::EDIT_NODE_MOVE_ALL);
-				// nodes->setPosition(id, pos);
-				// nodes->setRotation(id,newrot);
-
-    		}
-    	}
-
+            move_node(*offset);
+        }
     }
 
     {//Setting the Step-with for the simulation
@@ -738,4 +696,34 @@ bool Mars::setSim_step_size(double value)
     c.dValue = value;
     simulatorInterface->getControlCenter()->cfg->setProperty(c);
     return(simulation::MarsBase::setSim_step_size(value));
+}
+
+void Mars::move_node(::simulation::Positions const & arg)
+{
+    mars::interfaces::NodeManagerInterface* nodes = simulatorInterface->getControlCenter()->nodes;
+    mars::interfaces::NodeId id = nodes->getID(arg.nodename);
+    if (id){
+        mars::interfaces::NodeData nodedata = nodes->getFullNode(id);
+        utils::Vector pos = nodes->getPosition(id);
+
+        pos.x() = arg.posx;
+        pos.y() = arg.posy;
+        pos.z() = arg.posz;
+
+        mars::utils::Quaternion rot = nodes->getRotation(id);
+
+        mars::utils::Vector rotoff;
+
+        rotoff.x() =  arg.rotx;
+        rotoff.y() =  arg.roty;
+        rotoff.z() =  arg.rotz;
+
+        mars::utils::Quaternion newrot = mars::utils::eulerToQuaternion(rotoff);
+
+        nodedata.pos = pos;
+        nodedata.rot = newrot;
+
+        nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_POS | mars::interfaces::EDIT_NODE_MOVE_ALL);
+        nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_ROT | mars::interfaces::EDIT_NODE_MOVE_ALL);
+    }
 }

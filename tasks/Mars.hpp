@@ -142,6 +142,10 @@ namespace simulation {
         mars::interfaces::PluginInterface* multisimPlugin;
 
         int getOptionCount(const std::vector<Option>& options);
+        
+        /* This operation moves a node to a specific position, simpliar to the positions property but can be used during runtime
+         */
+        virtual void move_node(::simulation::Positions const & arg);
 
         char** setOptions(const std::vector<Option>& options);
 
