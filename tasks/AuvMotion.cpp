@@ -163,6 +163,8 @@ void AuvMotion::update(double time) {
 	control->nodes->applyForce(vehicle_id, force.block<3,1>(0,0), pos);
 	control->nodes->applyTorque(vehicle_id, force.block<3,1>(3,0));	
 
+        command.time = getTime();
+        _status.write(command);
 }
 
 base::Vector6d AuvMotion::gravity_buoyancy(const Eigen::Quaternion<double> q)

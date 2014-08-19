@@ -24,6 +24,7 @@ namespace simulation {
 		unsigned int RATE;
 
         void update( double time );
+        base::commands::Joints command;
 
     public:
         ForceApplier(std::string const& name = "simulation::ForceApplier");

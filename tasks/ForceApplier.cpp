@@ -74,7 +74,6 @@ void ForceApplier::updateHook()
 {
     ForceApplierBase::updateHook();
 
-    base::commands::Joints command;
     if (_command.readNewest(command) == RTT::NewData)
     {
         //we have to check it here otherwise the port
@@ -114,7 +113,6 @@ void ForceApplier::updateHook()
         	status.states[i].pwm = -command.target[i];
         }
         */
-        _status.write(command);
         
     }
 }
@@ -138,4 +136,6 @@ void ForceApplier::update(double time) {
 		tmp2 *= std::max(-maximum_thruster_force[i],std::min(maximum_thruster_force[i],thruster_force[i]*maximum_thruster_force[i]));
 		control->nodes->applyForce(vehicle_id, tmp2, tmp1);
 	}
+        command.time = getTime();
+        _status.write(command);
 }
