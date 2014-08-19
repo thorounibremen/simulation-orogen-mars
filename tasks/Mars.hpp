@@ -39,10 +39,18 @@ class SimulationTime
     double msElapsed;
     /** Check wether the time is initialized or not */
     bool initialized;
+    /** Override calculation of time, using base::Time::now insted */
+    bool useNow;
+
 public:
     SimulationTime()
     {
         initialized = false;
+        useNow = false;
+    }
+
+    void useNowInsteadOfSimTime(){
+        useNow = true;
     }
 
     /** @brief set the start time
@@ -61,7 +69,7 @@ public:
     base::Time get()
     {
 	boost::mutex::scoped_lock lock( timeLock );
-	if(!initialized){
+	if(!initialized || useNow){
             //This prevent some wiered states in the timestamp estimator if the simulation is
             //not completly setup so far.
             return base::Time::now();

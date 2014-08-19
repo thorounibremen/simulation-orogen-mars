@@ -423,6 +423,9 @@ bool Mars::configureHook()
         throw std::runtime_error("Config directory is not set! Can not start mars");     
     }
 
+    if(_use_now_instead_of_sim_time.get()){
+        simTime.useNowInsteadOfSimTime();
+    }
 
     //check if the environemnt was sourced more than once and the path has more than one entry
     int pos = _config_dir.get().rfind(":/");
