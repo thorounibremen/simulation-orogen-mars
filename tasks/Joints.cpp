@@ -64,7 +64,7 @@ void Joints::update(double delta_t)
             {
                 //set maximum speed that is allowed for turning
                 if(curCmd.hasSpeed())
-                    motor->setDesiredMotorVelocity(curCmd.speed);
+                    motor->setMaximumVelocity(curCmd.speed);
 
                 motor->setValue( conv.toMars( curCmd.position ) );
             }
