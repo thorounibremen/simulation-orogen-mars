@@ -13,6 +13,9 @@
 #include <mars/app/GraphicsTimer.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 
+#include <mars/sim/SimMotor.h>
+#include <mars/interfaces/sim/MotorManagerInterface.h>
+
 //#include <mars/multisim-plugin/MultiSimPlugin.h>
 
 #include <mars/lib_manager/LibManager.h>
@@ -510,6 +513,26 @@ bool Mars::configureHook()
             move_node(*offset);
         }
     }
+
+
+    simulation::Pose initial_pose = _initial_pose.get();
+    if(!initial_pose.empty()){
+    	mars::interfaces::ControlCenter* control = simulatorInterface->getControlCenter();
+    	if (control){
+			for (simulation::Pose::iterator pos = initial_pose.begin(); pos != initial_pose.end();pos++){
+				int marsMotorId = control->motors->getID( pos->name );
+				mars::sim::SimMotor *motor = control->motors->getSimMotor( marsMotorId );
+				if (motor){
+					motor->setValue( pos->pos );
+				}else{
+					printf("no motor %s",pos->name.c_str());
+				}
+			}
+    	}else{
+    		printf("no contol center");
+    	}
+    }
+
 
     {//Setting the Step-with for the simulation
     cfg_manager::cfgPropertyStruct c = simulatorInterface->getControlCenter()->cfg->getOrCreateProperty("Simulator", "calc_ms", _sim_step_size.get()*1000.0);

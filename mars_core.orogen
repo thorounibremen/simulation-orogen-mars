@@ -13,6 +13,7 @@ using_library "QtGui", :typekit => false
 import_types_from "tasks/MarsControl.hpp"
 import_types_from "servoTypes.hpp"
 import_types_from "jointTypes.hpp"
+import_types_from "poseType.hpp"
 import_types_from "base"
 
 using_library "actuator_dispatcher"
@@ -59,6 +60,10 @@ task_context "Mars" do
 
         property('positions', 'std/vector<simulation/Positions>' ).
 	    doc('override positions in the scene (scn) file, e.g. move the terrain to create different experiment setups without changing the scene file itself')
+
+		property('initial_pose', 'simulation/Pose' ).
+	    doc('override initial joint positions in the scene (scn) file, i.e. set an initial pose')
+
 
         property('config_dir', '/std/string',"#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/configuration/mars_default").
 	    doc('the full path to the main configuration folder')
