@@ -12,10 +12,6 @@ struct JointPos{
 		float pos;
 	};
 
-//struct Pose {
-//	std::vector<JointPos> pose;
-//};
-
 typedef std::vector<JointPos> Pose;
 
 }
