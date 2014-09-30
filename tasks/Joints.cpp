@@ -109,13 +109,18 @@ void Joints::update(double delta_t)
 	state.speed = motor->getJoint()->getVelocity();
 	state.effort = conv->fromMars( motor->getTorque() );
 
+	currents[conv->externalName] = motor->getCurrent();
+
 	status[conv->externalName] = state;
     }
 
     // and write it to the output port
     status.time = getTime();
     _status_samples.write( status );
-    
+
+    currents.time = status.time;
+    _current_values.write(currents);
+
     // see if we have configuration for the joint_transforms 
     // and the output port for it is connected
     std::vector<base::samples::RigidBodyState> rbs;
@@ -160,7 +165,11 @@ bool Joints::configureHook()
     status.resize( num_joints - parallel_kinematics.size() );
 
 
+    currents.resize(num_joints - parallel_kinematics.size());
+
+
     std::vector<std::string> marsNames = _names.value();
+
 
 
     //set proper status names (by parallel kinematics)
@@ -169,6 +178,7 @@ bool Joints::configureHook()
     //set names
     if (parallel_kinematics.empty()){
     	status.names = _names.value();
+    	currents.names = _names.value();
     }else{
     	printf("parallel kinematic_configuration:\n");
 	    for (std::vector< simulation::ParallelKinematic >::iterator it = parallel_kinematics.begin();it != parallel_kinematics.end();it++){
@@ -193,6 +203,8 @@ bool Joints::configureHook()
 	    	}
 	    }
 	    status.names = externalNames;
+	    currents.names = externalNames;
+
     }
 
 

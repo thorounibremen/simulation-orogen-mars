@@ -82,6 +82,7 @@ namespace simulation {
 	std::vector<JointConversion> mars_ids;
 
 	base::samples::Joints status;
+	simulation::JointCurrents currents;
 	base::commands::Joints cmd;
 
 	std::vector< simulation::ParallelKinematic > parallel_kinematics;

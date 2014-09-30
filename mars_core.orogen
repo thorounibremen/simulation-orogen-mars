@@ -219,6 +219,8 @@ task_context "Joints" do
     input_port( "command", "base/commands/Joints" ).
 	doc "command values for the joints"
 
+	output_port( "current_values", "simulation/JointCurrents")
+
     # if the joint_transform configuration is set, this port
     # will output the joints in form of RigidBodyStates
     #
