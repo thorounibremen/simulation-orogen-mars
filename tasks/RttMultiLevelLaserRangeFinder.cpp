@@ -69,7 +69,7 @@ bool RttMultiLevelLaserRangeFinder::startHook()
     if(config.numRaysVertical != 1)
         verAngleStep = config.verticalOpeningAngle / (config.numRaysVertical - 1);
     
-    double verStartAngle = -config.verticalOpeningAngle / 2.0;
+    double verStartAngle = config.verticalStartAngle;
     
     for(int h = 0; h < config.numRaysHorizontal; h++)
     {
@@ -79,9 +79,9 @@ bool RttMultiLevelLaserRangeFinder::startHook()
         verScan.vertical_start_angle = base::Angle::fromRad(verStartAngle);
         verScan.vertical_angular_resolution = verAngleStep;
         
-        std::cout << "Hor Angle " << verScan.horizontal_angle << std::endl;
-        std::cout << "Vertical Start Angle " << verScan.vertical_start_angle << std::endl;
-        std::cout << "Vertical Angle step " << verScan.vertical_angular_resolution << " end is " << verScan.vertical_start_angle + base::Angle::fromRad(verScan.vertical_angular_resolution * (config.numRaysVertical - 1)) << std::endl;
+//         std::cout << "Hor Angle " << verScan.horizontal_angle << std::endl;
+//         std::cout << "Vertical Start Angle " << verScan.vertical_start_angle << std::endl;
+//         std::cout << "Vertical Angle step " << verScan.vertical_angular_resolution << " end is " << verScan.vertical_start_angle + base::Angle::fromRad(verScan.vertical_angular_resolution * (config.numRaysVertical - 1)) << std::endl;
     }
     
     
@@ -94,6 +94,8 @@ void  RttMultiLevelLaserRangeFinder::update( double time )
     if(!isRunning()) 
         return; 
     
+    if(!sensor->gotNewData())
+        return;
     
     scan.time = getTime();
     const std::vector<double> &ranges(sensor->getSensorData());
