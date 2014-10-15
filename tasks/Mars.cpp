@@ -288,6 +288,33 @@ void* Mars::startMarsFunc(void* argument)
     std::string addonsConfigPath = marsArguments->config_dir + "/other_libs.txt";
     libManager->loadConfigFile(addonsConfigPath);
 
+    std::list<std::string> lib_names;
+    libManager->getAllLibraryNames(&lib_names);
+    for(std::list<std::string>::iterator it = lib_names.begin(); it != lib_names.end(); ++it){
+        if(it->find("path_drawer") !=std::string::npos){
+            mars::lib_manager::LibInterface* lib = libManager->getLibrary(std::string("cfg_manager"));
+            //mars::lib_manager::LibInterface* lib = libManager->getLibrary(*it);
+            if(lib)
+            {
+                cfg_manager::CFGManagerInterface* cfg = dynamic_cast<cfg_manager::CFGManagerInterface*>(lib);
+                if(cfg){
+                    cfg_manager::cfgPropertyStruct obj_file_path;
+                    obj_file_path = cfg->getOrCreateProperty("PathDrawer", "obj_file", marsArguments->path_drawer_obj);
+
+                    // overriding any defaults
+                    obj_file_path.sValue = marsArguments->path_drawer_obj;
+                    cfg->setProperty(obj_file_path);
+                    printf("setting property %s\n", obj_file_path.sValue.c_str());
+                }else{
+                    printf("could not get cfg\n");
+                }
+                break;
+            }else{
+                printf("could not get lib\n");
+            }
+        }
+    }
+
     // GraphicsTimer allows to update the graphics interface 
     // every 10 ms
     Mars::graphicsTimer = new app::GraphicsTimer(Mars::getTaskInterface()->marsGraphics, mars->simulatorInterface);
@@ -449,6 +476,7 @@ bool Mars::configureHook()
     argument.controller_port = _controller_port.get();
     argument.raw_options = _raw_options.get();
     argument.config_dir = _config_dir.get();
+    argument.path_drawer_obj = _path_drawer_obj.get();
     argument.initialized = false;
     argument.add_floor = _add_floor.get();
     argument.failed_to_init=false;

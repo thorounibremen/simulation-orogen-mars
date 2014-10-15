@@ -107,15 +107,16 @@ namespace simulation {
     {
 	    Mars* mars;
 	    bool enable_gui;
-            int controller_port;
-	    std::string config_dir;
-            bool initialized;
-            bool add_floor;
-            bool failed_to_init;
-            bool realtime_calc;
-            // Raw command line option can be passed to mars
-            // using this option vector
-            std::vector<Option> raw_options;
+        int controller_port;
+        std::string config_dir;
+        std::string path_drawer_obj;
+        bool initialized;
+        bool add_floor;
+        bool failed_to_init;
+        bool realtime_calc;
+        // Raw command line option can be passed to mars
+        // using this option vector
+        std::vector<Option> raw_options;
     };
 
 
