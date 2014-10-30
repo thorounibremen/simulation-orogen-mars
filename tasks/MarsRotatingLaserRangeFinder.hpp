@@ -22,6 +22,8 @@ namespace simulation {
     protected:
         int mSensorID;
         mars::sim::RotatingRaySensor* mSensor;
+        std::vector<mars::utils::Vector> mPoints;
+        velodyne_lidar::MultilevelLaserScan mScan;
 
     public:    
         /** TaskContext constructor for MarsRotatingLaserRangeFinder
@@ -39,7 +41,7 @@ namespace simulation {
 
         /** Default deconstructor of MarsRotatingLaserRangeFinder
          */
-	    ~MarsRotatingLaserRangeFinder();
+	      ~MarsRotatingLaserRangeFinder();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

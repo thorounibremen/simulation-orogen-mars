@@ -52,6 +52,7 @@ bool MarsRotatingLaserRangeFinder::startHook()
     
     return true;
 }
+
 void MarsRotatingLaserRangeFinder::updateHook()
 {
     MarsRotatingLaserRangeFinderBase::updateHook();
@@ -61,29 +62,26 @@ void MarsRotatingLaserRangeFinder::updateHook()
     if(!isRunning()) {
         return; 
     }
-
-    base::samples::Pointcloud pointcloud;
-    pointcloud.time = getTime();
     
-    std::vector<mars::utils::Vector> data = mSensor->getPointcloud();
-    
-    std::cout << "Size pointcloud " << data.size() << std::endl;
-    
-    // Sensor sends empty pointcloud until 360 degrees are available.
-    if(data.empty()) {
-        return;
-    } 
-    
-    std::vector<mars::utils::Vector>::iterator it = data.begin();
-    for(; it != data.end(); it++) {
-        int len_ray = it->norm();
-        if(len_ray >= _min_range.get() && len_ray <= _max_range.get()) {
-            base::Vector3d vec((*it)[0], (*it)[1], (*it)[2]);
-            pointcloud.points.push_back(vec);
+    if(_pointcloud.connected() && mSensor->getPointcloud(mPoints)) {
+        // Fill base pointcloud.
+        base::samples::Pointcloud pointcloud;
+        pointcloud.time = getTime();
+        std::vector<mars::utils::Vector>::iterator it = mPoints.begin();
+        for(; it != mPoints.end(); it++) {
+            //int len_ray = it->norm();
+            //if(len_ray >= _min_range.get() && len_ray <= _max_range.get()) {
+                base::Vector3d vec((*it)[0], (*it)[1], (*it)[2]);
+                pointcloud.points.push_back(vec);
+            //}
         }
+        _pointcloud.write(pointcloud);
     }
     
-    _pointcloud.write(pointcloud);
+    if(_laser_scans.connected() && mSensor->getMultiLevelLaserScan(mScan)) {
+        std::cout << "Write mlls" << std::endl;
+        _laser_scans.write(mScan);
+    }
 }
 
 void MarsRotatingLaserRangeFinder::errorHook()

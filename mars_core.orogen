@@ -14,6 +14,7 @@ import_types_from "tasks/MarsControl.hpp"
 import_types_from "servoTypes.hpp"
 import_types_from "jointTypes.hpp"
 import_types_from "base"
+import_types_from 'velodyne_lidar/MultilevelLaserScan.h'
 
 using_library "actuator_dispatcher"
 
@@ -286,15 +287,19 @@ task_context "MarsRotatingLaserRangeFinder" do
 
     property('name', '/std/string', 'unknown_ray_sensor').
 	    doc('Name of the RotatingRaySensor in the scene file')
-	    
+	   
+	  # Handled within the sensor. 
     property('min_range', 'double', 0.0).
-        doc("Minimum valid range of the laser range finder")
+        doc("Not used, instead the scene file configuration is used")
         
     property('max_range', 'double', 20.0).
-        doc("Maximum valid range of the laser range finder")
+        doc("Not used, instead the scene file configuration is used")
 
     output_port('pointcloud', '/base/samples/Pointcloud').
         doc 'Received distances converted to a pointcloud'
+        
+    output_port('laser_scans', '/velodyne_lidar/MultilevelLaserScan').
+        doc '3d scan using the MultilevelLaserScan format, '
 end
 
 task_context "MarsIMU" do
