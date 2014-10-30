@@ -57,8 +57,7 @@ void Joints::update(double delta_t)
             
             base::JointState &curCmd(cmd[*it]);
 
-	    mars::sim::SimMotor *motor =
-		control->motors->getSimMotor( conv.mars_id );
+	    mars::sim::SimMotor *motor = control->motors->getSimMotor( conv.mars_id );
 
 	    if( curCmd.hasPosition() )
             {
@@ -71,7 +70,7 @@ void Joints::update(double delta_t)
             else
             {
                 if( curCmd.hasSpeed() )
-                    motor->setVelocity(curCmd.speed );
+                    motor->setVelocity(curCmd.speed / conv.scaling);
             }
 	    if( curCmd.hasEffort() )
 	    {
@@ -106,7 +105,7 @@ void Joints::update(double delta_t)
 
 	base::JointState state;
 	state.position = conv->fromMars(conv->updateAbsolutePosition( motor->getActualPosition() ));
-	state.speed = motor->getJoint()->getVelocity();
+	state.speed = motor->getJoint()->getVelocity() * conv->scaling;
 	state.effort = conv->fromMars( motor->getTorque() );
 
 	status[conv->externalName] = state;

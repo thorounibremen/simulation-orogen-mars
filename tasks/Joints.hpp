@@ -73,6 +73,7 @@ namespace simulation {
 	    int mars_id;
             std::string marsName;
             std::string externalName;
+        /// Scale factor from Mars to Module
 	    double scaling;
 	    double offset;
             double absolutePosition;
