@@ -226,6 +226,7 @@ bool Joints::configureHook()
 		}else
 		{
 			status.names[i] = rename[i];
+            currents.names[i] = rename[i];
 			mars_ids[i].externalName = rename[i];
 		}
 
