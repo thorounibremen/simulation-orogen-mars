@@ -73,6 +73,7 @@ namespace simulation {
 	    int mars_id;
             std::string marsName;
             std::string externalName;
+        /// Scale factor from Mars to Module
 	    double scaling;
 	    double offset;
             double absolutePosition;
@@ -82,6 +83,7 @@ namespace simulation {
 	std::vector<JointConversion> mars_ids;
 
 	base::samples::Joints status;
+	simulation::JointCurrents currents;
 	base::commands::Joints cmd;
 
 	std::vector< simulation::ParallelKinematic > parallel_kinematics;
