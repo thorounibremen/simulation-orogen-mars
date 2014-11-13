@@ -287,30 +287,26 @@ void* Mars::startMarsFunc(void* argument)
     // Loading libraries that are specified in other_libs.txt
     std::string addonsConfigPath = marsArguments->config_dir + "/other_libs.txt";
     libManager->loadConfigFile(addonsConfigPath);
-
-    std::list<std::string> lib_names;
-    libManager->getAllLibraryNames(&lib_names);
+    /*libManager->getAllLibraryNames(&lib_names);
     for(std::list<std::string>::iterator it = lib_names.begin(); it != lib_names.end(); ++it){
-        if(it->find("path_drawer") !=std::string::npos){
-            mars::lib_manager::LibInterface* lib = libManager->getLibrary(std::string("cfg_manager"));
-            //mars::lib_manager::LibInterface* lib = libManager->getLibrary(*it);
-            if(lib)
-            {
-                cfg_manager::CFGManagerInterface* cfg = dynamic_cast<cfg_manager::CFGManagerInterface*>(lib);
-                if(cfg){
-                    cfg_manager::cfgPropertyStruct obj_file_path;
-                    obj_file_path = cfg->getOrCreateProperty("PathDrawer", "obj_file", marsArguments->path_drawer_obj);
+    }*/
 
-                    // overriding any defaults
-                    obj_file_path.sValue = marsArguments->path_drawer_obj;
-                    cfg->setProperty(obj_file_path);
-                    printf("setting property %s\n", obj_file_path.sValue.c_str());
-                }else{
-                    printf("could not get cfg\n");
-                }
-                break;
-            }else{
-                printf("could not get lib\n");
+    // set simulation properties, if specified
+    lib = libManager->getLibrary(std::string("cfg_manager"));
+    if(lib)
+    {
+        cfg_manager::CFGManagerInterface* cfg = dynamic_cast<cfg_manager::CFGManagerInterface*>(lib);
+        if(cfg){
+            std::vector<SimulationProperty> props = marsArguments->simulation_property_list;
+            for(std::vector<SimulationProperty>::iterator prop_it = props.begin(); prop_it != props.end(); ++prop_it){
+                // get or create property
+                cfg_manager::cfgPropertyStruct cfg_prop_struct;
+                cfg_prop_struct = cfg->getOrCreateProperty(prop_it->lib_name, prop_it->property_name, prop_it->value);
+
+                // overriding any defaults
+                cfg_prop_struct.sValue = prop_it->value;
+                cfg->setProperty(cfg_prop_struct);
+                printf("setting property %s\n", cfg_prop_struct.sValue.c_str());
             }
         }
     }
@@ -476,7 +472,7 @@ bool Mars::configureHook()
     argument.controller_port = _controller_port.get();
     argument.raw_options = _raw_options.get();
     argument.config_dir = _config_dir.get();
-    argument.path_drawer_obj = _path_drawer_obj.get();
+    argument.simulation_property_list = _simulation_property_list.get();
     argument.initialized = false;
     argument.add_floor = _add_floor.get();
     argument.failed_to_init=false;

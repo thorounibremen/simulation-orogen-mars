@@ -31,5 +31,12 @@ namespace simulation {
 	   float rotx,roty,rotz;
    };
 
+    struct SimulationProperty
+    {
+        std::string lib_name;
+        std::string property_name;
+        std::string value;
+    };
+
 }
 #endif // SIMULATION_MARS_CONTROL_HPP

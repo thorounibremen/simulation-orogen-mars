@@ -4,7 +4,7 @@
 #include "simulation/MarsBase.hpp"
 #include <vector>
 #include <mars/data_broker/ReceiverInterface.h>
-#include "MarsPlugin.hpp"  
+#include "MarsPlugin.hpp"
 #include <boost/thread/mutex.hpp>
 
 class QApplication;
@@ -108,8 +108,8 @@ namespace simulation {
 	    Mars* mars;
 	    bool enable_gui;
         int controller_port;
+        std::vector<SimulationProperty> simulation_property_list;
         std::string config_dir;
-        std::string path_drawer_obj;
         bool initialized;
         bool add_floor;
         bool failed_to_init;

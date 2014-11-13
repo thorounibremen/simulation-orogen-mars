@@ -63,8 +63,8 @@ task_context "Mars" do
         property('config_dir', '/std/string',"#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/configuration/mars_default").
 	    doc('the full path to the main configuration folder')
 
-        property('path_drawer_obj', '/std/string').
-        doc('the full path to the blender export .obj file which contains a list of vectors')
+        property('simulation_property_list', '/std/vector</simulation/SimulationProperty>').
+        doc('list of attributes containing plugin and property name as well as the desired value')
 
         property('distributed_simulation', 'bool').
 	    doc('switch to active the distributed simulation if needed')
