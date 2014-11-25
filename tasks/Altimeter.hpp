@@ -3,7 +3,7 @@
 #ifndef SIMULATION_MARSALTIMETER_TASK_HPP
 #define SIMULATION_MARSALTIMETER_TASK_HPP
 
-#include "mars/MarsAltimeterBase.hpp"
+#include "mars/AltimeterBase.hpp"
 namespace mars{
     namespace sim{
         class RaySensor;
@@ -13,7 +13,7 @@ namespace mars{
 
 namespace mars {
 
-    /*! \class MarsAltimeter 
+    /*! \class Altimeter 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -22,37 +22,37 @@ namespace mars {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','mars::MarsAltimeter')
+         task('custom_task_name','mars::Altimeter')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsAltimeter : public MarsAltimeterBase
+    class Altimeter : public AltimeterBase
     {
-	friend class MarsAltimeterBase;
+	friend class AltimeterBase;
     protected:
 	unsigned long node_id;
-        mars::sim::RaySensor* sonar;
+        sim::RaySensor* sonar;
         base::samples::RigidBodyState gdist;
 
 
     public:
-        /** TaskContext constructor for MarsAltimeter
+        /** TaskContext constructor for Altimeter
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsAltimeter(std::string const& name = "mars::MarsAltimeter");
+        Altimeter(std::string const& name = "mars::Altimeter");
 
-        /** TaskContext constructor for MarsAltimeter 
+        /** TaskContext constructor for Altimeter 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsAltimeter(std::string const& name, RTT::ExecutionEngine* engine);
+        Altimeter(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsAltimeter
+        /** Default deconstructor of Altimeter
          */
-	~MarsAltimeter();
+	~Altimeter();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

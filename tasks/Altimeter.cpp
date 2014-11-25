@@ -1,6 +1,6 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsAltimeter.hpp"
+#include "Altimeter.hpp"
 #include <mars/sim/RaySensor.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 #include <mars/interfaces/sim/SensorManagerInterface.h>
@@ -8,68 +8,68 @@
 
 using namespace mars;
 
-MarsAltimeter::MarsAltimeter(std::string const& name)
-    : MarsAltimeterBase(name)
+Altimeter::Altimeter(std::string const& name)
+    : AltimeterBase(name)
 {
 }
 
-MarsAltimeter::MarsAltimeter(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsAltimeterBase(name, engine)
+Altimeter::Altimeter(std::string const& name, RTT::ExecutionEngine* engine)
+    : AltimeterBase(name, engine)
 {
 }
 
-MarsAltimeter::~MarsAltimeter()
+Altimeter::~Altimeter()
 {
 }
 
 
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsAltimeter.hpp for more detailed
+// hooks defined by Orocos::RTT. See Altimeter.hpp for more detailed
 // documentation about them.
 
-bool MarsAltimeter::configureHook()
+bool Altimeter::configureHook()
 {
-    if (! MarsAltimeterBase::configureHook())
+    if (! AltimeterBase::configureHook())
         return false;
     
     node_id = control->sensors->getSensorID(_node_name.get());
     sonar = dynamic_cast<mars::sim::RaySensor*>(control->sensors->getSimSensor(node_id));
     if(sonar==0){
-        fprintf(stderr,"[FATAL] Given node name is not a RaySensor (Name: %s, internal id: %i).",_node_name.get().c_str(), node_id);
+        fprintf(stderr,"[FATAL] Given node name is not a RaySensor (Name: %s, internal id: %lu).",_node_name.get().c_str(), node_id);
         return false;
     }
 
     return true;
 }
-bool MarsAltimeter::startHook()
+bool Altimeter::startHook()
 {
-    if (! MarsAltimeterBase::startHook())
+    if (! AltimeterBase::startHook())
         return false;
     return true;
 }
-void MarsAltimeter::updateHook()
+void Altimeter::updateHook()
 {
-    MarsAltimeterBase::updateHook();
+    AltimeterBase::updateHook();
 
     std::vector<double> sensor_data = sonar->getSensorData();
     if(sensor_data.size() != 1){
-        fprintf(stderr,"Warning Sensor data size should be one for GroundDistance but is: %i\n",sensor_data.size());
+        fprintf(stderr,"Warning Sensor data size should be one for GroundDistance but is: %lu\n",sensor_data.size());
     }
 
     gdist.position = Eigen::Vector3d(0.0,0.0,sensor_data[0]);
     _ground_distance.write(gdist);
 }
 
-void MarsAltimeter::errorHook()
+void Altimeter::errorHook()
 {
-    MarsAltimeterBase::errorHook();
+    AltimeterBase::errorHook();
 }
-void MarsAltimeter::stopHook()
+void Altimeter::stopHook()
 {
-    MarsAltimeterBase::stopHook();
+    AltimeterBase::stopHook();
 }
-void MarsAltimeter::cleanupHook()
+void Altimeter::cleanupHook()
 {
-    MarsAltimeterBase::cleanupHook();
+    AltimeterBase::cleanupHook();
 }

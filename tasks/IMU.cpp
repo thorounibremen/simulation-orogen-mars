@@ -1,6 +1,6 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsIMU.hpp"
+#include "IMU.hpp"
 #include "Plugin.hpp"
 #include <mars/interfaces/sim/MotorManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
@@ -8,35 +8,35 @@
 
 using namespace mars;
 
-MarsIMU::MarsIMU(std::string const& name)
-    : MarsIMUBase(name)
+IMU::IMU(std::string const& name)
+    : IMUBase(name)
 {
 }
 
-MarsIMU::MarsIMU(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsIMUBase(name, engine)
+IMU::IMU(std::string const& name, RTT::ExecutionEngine* engine)
+    : IMUBase(name, engine)
 {
 }
 
-MarsIMU::~MarsIMU()
+IMU::~IMU()
 {
 }
 
 
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsIMU.hpp for more detailed
+// hooks defined by Orocos::RTT. See IMU.hpp for more detailed
 // documentation about them.
 
-// bool MarsIMU::configureHook()
+// bool IMU::configureHook()
 // {
-//     if (! MarsIMUBase::configureHook())
+//     if (! IMUBase::configureHook())
 //         return false;
 //     return true;
 // }
-bool MarsIMU::startHook()
+bool IMU::startHook()
 {
-    if (! MarsIMUBase::startHook())
+    if (! IMUBase::startHook())
         return false;
 
     node_id = control->nodes->getID( _name.value() );
@@ -73,24 +73,24 @@ bool MarsIMU::startHook()
 
     return true;
 }
-void MarsIMU::updateHook()
+void IMU::updateHook()
 {
-    MarsIMUBase::updateHook();
+    IMUBase::updateHook();
 }
-// void MarsIMU::errorHook()
+// void IMU::errorHook()
 // {
-//     MarsIMUBase::errorHook();
+//     IMUBase::errorHook();
 // }
-void MarsIMU::stopHook()
+void IMU::stopHook()
 {
-    MarsIMUBase::stopHook();
+    IMUBase::stopHook();
 }
-// void MarsIMU::cleanupHook()
+// void IMU::cleanupHook()
 // {
-//     MarsIMUBase::cleanupHook();
+//     IMUBase::cleanupHook();
 // }
 
-void MarsIMU::update( double time )
+void IMU::update( double time )
 {
     if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
     

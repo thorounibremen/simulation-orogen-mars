@@ -3,19 +3,19 @@
 #ifndef SIMULATION_MARSDEPTHCAMERA_TASK_HPP
 #define SIMULATION_MARSDEPTHCAMERA_TASK_HPP
 
-#include "mars/MarsDepthCameraBase.hpp"
+#include "mars/DepthCameraBase.hpp"
 
 namespace mars {
 
-    /*! \class MarsDepthCamera 
+    /*! \class DepthCamera 
      * Used coordinate system: For both the scene frame and the image plane
      * the x-axis points right. The the y-axis of the scene frame points downwards, 
      * the one of the image plane upwards. And the z-axis of the scene frame points towards the 
      * image plane.
      */
-    class MarsDepthCamera : public MarsDepthCameraBase
+    class DepthCamera : public DepthCameraBase
     {
-	friend class MarsDepthCameraBase;
+	friend class DepthCameraBase;
     protected:
         base::samples::DistanceImage *image;
         RTT::extras::ReadOnlyPointer<base::samples::DistanceImage> ro_ptr;
@@ -23,22 +23,22 @@ namespace mars {
 
 
     public:
-        /** TaskContext constructor for MarsDepthCamera
+        /** TaskContext constructor for DepthCamera
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsDepthCamera(std::string const& name = "mars::MarsDepthCamera");
+        DepthCamera(std::string const& name = "mars::DepthCamera");
 
-        /** TaskContext constructor for MarsDepthCamera 
+        /** TaskContext constructor for DepthCamera 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsDepthCamera(std::string const& name, RTT::ExecutionEngine* engine);
+        DepthCamera(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsDepthCamera
+        /** Default deconstructor of DepthCamera
          */
-         ~MarsDepthCamera();
+         ~DepthCamera();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

@@ -324,6 +324,7 @@ void* Mars::startMarsFunc(void* argument)
     }
     //assert(mars->simulatorInterface->getControlCenter()->dataBroker->registerTriggeredReceiver(mars,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1));
     int result = mars->simulatorInterface->getControlCenter()->dataBroker->registerTriggeredReceiver(mars,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1);
+    (void)result;
     assert(result);
     
     // is realtime calc requested?
@@ -475,7 +476,7 @@ bool Mars::configureHook()
     argument.controller_port = _controller_port.get();
     argument.raw_options = _raw_options.get();
     argument.config_dir = _config_dir.get();
-    argument.mars_property_list = _mars_property_list.get();
+    argument.mars_property_list = _simulation_property_list.get();
     argument.initialized = false;
     argument.add_floor = _add_floor.get();
     argument.failed_to_init=false;

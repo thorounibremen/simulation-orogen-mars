@@ -6,7 +6,7 @@
 #include <base/Time.hpp>
 
 
-namespace simulation
+namespace mars 
 {
 
 struct ParallelKinematic{

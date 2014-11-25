@@ -1,21 +1,21 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsHighResRangeFinder.hpp"
+#include "HighResRangeFinder.hpp"
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
 using namespace mars;
 
-MarsHighResRangeFinder::MarsHighResRangeFinder(std::string const& name)
-    : MarsHighResRangeFinderBase(name)
+HighResRangeFinder::HighResRangeFinder(std::string const& name)
+    : HighResRangeFinderBase(name)
 {
 }
 
-MarsHighResRangeFinder::MarsHighResRangeFinder(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsHighResRangeFinderBase(name, engine)
+HighResRangeFinder::HighResRangeFinder(std::string const& name, RTT::ExecutionEngine* engine)
+    : HighResRangeFinderBase(name, engine)
 {
 }
 
-MarsHighResRangeFinder::~MarsHighResRangeFinder()
+HighResRangeFinder::~HighResRangeFinder()
 {
     std::vector<Camera*>::iterator it = cameras.begin();
     for(; it != cameras.end(); ++it) {
@@ -24,7 +24,7 @@ MarsHighResRangeFinder::~MarsHighResRangeFinder()
     cameras.clear();
 }
 
-bool MarsHighResRangeFinder::addCamera(::std::string const & name, double orientation)
+bool HighResRangeFinder::addCamera(::std::string const & name, double orientation)
 {
     long sensor_id = control->sensors->getSensorID( name );
     if( !sensor_id ){
@@ -46,7 +46,7 @@ bool MarsHighResRangeFinder::addCamera(::std::string const & name, double orient
 }
     
     
-void MarsHighResRangeFinder::calcCamParameters(Camera* camera) {
+void HighResRangeFinder::calcCamParameters(Camera* camera) {
     
     int width = camera->cam_sensor_info.width;
     int height = camera->cam_sensor_info.height;
@@ -97,19 +97,19 @@ void MarsHighResRangeFinder::calcCamParameters(Camera* camera) {
 
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsHighResRangeFinder.hpp for more detailed
+// hooks defined by Orocos::RTT. See HighResRangeFinder.hpp for more detailed
 // documentation about them.
 
-bool MarsHighResRangeFinder::configureHook()
+bool HighResRangeFinder::configureHook()
 {
-    if (! MarsHighResRangeFinderBase::configureHook())
+    if (! HighResRangeFinderBase::configureHook())
         return false;
         
     return true;
 }
-bool MarsHighResRangeFinder::startHook()
+bool HighResRangeFinder::startHook()
 {
-    if (! MarsHighResRangeFinderBase::startHook())
+    if (! HighResRangeFinderBase::startHook())
         return false;
         
     // Adds this camera to the list of cameras.
@@ -120,24 +120,24 @@ bool MarsHighResRangeFinder::startHook()
     return true;
 }
 
-void MarsHighResRangeFinder::updateHook()
+void HighResRangeFinder::updateHook()
 {
-    MarsHighResRangeFinderBase::updateHook();
+    HighResRangeFinderBase::updateHook();
 }
-void MarsHighResRangeFinder::errorHook()
+void HighResRangeFinder::errorHook()
 {
-    MarsHighResRangeFinderBase::errorHook();
+    HighResRangeFinderBase::errorHook();
 }
-void MarsHighResRangeFinder::stopHook()
+void HighResRangeFinder::stopHook()
 {
-    MarsHighResRangeFinderBase::stopHook();
+    HighResRangeFinderBase::stopHook();
 }
-void MarsHighResRangeFinder::cleanupHook()
+void HighResRangeFinder::cleanupHook()
 {
-    MarsHighResRangeFinderBase::cleanupHook();
+    HighResRangeFinderBase::cleanupHook();
 }
 
-void MarsHighResRangeFinder::getData()
+void HighResRangeFinder::getData()
 {	
     Eigen::Matrix<double, 3, 1> scene_p;
     base::samples::Pointcloud pointcloud;

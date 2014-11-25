@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace simulation
+namespace mars 
 {
 
 struct JointPos{

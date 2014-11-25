@@ -3,7 +3,7 @@
 #ifndef SIMULATION_MARSROTATINGLASERRANGEFINDER_TASK_HPP
 #define SIMULATION_MARSROTATINGLASERRANGEFINDER_TASK_HPP
 
-#include "mars/MarsRotatingLaserRangeFinderBase.hpp"
+#include "mars/RotatingLaserRangeFinderBase.hpp"
 
 namespace mars{
     namespace sim{
@@ -13,33 +13,33 @@ namespace mars{
 
 namespace mars {
 
-    /*! \class MarsRotatingLaserRangeFinder 
+    /*! \class RotatingLaserRangeFinder 
      * \brief Rock module to receive Mars RotatingRaySensor data.
      */
-    class MarsRotatingLaserRangeFinder : public MarsRotatingLaserRangeFinderBase
+    class RotatingLaserRangeFinder : public RotatingLaserRangeFinderBase
     {
-	friend class MarsRotatingLaserRangeFinderBase;
+	friend class RotatingLaserRangeFinderBase;
     protected:
         int mSensorID;
         mars::sim::RotatingRaySensor* mSensor;
 
     public:    
-        /** TaskContext constructor for MarsRotatingLaserRangeFinder
+        /** TaskContext constructor for RotatingLaserRangeFinder
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsRotatingLaserRangeFinder(std::string const& name = "mars::MarsRotatingLaserRangeFinder");
+        RotatingLaserRangeFinder(std::string const& name = "mars::RotatingLaserRangeFinder");
 
-        /** TaskContext constructor for MarsRotatingLaserRangeFinder 
+        /** TaskContext constructor for RotatingLaserRangeFinder 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsRotatingLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
+        RotatingLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsRotatingLaserRangeFinder
+        /** Default deconstructor of RotatingLaserRangeFinder
          */
-	    ~MarsRotatingLaserRangeFinder();
+	    ~RotatingLaserRangeFinder();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

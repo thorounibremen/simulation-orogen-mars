@@ -3,7 +3,7 @@
 #ifndef SIMULATION_MARSIMU_TASK_HPP
 #define SIMULATION_MARSIMU_TASK_HPP
 
-#include "mars/MarsIMUBase.hpp"
+#include "mars/IMUBase.hpp"
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
 
@@ -11,7 +11,7 @@ namespace mars {
 
     class IMUPlugin;
 
-    /*! \class MarsIMU 
+    /*! \class IMU 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -20,14 +20,14 @@ namespace mars {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','mars::MarsIMU')
+         task('custom_task_name','mars::IMU')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsIMU : public MarsIMUBase
+    class IMU : public IMUBase
     {
-	friend class MarsIMUBase;
+	friend class IMUBase;
 
     protected:
         long node_id;
@@ -42,22 +42,22 @@ namespace mars {
 
 
     public:
-        /** TaskContext constructor for MarsIMU
+        /** TaskContext constructor for IMU
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsIMU(std::string const& name = "mars::MarsIMU");
+        IMU(std::string const& name = "mars::IMU");
 
-        /** TaskContext constructor for MarsIMU 
+        /** TaskContext constructor for IMU 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsIMU(std::string const& name, RTT::ExecutionEngine* engine);
+        IMU(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsIMU
+        /** Default deconstructor of IMU
          */
-	~MarsIMU();
+	~IMU();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

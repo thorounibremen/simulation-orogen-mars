@@ -1,38 +1,38 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsDepthCamera.hpp"
+#include "DepthCamera.hpp"
 
 using namespace mars;
 
-MarsDepthCamera::MarsDepthCamera(std::string const& name)
-    : MarsDepthCameraBase(name)
+DepthCamera::DepthCamera(std::string const& name)
+    : DepthCameraBase(name)
 {
 }
 
-MarsDepthCamera::MarsDepthCamera(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsDepthCameraBase(name, engine)
+DepthCamera::DepthCamera(std::string const& name, RTT::ExecutionEngine* engine)
+    : DepthCameraBase(name, engine)
 {
 }
 
-MarsDepthCamera::~MarsDepthCamera()
+DepthCamera::~DepthCamera()
 {
 }
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsDepthCamera.hpp for more detailed
+// hooks defined by Orocos::RTT. See DepthCamera.hpp for more detailed
 // documentation about them.
-bool MarsDepthCamera::configureHook()
+bool DepthCamera::configureHook()
 {
     
-    if (! MarsDepthCameraBase::configureHook())
+    if (! DepthCameraBase::configureHook())
         return false;
     return true;
 }
 
-bool MarsDepthCamera::startHook()
+bool DepthCamera::startHook()
 {
-        std::cout << "MarsDepthCamera startHook" <<  std::endl;
-    if (! MarsDepthCameraBase::startHook())
+        std::cout << "DepthCamera startHook" <<  std::endl;
+    if (! DepthCameraBase::startHook())
         return false;
     image = new base::samples::DistanceImage(width, height);
     image->setSize(width, height);
@@ -40,27 +40,27 @@ bool MarsDepthCamera::startHook()
     return true;
 }
 
-void MarsDepthCamera::updateHook()
+void DepthCamera::updateHook()
 {
-    MarsDepthCameraBase::updateHook();
+    DepthCameraBase::updateHook();
 }
 
-void MarsDepthCamera::errorHook()
+void DepthCamera::errorHook()
 {
-    MarsDepthCameraBase::errorHook();
+    DepthCameraBase::errorHook();
 }
 
-void MarsDepthCamera::stopHook()
+void DepthCamera::stopHook()
 {
-    MarsDepthCameraBase::stopHook();
+    DepthCameraBase::stopHook();
 }
 
-void MarsDepthCamera::cleanupHook()
+void DepthCamera::cleanupHook()
 {
-    MarsDepthCameraBase::cleanupHook();
+    DepthCameraBase::cleanupHook();
 }
 
-void MarsDepthCamera::getData()
+void DepthCamera::getData()
 {	
     image = ro_ptr.write_access();
     camera->getDepthImage(image->data);

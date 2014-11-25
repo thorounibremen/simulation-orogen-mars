@@ -1,33 +1,33 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsCamera.hpp"
+#include "Camera.hpp"
 
 using namespace mars;
 
-MarsCamera::MarsCamera(std::string const& name)
-    : MarsCameraBase(name)
+Camera::Camera(std::string const& name)
+    : CameraBase(name)
 {
 }
 
-MarsCamera::MarsCamera(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsCameraBase(name, engine)
+Camera::Camera(std::string const& name, RTT::ExecutionEngine* engine)
+    : CameraBase(name, engine)
 {
 }
 
-MarsCamera::~MarsCamera()
+Camera::~Camera()
 {
 }
 
 
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsCamera.hpp for more detailed
+// hooks defined by Orocos::RTT. See Camera.hpp for more detailed
 // documentation about them.
 
 
 
 
-bool MarsCamera::configureHook()
+bool Camera::configureHook()
 {
     
     if (! mars::CameraPlugin::configureHook())
@@ -43,7 +43,7 @@ bool MarsCamera::configureHook()
 
 
 
-bool MarsCamera::startHook()
+bool Camera::startHook()
 {
     
     if (! mars::CameraPlugin::startHook())
@@ -59,7 +59,7 @@ bool MarsCamera::startHook()
 
 
 
-void MarsCamera::updateHook()
+void Camera::updateHook()
 {
     
     mars::CameraPlugin::updateHook();
@@ -72,7 +72,7 @@ void MarsCamera::updateHook()
 
 
 
-void MarsCamera::errorHook()
+void Camera::errorHook()
 {
     
     mars::CameraPlugin::errorHook();
@@ -85,7 +85,7 @@ void MarsCamera::errorHook()
 
 
 
-void MarsCamera::stopHook()
+void Camera::stopHook()
 {
     
     mars::CameraPlugin::stopHook();
@@ -98,7 +98,7 @@ void MarsCamera::stopHook()
 
 
 
-void MarsCamera::cleanupHook()
+void Camera::cleanupHook()
 {
     
     mars::CameraPlugin::cleanupHook();
@@ -109,7 +109,7 @@ void MarsCamera::cleanupHook()
     
 }
 
-void MarsCamera::getData()
+void Camera::getData()
 {	
     camera->getImage(marsImage);
 

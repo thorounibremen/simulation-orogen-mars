@@ -51,24 +51,23 @@ task_context "Mars" do
             doc("Possible Values: abort (killing sim), reset (ressing scene and simulation), warn (keep simulation running an print warnings), shutdown (stop physics but keep mars-running and set this tas to the error state)").
             dynamic
 
-
         property('initial_scene', '/std/string').
 	    doc('the full path to the initial scene, this is needed because operations are not accessible during configuration within syskit (deadlock)')
 
 	    property('initial_scenes', '/std/vector</std/string>').
 	    doc('the full path to the initial scene, this is needed because operations are not accessible during configuration within syskit (deadlock)')
 
-        property('positions', 'std/vector<simulation/Positions>' ).
+        property('positions', 'std/vector<mars/Positions>' ).
 	    doc('override positions in the scene (scn) file, e.g. move the terrain to create different experiment setups without changing the scene file itself')
 
-		property('initial_pose', 'simulation/Pose' ).
+		property('initial_pose', 'mars/Pose' ).
 	    doc('override initial joint positions in the scene (scn) file, i.e. set an initial pose')
 
 
         property('config_dir', '/std/string',"#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/configuration/mars_default").
 	    doc('the full path to the main configuration folder')
 
-        property('simulation_property_list', '/std/vector</simulation/SimulationProperty>').
+        property('simulation_property_list', '/std/vector</mars/SimulationProperty>').
         doc('list of attributes containing plugin and property name as well as the desired value')
 
         property('distributed_simulation', 'bool').
@@ -100,13 +99,12 @@ task_context "Mars" do
         # method addPlugin(input: TaskContext ) return bool
         # method removePlugin(input: TaskContext) return bool
 
-        input_port('control_action', '/simulation/Control')
+        input_port('control_action', '/mars/Control')
 
         #This operation moves a node to a specific position, simpliar to the positions property but can be used during runtime
         operation("move_node").
-            argument("arg","/simulation/Positions")
+            argument("arg","/mars/Positions")
         
-
         output_port('time', 'double')
         output_port('simulated_time', '/base/Time')
 
@@ -117,15 +115,17 @@ end
 
 task_context "Plugin" do
     needs_configuration
-
+    abstract
     error_states "LOST_MARS_CONNECTION"
-
 end
 
+#Do not use this prugin direct use Camera or DepthCamera instead
 task_context "CameraPlugin" do
     subclasses "Plugin"
+    abstract
     property('name', '/std/string').
 	doc('name of the camera in the scene file')
+
 end
 
 task_context "Camera" do
@@ -175,36 +175,6 @@ task_context "HighResRangeFinder" do
         doc 'Created by using the distance image of the DepthCamera'
 end
 
-# E.g. (ruby script): Two actuators 'rear_left' and 'rear_right'.
-# actuator_names = ["rear_left", "rear_right"]
-# actuator_indices = [1, 2]  <- Using a negative index to invert, using 0 to deactivate
-# actuators = TaskContext.get 'mars_actuator'
-# actuators.names = actuator_names
-# actuators.dispatch("name_of_the_actuator_set", actuator_indices)  <- Has to be done before configure and start!
-# 
-# DEPRECATION: don't use this anymore since its based on the old base/actuators types
-# use Joints instead
-#
-task_context "Actuator" do
-    subclasses "Plugin"
-
-    operation('dispatch').
-        doc('creates an output port of actuator status and an input port for setting actuator commands').
-        returns("bool").
-        argument('name', 'std::string', "the name of the board set. Ports called status_name and cmd_name will be created").
-        argument('actuatorMap', '/std/vector</int>', "A map that maps the actuator id to the position in the Command structure. Note that a negative value can be given to autoamtically invert the commands")
-
-    dynamic_input_port(/cmd_\w+/, "base/actuators/Command").
-        doc "commands for a set of actuators set up by #dispatch"
-    dynamic_output_port(/status_\w+/, "base/actuators/Status").
-        doc "status of a set of actuators set up by #dispatch"
-
-    property('names', 'std/vector</std/string>').
-	doc('Array of names of the motor in the scene file. The names get mapped to motor ids starting from zero')
-
-    port_driven
-end
-
 task_context "Joints" do
     subclasses "Plugin"
 
@@ -212,7 +182,7 @@ task_context "Joints" do
         doc('Array of names of the motor in the scene file. The names get mapped to motor ids starting from zero')
     property('name_remap', 'std/vector</std/string>').
         doc('If this array is set the joints will be renamed for the external interface')
-    property('parallel_kinematics', 'std/vector<simulation/ParallelKinematic>').
+    property('parallel_kinematics', 'std/vector<mars/ParallelKinematic>').
         doc('maps a single joint command to two joints to control parallel kinematics simulated by two joints')
     property('scaling', 'std/vector<double>').
 	doc('Optional array of scale values that are applied to the mars joint values. Needs to be empty or the same size as names.')
@@ -227,7 +197,7 @@ task_context "Joints" do
     input_port( "command", "base/commands/Joints" ).
 	doc "command values for the joints"
 
-	output_port( "current_values", "simulation/JointCurrents")
+	output_port( "current_values", "mars/JointCurrents")
 
     # if the joint_transform configuration is set, this port
     # will output the joints in form of RigidBodyStates
@@ -249,6 +219,9 @@ task_context "ForceTorque6DOF" do
 	
 end
 
+# This plugin can be used to "trigger" a simlation cycle,
+# it can be useful for operating mars with more-than-realtime 
+# mode and use the task_scheduler for a fixed execution sequence
 task_context "Trigger" do
     subclasses "Plugin"
 
@@ -336,65 +309,6 @@ task_context "IMU" do
         doc 'provides timestamped IMUReading samples containing the complete pose'
 end
 
-# 
-# this is not a very good name, since this seems to be very specific to
-# underwater thrusters. Maybe call it Thrusters?
-#
-task_context "Actuators" do
-    subclasses "Plugin"
-    needs_configuration
-
-    property('node_name', 'std/string')
-	doc 'the name of the vehicle in the scene file'
-
-    property('amount_of_actuators', 'int')
-	doc 'the amount of actuators the vehicle has'
-
-    property('maximum_thruster_force', 'std/vector<double>')
-	doc 'The maximum thruster foce for each actuator. Is also used as a factor. The size of the vector must equal to amount_of_actuators'
-
-    property('thruster_position', 'std/vector</base/Vector3d>')
-	doc 'Positions of the thrusters on the vehicle. The size of the vector must equal to amount_of_actuators'
-
-    property('thruster_direction', 'std/vector</base/Vector3d>')
-	doc 'Directions of the thruster force on the vehicle. The size of the vector must equal to amount_of_actuators'
-
-    input_port("command", "base/actuators/Command").
-        doc("actuator command").
-        needs_buffered_connection 
-    
-    output_port("status", "base/actuators/Status")
-    port_driven :command
-end
-
-task_context "ForceApplier" do
-    subclasses "Plugin"
-    needs_configuration
-    
-    property('node_name', 'std/string')
-	doc 'the name of the vehicle in the scene file'
-	
-    property('amount_of_actuators', 'int')
-	doc 'the amount of actuators the vehicle has'
-	
-    property('maximum_thruster_force', 'std/vector<double>')
-	doc 'The maximum thruster foce for each actuator. Is also used as a factor. The size of the vector must equal to amount_of_actuators'
-	
-    property('thruster_position', 'std/vector</base/Vector3d>')
-	doc 'Positions of the thrusters on the vehicle. The size of the vector must equal to amount_of_actuators'
-
-    property('joint_names','std/vector</string>').
-        doc 'The names of the joints, array indexes must equal to the positions'
-
-    property('thruster_direction', 'std/vector</base/Vector3d>')
-	doc 'Directions of the thruster force on the vehicle. The size of the vector must equal to amount_of_actuators'
-	
-    input_port("command", "base/commands/Joints").
-        doc("actuator command as joint type").
-        needs_buffered_connection
-    output_port("status", "base/samples/Joints")
-    port_driven :command
-end
 
 task_context "Sonar" do
     subclasses "Plugin"
@@ -431,6 +345,43 @@ task_context "Altimeter" do
         doc('current ground distance simulating echo sounder')
 end
 
+
+
+
+
+###Here are comming AUV specific plugins for motion building
+
+task_context "ForceApplier" do
+    subclasses "Plugin"
+    needs_configuration
+    
+    property('node_name', 'std/string')
+	doc 'the name of the vehicle in the scene file'
+	
+    property('amount_of_actuators', 'int')
+	doc 'the amount of actuators the vehicle has'
+	
+    property('maximum_thruster_force', 'std/vector<double>')
+	doc 'The maximum thruster foce for each actuator. Is also used as a factor. The size of the vector must equal to amount_of_actuators'
+	
+    property('thruster_position', 'std/vector</base/Vector3d>')
+	doc 'Positions of the thrusters on the vehicle. The size of the vector must equal to amount_of_actuators'
+
+    property('joint_names','std/vector</string>').
+        doc 'The names of the joints, array indexes must equal to the positions'
+
+    property('thruster_direction', 'std/vector</base/Vector3d>')
+	doc 'Directions of the thruster force on the vehicle. The size of the vector must equal to amount_of_actuators'
+	
+    input_port("command", "base/commands/Joints").
+        doc("actuator command as joint type").
+        needs_buffered_connection
+    output_port("status", "base/samples/Joints")
+    port_driven :command
+end
+
+# This plugin models a artificial buoancy for AUVs,
+# the auv will stop to "float" at Z-Value 0 (water surface)
 task_context "AuvController" do
     subclasses "Plugin"
     property('node_name', 'std/string')
@@ -480,19 +431,3 @@ task_context "AuvMotion" do
 end
 
 
-
-#
-#deployment "simulation" do
-#        sim = task('mars_simulation', 'mars::Mars')
-#        acc = task('mars_actuator', 'mars::Actuator')
-#        cam = task('mars_camera', 'mars::Camera')
-#	add_default_logger
-#end
-#
-
-
-deployment "simulation" do
-	task('simulation', 'mars::Mars')
-	task('actuators', 'mars::Actuators')
-	add_default_logger
-end

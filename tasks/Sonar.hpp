@@ -5,8 +5,6 @@
 
 #include "mars/SonarBase.hpp"
 
-namespace mars {
-
 namespace mars
 {
     //sonar configuration should be implemented in mars
@@ -46,7 +44,6 @@ namespace mars
         unsigned char default_response_value;
         unsigned char default_value;
     };
-}
 
     class Sonar : public SonarBase
     {

@@ -1,39 +1,39 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsRotatingLaserRangeFinder.hpp"
+#include "RotatingLaserRangeFinder.hpp"
 
 #include <mars/sim/RotatingRaySensor.h>
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
 using namespace mars;
 
-MarsRotatingLaserRangeFinder::MarsRotatingLaserRangeFinder(std::string const& name)
-    : MarsRotatingLaserRangeFinderBase(name), mSensorID(0), mSensor(NULL)
+RotatingLaserRangeFinder::RotatingLaserRangeFinder(std::string const& name)
+    : RotatingLaserRangeFinderBase(name), mSensorID(0), mSensor(NULL)
 {
 }
 
-MarsRotatingLaserRangeFinder::MarsRotatingLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsRotatingLaserRangeFinderBase(name, engine), mSensorID(0), mSensor(NULL)
+RotatingLaserRangeFinder::RotatingLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine)
+    : RotatingLaserRangeFinderBase(name, engine), mSensorID(0), mSensor(NULL)
 {
 }
 
-MarsRotatingLaserRangeFinder::~MarsRotatingLaserRangeFinder()
+RotatingLaserRangeFinder::~RotatingLaserRangeFinder()
 {
 }
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsRotatingLaserRangeFinder.hpp for more detailed
+// hooks defined by Orocos::RTT. See RotatingLaserRangeFinder.hpp for more detailed
 // documentation about them.
 
-bool MarsRotatingLaserRangeFinder::configureHook()
+bool RotatingLaserRangeFinder::configureHook()
 {
-    if (! MarsRotatingLaserRangeFinderBase::configureHook())
+    if (! RotatingLaserRangeFinderBase::configureHook())
         return false;
     return true;
 }
-bool MarsRotatingLaserRangeFinder::startHook()
+bool RotatingLaserRangeFinder::startHook()
 {
-    if (! MarsRotatingLaserRangeFinderBase::startHook())
+    if (! RotatingLaserRangeFinderBase::startHook())
         return false;
            
     mSensorID = control->sensors->getSensorID( _name.value() );
@@ -52,9 +52,9 @@ bool MarsRotatingLaserRangeFinder::startHook()
     
     return true;
 }
-void MarsRotatingLaserRangeFinder::updateHook()
+void RotatingLaserRangeFinder::updateHook()
 {
-    MarsRotatingLaserRangeFinderBase::updateHook();
+    RotatingLaserRangeFinderBase::updateHook();
 
     // Seems Plugin is set up but not active yet, we are not sure that we 
     // are initialized correctly so retuning
@@ -86,19 +86,19 @@ void MarsRotatingLaserRangeFinder::updateHook()
     _pointcloud.write(pointcloud);
 }
 
-void MarsRotatingLaserRangeFinder::errorHook()
+void RotatingLaserRangeFinder::errorHook()
 {
-    MarsRotatingLaserRangeFinderBase::errorHook();
+    RotatingLaserRangeFinderBase::errorHook();
 }
-void MarsRotatingLaserRangeFinder::stopHook()
+void RotatingLaserRangeFinder::stopHook()
 {
-    MarsRotatingLaserRangeFinderBase::stopHook();
+    RotatingLaserRangeFinderBase::stopHook();
 }
-void MarsRotatingLaserRangeFinder::cleanupHook()
+void RotatingLaserRangeFinder::cleanupHook()
 {
-    MarsRotatingLaserRangeFinderBase::cleanupHook();
+    RotatingLaserRangeFinderBase::cleanupHook();
 }
 
-void MarsRotatingLaserRangeFinder::update(double delta_t) {
+void RotatingLaserRangeFinder::update(double delta_t) {
 
 }

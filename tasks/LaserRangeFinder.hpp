@@ -3,7 +3,7 @@
 #ifndef SIMULATION_MARSLASERRANGEFINDER_TASK_HPP
 #define SIMULATION_MARSLASERRANGEFINDER_TASK_HPP
 
-#include "mars/MarsLaserRangeFinderBase.hpp"
+#include "mars/LaserRangeFinderBase.hpp"
         
 namespace mars{
     namespace sim{
@@ -13,7 +13,7 @@ namespace mars{
 
 namespace mars {
 
-    /*! \class MarsLaserRangeFinder 
+    /*! \class LaserRangeFinder 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -22,36 +22,36 @@ namespace mars {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','mars::MarsLaserRangeFinder')
+         task('custom_task_name','mars::LaserRangeFinder')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsLaserRangeFinder : public MarsLaserRangeFinderBase
+    class LaserRangeFinder : public LaserRangeFinderBase
     {
-	friend class MarsLaserRangeFinderBase;
+	friend class LaserRangeFinderBase;
     protected:
         base::samples::LaserScan scan;
         mars::sim::RaySensor* sensor;
 
         void update( double time );
     public:
-        /** TaskContext constructor for MarsLaserRangeFinder
+        /** TaskContext constructor for LaserRangeFinder
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsLaserRangeFinder(std::string const& name = "mars::MarsLaserRangeFinder");
+        LaserRangeFinder(std::string const& name = "mars::LaserRangeFinder");
 
-        /** TaskContext constructor for MarsLaserRangeFinder 
+        /** TaskContext constructor for LaserRangeFinder 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
+        LaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsLaserRangeFinder
+        /** Default deconstructor of LaserRangeFinder
          */
-	~MarsLaserRangeFinder();
+	~LaserRangeFinder();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
