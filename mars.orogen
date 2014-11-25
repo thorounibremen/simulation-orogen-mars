@@ -1,4 +1,4 @@
-name 'simulation'
+name 'mars'
 
 using_library "mars_interfaces", :typekit => false
 using_library "mars_gui", :typekit => false
@@ -27,7 +27,7 @@ using_library "actuator_dispatcher"
 # use subclassing to derive robot specific modules, e.g.
 #
 # task_context 'RobotSimulation' do
-#         subclasses 'simulation::Mars'
+#         subclasses 'mars::Mars'
 # end
 #
 # Pay attention that all these tasks have to be started within 
@@ -84,7 +84,7 @@ task_context "Mars" do
             dynamic.
             doc('The Step-size that each mars-step calculates')
 
-        property('raw_options', '/std/vector<simulation::Option>').
+        property('raw_options', '/std/vector<mars::Option>').
             doc('forward the original mars arguments, such as -c 1600 for setting the ode port - option consists of name, here: -c and parameter: here 1600')
 
 		property('realtime_calc', 'bool', false).
@@ -115,7 +115,7 @@ task_context "Mars" do
         exception_states :PHYSICS_ERROR
 end
 
-task_context "MarsPlugin" do
+task_context "Plugin" do
     needs_configuration
 
     error_states "LOST_MARS_CONNECTION"
@@ -123,26 +123,26 @@ task_context "MarsPlugin" do
 end
 
 task_context "CameraPlugin" do
-    subclasses "MarsPlugin"
+    subclasses "Plugin"
     property('name', '/std/string').
 	doc('name of the camera in the scene file')
 end
 
-task_context "MarsCamera" do
+task_context "Camera" do
     subclasses "CameraPlugin"
     needs_configuration
 
     output_port 'frame', ro_ptr('base::samples::frame::Frame')
 end
 
-task_context "MarsDepthCamera" do
+task_context "DepthCamera" do
     subclasses "CameraPlugin"
     needs_configuration
     
     output_port 'distance_image', ro_ptr('base::samples::DistanceImage')
 end
 
-task_context "MarsHighResRangeFinder" do
+task_context "HighResRangeFinder" do
     subclasses "CameraPlugin"
     needs_configuration
 
@@ -172,7 +172,7 @@ task_context "MarsHighResRangeFinder" do
         argument('orientation', 'double', "To get a full 360 degree view you have to add four 90-cameras with 0, 90, 180 and 270") 
 
     output_port('pointcloud', '/base/samples/Pointcloud').
-        doc 'Created by using the distance image of the MarsDepthCamera'
+        doc 'Created by using the distance image of the DepthCamera'
 end
 
 # E.g. (ruby script): Two actuators 'rear_left' and 'rear_right'.
@@ -185,8 +185,8 @@ end
 # DEPRECATION: don't use this anymore since its based on the old base/actuators types
 # use Joints instead
 #
-task_context "MarsActuator" do
-    subclasses "MarsPlugin"
+task_context "Actuator" do
+    subclasses "Plugin"
 
     operation('dispatch').
         doc('creates an output port of actuator status and an input port for setting actuator commands').
@@ -206,7 +206,7 @@ task_context "MarsActuator" do
 end
 
 task_context "Joints" do
-    subclasses "MarsPlugin"
+    subclasses "Plugin"
 
     property('names', 'std/vector</std/string>').
         doc('Array of names of the motor in the scene file. The names get mapped to motor ids starting from zero')
@@ -240,7 +240,7 @@ end
 
 task_context "ForceTorque6DOF" do
 	
-	subclasses "MarsPlugin"
+	subclasses "Plugin"
 	
 	output_port("wrenches", "std/vector< /base/samples/Wrench >")
 	
@@ -249,8 +249,8 @@ task_context "ForceTorque6DOF" do
 	
 end
 
-task_context "MarsTrigger" do
-    subclasses "MarsPlugin"
+task_context "Trigger" do
+    subclasses "Plugin"
 
     property "do_step","bool",false
     doc("This components triggeres the mars simulation cycle if the update-hook is called, 
@@ -258,8 +258,8 @@ task_context "MarsTrigger" do
         trigger_component")
 end
 
-task_context "MarsLaserRangeFinder" do
-    subclasses "MarsPlugin"
+task_context "LaserRangeFinder" do
+    subclasses "Plugin"
 
     needs_configuration
 
@@ -286,8 +286,8 @@ end
 
 # Can be used to simulate laser scanners with more than one vertical scan line
 # (e.g. Velodyne).
-task_context "MarsRotatingLaserRangeFinder" do
-    subclasses "MarsPlugin"
+task_context "RotatingLaserRangeFinder" do
+    subclasses "Plugin"
 
     needs_configuration
 
@@ -304,8 +304,8 @@ task_context "MarsRotatingLaserRangeFinder" do
         doc 'Received distances converted to a pointcloud'
 end
 
-task_context "MarsIMU" do
-    subclasses "MarsPlugin"
+task_context "IMU" do
+    subclasses "Plugin"
     
     property("imu_frame", "std/string", "imu").
 	doc "The name of the imu frame."
@@ -341,7 +341,7 @@ end
 # underwater thrusters. Maybe call it Thrusters?
 #
 task_context "Actuators" do
-    subclasses "MarsPlugin"
+    subclasses "Plugin"
     needs_configuration
 
     property('node_name', 'std/string')
@@ -368,7 +368,7 @@ task_context "Actuators" do
 end
 
 task_context "ForceApplier" do
-    subclasses "MarsPlugin"
+    subclasses "Plugin"
     needs_configuration
     
     property('node_name', 'std/string')
@@ -397,7 +397,7 @@ task_context "ForceApplier" do
 end
 
 task_context "Sonar" do
-    subclasses "MarsPlugin"
+    subclasses "Plugin"
     needs_configuration
 
     property('node_name', 'std/string').
@@ -420,8 +420,8 @@ task_context "Sonar" do
 end
 
 
-task_context "MarsAltimeter" do
-    subclasses "MarsPlugin"
+task_context "Altimeter" do
+    subclasses "Plugin"
     property('node_name', 'std/string')
 	doc 'the name of the vehicle in the scene file'
 
@@ -432,7 +432,7 @@ task_context "MarsAltimeter" do
 end
 
 task_context "AuvController" do
-    subclasses "MarsPlugin"
+    subclasses "Plugin"
     property('node_name', 'std/string')
 	doc 'the name of the vehicle in the scene file'
 
@@ -483,16 +483,16 @@ end
 
 #
 #deployment "simulation" do
-#        sim = task('mars_simulation', 'simulation::Mars')
-#        acc = task('mars_actuator', 'simulation::MarsActuator')
-#        cam = task('mars_camera', 'simulation::MarsCamera')
+#        sim = task('mars_simulation', 'mars::Mars')
+#        acc = task('mars_actuator', 'mars::Actuator')
+#        cam = task('mars_camera', 'mars::Camera')
 #	add_default_logger
 #end
 #
 
 
 deployment "simulation" do
-	task('simulation', 'simulation::Mars')
-	task('actuators', 'simulation::Actuators')
+	task('simulation', 'mars::Mars')
+	task('actuators', 'mars::Actuators')
 	add_default_logger
 end
