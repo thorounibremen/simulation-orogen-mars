@@ -5,7 +5,7 @@
 #include <string>
 #endif
 
-namespace simulation {
+namespace mars {
 
    enum Control { NONE = 0, START, PAUSE, RESET, STEP };
 

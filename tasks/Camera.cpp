@@ -2,7 +2,7 @@
 
 #include "MarsCamera.hpp"
 
-using namespace simulation;
+using namespace mars;
 
 MarsCamera::MarsCamera(std::string const& name)
     : MarsCameraBase(name)
@@ -30,7 +30,7 @@ MarsCamera::~MarsCamera()
 bool MarsCamera::configureHook()
 {
     
-    if (! simulation::CameraPlugin::configureHook())
+    if (! mars::CameraPlugin::configureHook())
         return false;
     
 
@@ -46,7 +46,7 @@ bool MarsCamera::configureHook()
 bool MarsCamera::startHook()
 {
     
-    if (! simulation::CameraPlugin::startHook())
+    if (! mars::CameraPlugin::startHook())
         return false;
     
     image = new base::samples::frame::Frame(width,height,8,base::samples::frame::MODE_RGB);
@@ -62,7 +62,7 @@ bool MarsCamera::startHook()
 void MarsCamera::updateHook()
 {
     
-    simulation::CameraPlugin::updateHook();
+    mars::CameraPlugin::updateHook();
     
 
     
@@ -75,7 +75,7 @@ void MarsCamera::updateHook()
 void MarsCamera::errorHook()
 {
     
-    simulation::CameraPlugin::errorHook();
+    mars::CameraPlugin::errorHook();
     
 
     
@@ -88,7 +88,7 @@ void MarsCamera::errorHook()
 void MarsCamera::stopHook()
 {
     
-    simulation::CameraPlugin::stopHook();
+    mars::CameraPlugin::stopHook();
     
 
     
@@ -101,7 +101,7 @@ void MarsCamera::stopHook()
 void MarsCamera::cleanupHook()
 {
     
-    simulation::CameraPlugin::cleanupHook();
+    mars::CameraPlugin::cleanupHook();
     
 
     

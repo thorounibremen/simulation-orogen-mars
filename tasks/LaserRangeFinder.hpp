@@ -3,7 +3,7 @@
 #ifndef SIMULATION_MARSLASERRANGEFINDER_TASK_HPP
 #define SIMULATION_MARSLASERRANGEFINDER_TASK_HPP
 
-#include "simulation/MarsLaserRangeFinderBase.hpp"
+#include "mars/MarsLaserRangeFinderBase.hpp"
         
 namespace mars{
     namespace sim{
@@ -11,7 +11,7 @@ namespace mars{
     };
 };
 
-namespace simulation {
+namespace mars {
 
     /*! \class MarsLaserRangeFinder 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -22,7 +22,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsLaserRangeFinder')
+         task('custom_task_name','mars::MarsLaserRangeFinder')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -40,7 +40,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsLaserRangeFinder(std::string const& name = "simulation::MarsLaserRangeFinder");
+        MarsLaserRangeFinder(std::string const& name = "mars::MarsLaserRangeFinder");
 
         /** TaskContext constructor for MarsLaserRangeFinder 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

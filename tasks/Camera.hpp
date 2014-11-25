@@ -3,9 +3,9 @@
 #ifndef SIMULATION_MARSCAMERA_TASK_HPP
 #define SIMULATION_MARSCAMERA_TASK_HPP
 
-#include "simulation/MarsCameraBase.hpp"
+#include "mars/MarsCameraBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     /*! \class MarsCamera 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -16,7 +16,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsCamera')
+         task('custom_task_name','mars::MarsCamera')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -34,7 +34,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsCamera(std::string const& name = "simulation::MarsCamera");
+        MarsCamera(std::string const& name = "mars::MarsCamera");
 
         /** TaskContext constructor for MarsCamera 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

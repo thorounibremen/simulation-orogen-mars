@@ -5,7 +5,7 @@
 #include <mars/sim/RotatingRaySensor.h>
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
-using namespace simulation;
+using namespace mars;
 
 MarsRotatingLaserRangeFinder::MarsRotatingLaserRangeFinder(std::string const& name)
     : MarsRotatingLaserRangeFinderBase(name), mSensorID(0), mSensor(NULL)

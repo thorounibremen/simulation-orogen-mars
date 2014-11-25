@@ -4,9 +4,9 @@
 #define SIMULATION_ACTUATORS_TASK_HPP
 
 #include "Mars.hpp"
-#include "simulation/ActuatorsBase.hpp"
+#include "mars/ActuatorsBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     class Actuators : public ActuatorsBase
     {
@@ -26,7 +26,7 @@ namespace simulation {
         void update( double time );
 
     public:
-        Actuators(std::string const& name = "simulation::Actuators");
+        Actuators(std::string const& name = "mars::Actuators");
         Actuators(std::string const& name, RTT::ExecutionEngine* engine);
 
 	~Actuators();

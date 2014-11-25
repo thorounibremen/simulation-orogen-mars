@@ -6,19 +6,19 @@
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 
-using namespace simulation;
+using namespace mars;
 
 
 Sonar::Sonar(std::string const& name)
     : SonarBase(name), sonar_update_mutex(new pthread_mutex_t)
 {
-	sonar_config = new simulation::SonarConfig();
+	sonar_config = new mars::SonarConfig();
 }
 
 Sonar::Sonar(std::string const& name, RTT::ExecutionEngine* engine)
     : SonarBase(name, engine), sonar_update_mutex(new pthread_mutex_t)
 {
-	sonar_config = new simulation::SonarConfig();
+	sonar_config = new mars::SonarConfig();
 }
 
 Sonar::~Sonar()
@@ -83,7 +83,7 @@ void Sonar::updateHook()
 // }
 
 bool Sonar::getSonarData(base::samples::SonarBeam &sonar_beam){
-    //just return false if the simulation is not running
+    //just return false if the mars is not running
     if(!control->sim->isSimRunning())
       return false;
 

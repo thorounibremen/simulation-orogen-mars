@@ -3,9 +3,9 @@
 #ifndef SIMULATION_JOINTS_TASK_HPP
 #define SIMULATION_JOINTS_TASK_HPP
 
-#include "simulation/JointsBase.hpp"
+#include "mars/JointsBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     /*! \class Joints 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -16,7 +16,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::Joints')
+         task('custom_task_name','mars::Joints')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -83,10 +83,10 @@ namespace simulation {
 	std::vector<JointConversion> mars_ids;
 
 	base::samples::Joints status;
-	simulation::JointCurrents currents;
+	mars::JointCurrents currents;
 	base::commands::Joints cmd;
 
-	std::vector< simulation::ParallelKinematic > parallel_kinematics;
+	std::vector< mars::ParallelKinematic > parallel_kinematics;
 
 
     public:
@@ -97,7 +97,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Joints(std::string const& name = "simulation::Joints");
+        Joints(std::string const& name = "mars::Joints");
 
         /** TaskContext constructor for Joints 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

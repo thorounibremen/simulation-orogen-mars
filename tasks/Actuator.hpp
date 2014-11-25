@@ -3,10 +3,10 @@
 #ifndef SIMULATION_MARSACTUATOR_TASK_HPP
 #define SIMULATION_MARSACTUATOR_TASK_HPP
 
-#include "simulation/MarsActuatorBase.hpp"
+#include "mars/MarsActuatorBase.hpp"
 #include "actuator_dispatcher/Actuator.hpp"
 
-namespace simulation {
+namespace mars {
 
     class ActuatorPlugin;
     
@@ -19,7 +19,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsActuator')
+         task('custom_task_name','mars::MarsActuator')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -42,7 +42,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsActuator(std::string const& name = "simulation::MarsActuator");
+        MarsActuator(std::string const& name = "mars::MarsActuator");
 
         /** TaskContext constructor for MarsActuator 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

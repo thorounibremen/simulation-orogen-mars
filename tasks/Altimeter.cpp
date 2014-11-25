@@ -6,7 +6,7 @@
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 
-using namespace simulation;
+using namespace mars;
 
 MarsAltimeter::MarsAltimeter(std::string const& name)
     : MarsAltimeterBase(name)

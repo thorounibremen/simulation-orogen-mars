@@ -4,7 +4,7 @@
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 
 using namespace base::actuators;
-using namespace simulation;
+using namespace mars;
 using namespace mars::utils;
 
 
@@ -97,7 +97,7 @@ void Actuators::updateHook()
 
         //TODO
         //for now we are copping it because we do not want to change
-        //the mapping for the simulation model
+        //the mapping for the mars model
         //
         std::vector<double> pwm;
         for (unsigned int i=0; i<command.target.size(); i++) {

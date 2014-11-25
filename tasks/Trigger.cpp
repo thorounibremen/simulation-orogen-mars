@@ -2,7 +2,7 @@
 
 #include "MarsTrigger.hpp"
 
-using namespace simulation;
+using namespace mars;
 
 MarsTrigger::MarsTrigger(std::string const& name)
     : MarsTriggerBase(name)
@@ -27,7 +27,7 @@ MarsTrigger::~MarsTrigger()
 // documentation about them.
 bool MarsTrigger::configureHook()
 {
-    if (! simulation::MarsPlugin::configureHook())
+    if (! mars::MarsPlugin::configureHook())
         return false;
     return true;
 }
@@ -35,7 +35,7 @@ bool MarsTrigger::configureHook()
 
 bool MarsTrigger::startHook()
 {
-    if (! simulation::MarsPlugin::startHook())
+    if (! mars::MarsPlugin::startHook())
         return false;
     return control->dataBroker->registerTriggeredReceiver(this,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1);
     
@@ -44,7 +44,7 @@ bool MarsTrigger::startHook()
 
 void MarsTrigger::updateHook()
 {
-    simulation::MarsPlugin::updateHook();
+    mars::MarsPlugin::updateHook();
     if(!_do_step.get()) return; 
     RTT::TaskContext::updateHook();
     pthread_mutex_lock(&mutex);
@@ -56,17 +56,17 @@ void MarsTrigger::updateHook()
 
 void MarsTrigger::errorHook()
 {
-    simulation::MarsPlugin::errorHook();
+    mars::MarsPlugin::errorHook();
 }
 
 void MarsTrigger::stopHook()
 {
-    simulation::MarsPlugin::stopHook();
+    mars::MarsPlugin::stopHook();
 }
 
 void MarsTrigger::cleanupHook()
 {
-    simulation::MarsPlugin::cleanupHook();
+    mars::MarsPlugin::cleanupHook();
 }
 
 

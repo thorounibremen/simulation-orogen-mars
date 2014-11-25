@@ -3,23 +3,23 @@
 #ifndef SIMULATION_MARSTRIGGER_TASK_HPP
 #define SIMULATION_MARSTRIGGER_TASK_HPP
 
-#include "simulation/MarsTriggerBase.hpp"
+#include "mars/MarsTriggerBase.hpp"
 #include <pthread.h>
 
-namespace simulation {
+namespace mars {
 
     /*! \class MarsTrigger 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * This components triggeres the mars simulation cycle if the update-hook is called, 
+     * This components triggeres the mars mars cycle if the update-hook is called, 
         this is useful if an sequence between componentes is needed, like it is possible with the
         trigger_component
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsTrigger')
+         task('custom_task_name','mars::MarsTrigger')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -40,7 +40,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsTrigger(std::string const& name = "simulation::MarsTrigger");
+        MarsTrigger(std::string const& name = "mars::MarsTrigger");
 
         /** TaskContext constructor for MarsTrigger 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

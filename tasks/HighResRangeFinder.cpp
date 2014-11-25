@@ -3,7 +3,7 @@
 #include "MarsHighResRangeFinder.hpp"
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
-using namespace simulation;
+using namespace mars;
 
 MarsHighResRangeFinder::MarsHighResRangeFinder(std::string const& name)
     : MarsHighResRangeFinderBase(name)

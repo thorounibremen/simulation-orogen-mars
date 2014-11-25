@@ -7,7 +7,7 @@
 #include <base/Logging.hpp>
 #include <base/samples/RigidBodyState.hpp>
 
-using namespace simulation;
+using namespace mars;
 
 Joints::Joints(std::string const& name)
     : JointsBase(name)
@@ -40,7 +40,7 @@ void Joints::init()
 void Joints::update(double delta_t)
 {
     if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
-    // if there was a command, write it to the simulation
+    // if there was a command, write it to the mars
     while( _command.read( cmd ) == RTT::NewData )
     {
 	for( size_t i=0; i<mars_ids.size(); ++i )
@@ -154,7 +154,7 @@ bool Joints::configureHook()
 	return false;
     }
 
-    std::vector< simulation::ParallelKinematic > parallel_kinematics = _parallel_kinematics.value();
+    std::vector< mars::ParallelKinematic > parallel_kinematics = _parallel_kinematics.value();
 
 
     mars_ids.clear();
@@ -180,7 +180,7 @@ bool Joints::configureHook()
     	currents.names = _names.value();
     }else{
     	printf("parallel kinematic_configuration:\n");
-	    for (std::vector< simulation::ParallelKinematic >::iterator it = parallel_kinematics.begin();it != parallel_kinematics.end();it++){
+	    for (std::vector< mars::ParallelKinematic >::iterator it = parallel_kinematics.begin();it != parallel_kinematics.end();it++){
 	    	printf("%s -> %s, %s\n",it->externalName.c_str(),it->internalName1.c_str(),it->internalName2.c_str());
 	    }
 	    std::vector<std::string> externalNames;
@@ -188,7 +188,7 @@ bool Joints::configureHook()
 	    bool is_parallel = false;
 	    for (std::vector<std::string>::iterator name = marsNames.begin(); name != marsNames.end();name++){
 	    	is_parallel = false;
-	    	for (std::vector< simulation::ParallelKinematic >::iterator parallel = parallel_kinematics.begin();parallel != parallel_kinematics.end();parallel++){
+	    	for (std::vector< mars::ParallelKinematic >::iterator parallel = parallel_kinematics.begin();parallel != parallel_kinematics.end();parallel++){
 	    		if (*name == parallel->internalName1){
 	    			externalNames.push_back(parallel->externalName);
 	    			is_parallel = true;
@@ -232,7 +232,7 @@ bool Joints::configureHook()
 
         if (!parallel_kinematics.empty()){
     	    //if (marsNames[i] in _parallel_kinematics )
-    	    for (std::vector< simulation::ParallelKinematic >::iterator it = parallel_kinematics.begin();it != parallel_kinematics.end();it++){
+    	    for (std::vector< mars::ParallelKinematic >::iterator it = parallel_kinematics.begin();it != parallel_kinematics.end();it++){
     	    	if (mars_ids[i].marsName == it->internalName1 || mars_ids[i].marsName == it->internalName2){
     	    		mars_ids[i].externalName = it->externalName;
     	    	}

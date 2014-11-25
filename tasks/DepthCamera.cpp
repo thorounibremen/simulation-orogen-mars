@@ -2,7 +2,7 @@
 
 #include "MarsDepthCamera.hpp"
 
-using namespace simulation;
+using namespace mars;
 
 MarsDepthCamera::MarsDepthCamera(std::string const& name)
     : MarsDepthCameraBase(name)

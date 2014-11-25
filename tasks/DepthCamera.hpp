@@ -3,9 +3,9 @@
 #ifndef SIMULATION_MARSDEPTHCAMERA_TASK_HPP
 #define SIMULATION_MARSDEPTHCAMERA_TASK_HPP
 
-#include "simulation/MarsDepthCameraBase.hpp"
+#include "mars/MarsDepthCameraBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     /*! \class MarsDepthCamera 
      * Used coordinate system: For both the scene frame and the image plane
@@ -27,7 +27,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsDepthCamera(std::string const& name = "simulation::MarsDepthCamera");
+        MarsDepthCamera(std::string const& name = "mars::MarsDepthCamera");
 
         /** TaskContext constructor for MarsDepthCamera 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

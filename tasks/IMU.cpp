@@ -6,7 +6,7 @@
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 #include <mars/utils/mathUtils.h>
 
-using namespace simulation;
+using namespace mars;
 
 MarsIMU::MarsIMU(std::string const& name)
     : MarsIMUBase(name)

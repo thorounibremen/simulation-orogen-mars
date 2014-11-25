@@ -3,11 +3,11 @@
 #ifndef SIMULATION_MARSIMU_TASK_HPP
 #define SIMULATION_MARSIMU_TASK_HPP
 
-#include "simulation/MarsIMUBase.hpp"
+#include "mars/MarsIMUBase.hpp"
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
 
-namespace simulation {
+namespace mars {
 
     class IMUPlugin;
 
@@ -20,7 +20,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsIMU')
+         task('custom_task_name','mars::MarsIMU')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -46,7 +46,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsIMU(std::string const& name = "simulation::MarsIMU");
+        MarsIMU(std::string const& name = "mars::MarsIMU");
 
         /** TaskContext constructor for MarsIMU 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

@@ -7,7 +7,7 @@
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
 
-using namespace simulation;
+using namespace mars;
 
 MarsLaserRangeFinder::MarsLaserRangeFinder(std::string const& name)
     : MarsLaserRangeFinderBase(name)

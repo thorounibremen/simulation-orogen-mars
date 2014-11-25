@@ -3,14 +3,14 @@
 #ifndef SIMULATION_MARSPLUGIN_TASK_HPP
 #define SIMULATION_MARSPLUGIN_TASK_HPP
 
-#include "simulation/MarsPluginBase.hpp"
+#include "mars/MarsPluginBase.hpp"
 #include "Mars.hpp"
 #include <mars/lib_manager/LibManager.h>
 #include <mars/interfaces/sim/SimulatorInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 #include <mars/data_broker/ReceiverInterface.h>
 
-namespace simulation {
+namespace mars {
 
     /*! \class MarsPlugin 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -21,7 +21,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsPlugin')
+         task('custom_task_name','mars::MarsPlugin')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -37,7 +37,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsPlugin(std::string const& name = "simulation::MarsPlugin");
+        MarsPlugin(std::string const& name = "mars::MarsPlugin");
 
         /** TaskContext constructor for MarsPlugin 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
@@ -109,19 +109,19 @@ namespace simulation {
         void cleanupHook();
 
 	/**
-	 * @brief provides the simulation time to be used as timestamps 
+	 * @brief provides the mars time to be used as timestamps 
 	 *
-	 * Returns the simulation time, which is a combination of the wall time 
-	 * when the simulation was started, and the simulation time elapsed since then.
+	 * Returns the mars time, which is a combination of the wall time 
+	 * when the mars was started, and the mars time elapsed since then.
 	 *
 	 * Use ONLY this time for setting the timestamps of the output data
 	 *
-	 * @return the simulation time to be used as timestamps
+	 * @return the mars time to be used as timestamps
 	 */
         base::Time getTime();
 
 	/**
-	 * @brief return the simulation time in ms since the start of the simulation
+	 * @brief return the mars time in ms since the start of the mars
 	 *
 	 * @note do not use this for generating timestamps
 	 */

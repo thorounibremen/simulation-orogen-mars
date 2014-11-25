@@ -5,7 +5,7 @@
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 
-using namespace simulation;
+using namespace mars;
 
 AuvController::AuvController(std::string const& name)
     : AuvControllerBase(name)
@@ -26,13 +26,13 @@ AuvController::~AuvController()
 bool AuvController::setOrientation(::base::Quaterniond const & value)
 {
     orientation_updated=true;	
-    return(simulation::AuvControllerBase::setOrientation(value));
+    return(mars::AuvControllerBase::setOrientation(value));
 }
 
 bool AuvController::setPosition(::base::Vector3d const & value)
 {
     position_updated=true;	
-    return(simulation::AuvControllerBase::setPosition(value));
+    return(mars::AuvControllerBase::setPosition(value));
 }
 
 bool AuvController::configureHook()

@@ -3,9 +3,9 @@
 #ifndef SIMULATION_MARSHIGHRESRANGEFINDER_TASK_HPP
 #define SIMULATION_MARSHIGHRESRANGEFINDER_TASK_HPP
 
-#include "simulation/MarsHighResRangeFinderBase.hpp"
+#include "mars/MarsHighResRangeFinderBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     /*! \class MarsHighResRangeFinder 
      * Allows to simulate 360deg laserscanners using distance images to increase performance.
@@ -124,7 +124,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsHighResRangeFinder(std::string const& name = "simulation::MarsHighResRangeFinder");
+        MarsHighResRangeFinder(std::string const& name = "mars::MarsHighResRangeFinder");
 
         /** TaskContext constructor for MarsHighResRangeFinder 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

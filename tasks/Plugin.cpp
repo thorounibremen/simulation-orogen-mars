@@ -2,7 +2,7 @@
 
 #include "MarsPlugin.hpp"
 
-using namespace simulation;
+using namespace mars;
 
 MarsPlugin::MarsPlugin(std::string const& name)
     : MarsPluginBase(name) ,PluginInterface(0), sim(0)
