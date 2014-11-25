@@ -3,7 +3,7 @@
 #include "MarsActuator.hpp"
 #include <mars/interfaces/sim/SimulatorInterface.h>
 //#include <mars_sim/ControlCenter.h>
-#include "MarsPlugin.hpp"
+#include "Plugin.hpp"
 #include <mars/sim/SimMotor.h>
 #include <mars/interfaces/sim/MotorManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
@@ -114,7 +114,7 @@ void MarsActuator::statusDispatchAdded(int dispatchId, std::vector< int > actuat
 bool MarsActuator::configureHook()
 {
     
-    if (!::mars::MarsPlugin::configureHook())
+    if (!::mars::Plugin::configureHook())
         return false;
     return true;
     
@@ -125,7 +125,7 @@ bool MarsActuator::configureHook()
 bool MarsActuator::startHook()
 {
     std::cout << "ACTUATOR START HOOK" << std::endl;
-    if (! ::mars::MarsPlugin::startHook())
+    if (! ::mars::Plugin::startHook())
         return false;
     
     std::vector<std::string> motorNames = _names.get();    
@@ -174,23 +174,23 @@ void MarsActuator::update(double delta_t){
 
 void MarsActuator::updateHook()
 {
-    mars::MarsPlugin::updateHook();
+    mars::Plugin::updateHook();
     processDispatched();
 }
 
 void MarsActuator::errorHook()
 {
-    mars::MarsPlugin::errorHook();
+    mars::Plugin::errorHook();
 }
 
 void MarsActuator::stopHook()
 {
-    mars::MarsPlugin::stopHook();
+    mars::Plugin::stopHook();
 }
 
 void MarsActuator::cleanupHook()
 {
-    mars::MarsPlugin::cleanupHook();
+    mars::Plugin::cleanupHook();
 }
 
 bool MarsActuator::dispatch(::std::string const & name, ::std::vector< boost::int32_t > const & actuatorMap){

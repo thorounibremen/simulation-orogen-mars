@@ -100,7 +100,7 @@ namespace mars {
         void cleanupHook();
         
         /**
-         * Overwrites update() of class MarsPlugin to publish the sensor data.  
+         * Overwrites update() of class Plugin to publish the sensor data.  
          */
         void update(double delta_t);
     };

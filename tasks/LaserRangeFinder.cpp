@@ -1,7 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "MarsLaserRangeFinder.hpp"
-#include "MarsPlugin.hpp"
+#include "Plugin.hpp"
 #include <mars/sim/RaySensor.h>
 #include <base/time.h>
 #include <mars/interfaces/sim/SensorManagerInterface.h>

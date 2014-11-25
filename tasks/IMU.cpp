@@ -1,7 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "MarsIMU.hpp"
-#include "MarsPlugin.hpp"
+#include "Plugin.hpp"
 #include <mars/interfaces/sim/MotorManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 #include <mars/utils/mathUtils.h>

@@ -4,7 +4,7 @@
 #include "mars/MarsBase.hpp"
 #include <vector>
 #include <mars/data_broker/ReceiverInterface.h>
-#include "MarsPlugin.hpp"
+#include "Plugin.hpp"
 #include <boost/thread/mutex.hpp>
 
 class QApplication;
@@ -162,7 +162,7 @@ namespace mars {
          */
         virtual void loadScene(::std::string const & path);
 
-        std::vector<MarsPlugin*> plugins;
+        std::vector<Plugin*> plugins;
         
         /* Dynamic Property setter of show_coordinate_system
          */
@@ -194,8 +194,8 @@ namespace mars {
 
 	~Mars();
 
-        void registerPlugin(MarsPlugin* plugin);
-        void unregisterPlugin(MarsPlugin* plugin);
+        void registerPlugin(Plugin* plugin);
+        void unregisterPlugin(Plugin* plugin);
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

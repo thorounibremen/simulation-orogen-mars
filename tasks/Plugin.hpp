@@ -3,7 +3,7 @@
 #ifndef SIMULATION_MARSPLUGIN_TASK_HPP
 #define SIMULATION_MARSPLUGIN_TASK_HPP
 
-#include "mars/MarsPluginBase.hpp"
+#include "mars/PluginBase.hpp"
 #include "Mars.hpp"
 #include <mars/lib_manager/LibManager.h>
 #include <mars/interfaces/sim/SimulatorInterface.h>
@@ -12,7 +12,7 @@
 
 namespace mars {
 
-    /*! \class MarsPlugin 
+    /*! \class Plugin 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -21,34 +21,34 @@ namespace mars {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','mars::MarsPlugin')
+         task('custom_task_name','mars::Plugin')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsPlugin : public MarsPluginBase, public mars::interfaces::PluginInterface, public mars::data_broker::ReceiverInterface
+    class Plugin : public PluginBase, public mars::interfaces::PluginInterface, public mars::data_broker::ReceiverInterface
     {
-	friend class MarsPluginBase;
+	friend class PluginBase;
     protected:
         mars::interfaces::SimulatorInterface *sim;
 
     public:
-        /** TaskContext constructor for MarsPlugin
+        /** TaskContext constructor for Plugin
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsPlugin(std::string const& name = "mars::MarsPlugin");
+        Plugin(std::string const& name = "mars::Plugin");
 
-        /** TaskContext constructor for MarsPlugin 
+        /** TaskContext constructor for Plugin 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsPlugin(std::string const& name, RTT::ExecutionEngine* engine);
+        Plugin(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsPlugin
+        /** Default deconstructor of Plugin
          */
-	~MarsPlugin();
+	~Plugin();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

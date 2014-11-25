@@ -1,46 +1,46 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsPlugin.hpp"
+#include "Plugin.hpp"
 
 using namespace mars;
 
-MarsPlugin::MarsPlugin(std::string const& name)
-    : MarsPluginBase(name) ,PluginInterface(0), sim(0)
+Plugin::Plugin(std::string const& name)
+    : PluginBase(name) ,PluginInterface(0), sim(0)
 {
     setlocale(LC_ALL,"C"); //Make sure english Encodings are used
 }
 
-MarsPlugin::MarsPlugin(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsPluginBase(name, engine) ,PluginInterface(0), sim(0)
+Plugin::Plugin(std::string const& name, RTT::ExecutionEngine* engine)
+    : PluginBase(name, engine) ,PluginInterface(0), sim(0)
 {
     setlocale(LC_ALL,"C"); //Make sure english Encodings are used
 }
 
-MarsPlugin::~MarsPlugin()
+Plugin::~Plugin()
 {
 }
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsPlugin.hpp for more detailed
+// hooks defined by Orocos::RTT. See Plugin.hpp for more detailed
 // documentation about them.
-bool MarsPlugin::configureHook()
+bool Plugin::configureHook()
 {
     if (! RTT::TaskContext::configureHook())
     {
-        RTT::log(RTT::Warning) << "MarsPlugin: configure failed." << RTT::endlog();
+        RTT::log(RTT::Warning) << "Plugin: configure failed." << RTT::endlog();
         return false;
     }
     
     if(!connect())
     {
-        RTT::log(RTT::Warning) << "MarsPlugin: establishing connection with Mars failed. Configure hook returning false." << RTT::endlog();
+        RTT::log(RTT::Warning) << "Plugin: establishing connection with Mars failed. Configure hook returning false." << RTT::endlog();
         return false;
     }
 
     return true;
 }
 
-bool MarsPlugin::startHook()
+bool Plugin::startHook()
 {
     if (! RTT::TaskContext::startHook())
         return false;
@@ -48,46 +48,46 @@ bool MarsPlugin::startHook()
     return true;
 }
 
-void MarsPlugin::updateHook()
+void Plugin::updateHook()
 {
     RTT::TaskContext::updateHook();
 }
 
-void MarsPlugin::errorHook()
+void Plugin::errorHook()
 {
     RTT::TaskContext::errorHook();
 }
 
 
-void MarsPlugin::stopHook()
+void Plugin::stopHook()
 {
     RTT::TaskContext::stopHook();
 }
 
-void MarsPlugin::cleanupHook()
+void Plugin::cleanupHook()
 {
     RTT::TaskContext::cleanupHook();
 }
         
-void MarsPlugin::update(double delta_t)
+void Plugin::update(double delta_t)
 {
 }
     
-void MarsPlugin::init()
+void Plugin::init()
 {
 }
 
-base::Time MarsPlugin::getTime()
+base::Time Plugin::getTime()
 {
     return Mars::simTime.get();
 }
 
-double MarsPlugin::getSimTime()
+double Plugin::getSimTime()
 {
     return Mars::simTime.getElapsedMs();
 }
 
-bool MarsPlugin::connect()
+bool Plugin::connect()
 {
     // get simulator interface from singleton
     if( sim )
@@ -96,8 +96,8 @@ bool MarsPlugin::connect()
     {
         sim = Mars::getSimulatorInterface();
         if( !sim ){
-            std::cerr << "MarsPlugin: could not get singleton instance of simulator interface." << std::endl;
-            RTT::log(RTT::Error) << "MarsPlugin: could not get singleton instance of simulator interface." << std::endl;
+            std::cerr << "Plugin: could not get singleton instance of simulator interface." << std::endl;
+            RTT::log(RTT::Error) << "Plugin: could not get singleton instance of simulator interface." << std::endl;
             return false;
         }
     }
@@ -116,7 +116,7 @@ bool MarsPlugin::connect()
     return true;
 }
 
-void MarsPlugin::disconnect()
+void Plugin::disconnect()
 {
     if( sim ){
         sim->removePlugin( this );
@@ -124,16 +124,16 @@ void MarsPlugin::disconnect()
     }
 }
 
-void MarsPlugin::reset() {};
+void Plugin::reset() {};
 
-void MarsPlugin::receiveData(
+void Plugin::receiveData(
         const mars::data_broker::DataInfo& info,
         const mars::data_broker::DataPackage& package,
         int id) 
 {
 }
 
-void MarsPlugin::handleMarsShudown(){
+void Plugin::handleMarsShudown(){
     fprintf(stderr,"Shutting down %s, because mars instance is shutting down\n",getName().c_str());
     exception(LOST_MARS_CONNECTION);
 }

@@ -45,7 +45,7 @@ CameraPlugin::~CameraPlugin()
 // documentation about them.
 bool CameraPlugin::configureHook()
 {
-    if (! mars::MarsPlugin::configureHook())
+    if (! mars::Plugin::configureHook())
         return false;
     
     
@@ -56,7 +56,7 @@ bool CameraPlugin::startHook()
 {
 
     
-    if (! mars::MarsPlugin::startHook())
+    if (! mars::Plugin::startHook())
         return false;
     
     sensor_id = control->sensors->getSensorID( _name.value() );
@@ -87,21 +87,21 @@ bool CameraPlugin::startHook()
 
 void CameraPlugin::updateHook()
 {
-    mars::MarsPlugin::updateHook();
+    mars::Plugin::updateHook();
     
     getData();
 }
 
 void CameraPlugin::errorHook()
 {
-    mars::MarsPlugin::errorHook();
+    mars::Plugin::errorHook();
 }
 
 
 
 void CameraPlugin::stopHook()
 {
-    mars::MarsPlugin::stopHook();
+    mars::Plugin::stopHook();
     camera->deactivateRendering();
 }
 
@@ -109,7 +109,7 @@ void CameraPlugin::stopHook()
 
 void CameraPlugin::cleanupHook()
 {
-    mars::MarsPlugin::cleanupHook();
+    mars::Plugin::cleanupHook();
 }
 
 void CameraPlugin::update(mars::interfaces::sReal time_ms)

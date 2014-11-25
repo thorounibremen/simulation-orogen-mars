@@ -653,11 +653,11 @@ void Mars::stopHook()
     */
 }
         
-void Mars::registerPlugin(MarsPlugin* plugin){
+void Mars::registerPlugin(Plugin* plugin){
     plugins.push_back(plugin);
 }
 
-void Mars::unregisterPlugin(MarsPlugin* plugin){
+void Mars::unregisterPlugin(Plugin* plugin){
     plugins.push_back(plugin);
 }
 

@@ -27,7 +27,7 @@ MarsTrigger::~MarsTrigger()
 // documentation about them.
 bool MarsTrigger::configureHook()
 {
-    if (! mars::MarsPlugin::configureHook())
+    if (! mars::Plugin::configureHook())
         return false;
     return true;
 }
@@ -35,7 +35,7 @@ bool MarsTrigger::configureHook()
 
 bool MarsTrigger::startHook()
 {
-    if (! mars::MarsPlugin::startHook())
+    if (! mars::Plugin::startHook())
         return false;
     return control->dataBroker->registerTriggeredReceiver(this,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1);
     
@@ -44,7 +44,7 @@ bool MarsTrigger::startHook()
 
 void MarsTrigger::updateHook()
 {
-    mars::MarsPlugin::updateHook();
+    mars::Plugin::updateHook();
     if(!_do_step.get()) return; 
     RTT::TaskContext::updateHook();
     pthread_mutex_lock(&mutex);
@@ -56,17 +56,17 @@ void MarsTrigger::updateHook()
 
 void MarsTrigger::errorHook()
 {
-    mars::MarsPlugin::errorHook();
+    mars::Plugin::errorHook();
 }
 
 void MarsTrigger::stopHook()
 {
-    mars::MarsPlugin::stopHook();
+    mars::Plugin::stopHook();
 }
 
 void MarsTrigger::cleanupHook()
 {
-    mars::MarsPlugin::cleanupHook();
+    mars::Plugin::cleanupHook();
 }
 
 
