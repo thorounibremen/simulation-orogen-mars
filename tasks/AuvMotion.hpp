@@ -3,9 +3,9 @@
 #ifndef SIMULATION_AUVMOTION_TASK_HPP
 #define SIMULATION_AUVMOTION_TASK_HPP
 
-#include "simulation/AuvMotionBase.hpp"
+#include "mars/AuvMotionBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     /*! \class AuvMotion 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -16,7 +16,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::AuvMotion')
+         task('custom_task_name','mars::AuvMotion')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -39,7 +39,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        AuvMotion(std::string const& name = "simulation::AuvMotion");
+        AuvMotion(std::string const& name = "mars::AuvMotion");
 
         /** TaskContext constructor for AuvMotion 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

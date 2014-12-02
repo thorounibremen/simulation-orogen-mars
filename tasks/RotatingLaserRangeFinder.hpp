@@ -1,54 +1,45 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef SIMULATION_MARSPLUGIN_TASK_HPP
-#define SIMULATION_MARSPLUGIN_TASK_HPP
+#ifndef SIMULATION_MARSROTATINGLASERRANGEFINDER_TASK_HPP
+#define SIMULATION_MARSROTATINGLASERRANGEFINDER_TASK_HPP
 
-#include "simulation/MarsPluginBase.hpp"
-#include "Mars.hpp"
-#include <mars/lib_manager/LibManager.h>
-#include <mars/interfaces/sim/SimulatorInterface.h>
-#include <mars/interfaces/sim/ControlCenter.h>
-#include <mars/data_broker/ReceiverInterface.h>
+#include "mars/RotatingLaserRangeFinderBase.hpp"
 
-namespace simulation {
+namespace mars{
+    namespace sim{
+        class  RotatingRaySensor;
+    };
+};
 
-    /*! \class MarsPlugin 
-     * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
-     * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
-     * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * 
-     * \details
-     * The name of a TaskContext is primarily defined via:
-     \verbatim
-     deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsPlugin')
-     end
-     \endverbatim
-     *  It can be dynamically adapted when the deployment is called with a prefix argument. 
+namespace mars {
+
+    /*! \class RotatingLaserRangeFinder 
+     * \brief Rock module to receive Mars RotatingRaySensor data.
      */
-    class MarsPlugin : public MarsPluginBase, public mars::interfaces::PluginInterface, public mars::data_broker::ReceiverInterface
+    class RotatingLaserRangeFinder : public RotatingLaserRangeFinderBase
     {
-	friend class MarsPluginBase;
+	friend class RotatingLaserRangeFinderBase;
     protected:
-        mars::interfaces::SimulatorInterface *sim;
+        int mSensorID;
+        mars::sim::RotatingRaySensor* mSensor;
 
-    public:
-        /** TaskContext constructor for MarsPlugin
+    public:    
+        /** TaskContext constructor for RotatingLaserRangeFinder
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsPlugin(std::string const& name = "simulation::MarsPlugin");
+        RotatingLaserRangeFinder(std::string const& name = "mars::RotatingLaserRangeFinder");
 
-        /** TaskContext constructor for MarsPlugin 
+        /** TaskContext constructor for RotatingLaserRangeFinder 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsPlugin(std::string const& name, RTT::ExecutionEngine* engine);
+        RotatingLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsPlugin
+        /** Default deconstructor of RotatingLaserRangeFinder
          */
-	~MarsPlugin();
+	    ~RotatingLaserRangeFinder();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -107,35 +98,13 @@ namespace simulation {
          * before calling start() again.
          */
         void cleanupHook();
-
-	/**
-	 * @brief provides the simulation time to be used as timestamps 
-	 *
-	 * Returns the simulation time, which is a combination of the wall time 
-	 * when the simulation was started, and the simulation time elapsed since then.
-	 *
-	 * Use ONLY this time for setting the timestamps of the output data
-	 *
-	 * @return the simulation time to be used as timestamps
-	 */
-        base::Time getTime();
-
-	/**
-	 * @brief return the simulation time in ms since the start of the simulation
-	 *
-	 * @note do not use this for generating timestamps
-	 */
-        double getSimTime();
-
-        bool connect();
-        void disconnect();
-        virtual void reset();
-        virtual void receiveData(const mars::data_broker::DataInfo& info,const mars::data_broker::DataPackage& package,int id);
-        virtual void handleMarsShudown();
-        virtual void init();
-        virtual void update(double delta_t);
+        
+        /**
+         * Overwrites update() of class Plugin to publish the sensor data.  
+         */
+        void update(double delta_t);
     };
-};
+}
 
 #endif
 

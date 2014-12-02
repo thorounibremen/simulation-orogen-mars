@@ -3,11 +3,11 @@
 #ifndef SIMULATION_MARSCAMERA_TASK_HPP
 #define SIMULATION_MARSCAMERA_TASK_HPP
 
-#include "simulation/MarsCameraBase.hpp"
+#include "mars/CameraBase.hpp"
 
-namespace simulation {
+namespace mars {
 
-    /*! \class MarsCamera 
+    /*! \class Camera 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -16,36 +16,36 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsCamera')
+         task('custom_task_name','mars::Camera')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsCamera : public MarsCameraBase
+    class Camera : public CameraBase
     {
-	friend class MarsCameraBase;
+	friend class CameraBase;
     protected:
         base::samples::frame::Frame *image;
         std::vector<mars::sim::Pixel> marsImage;
         RTT::extras::ReadOnlyPointer<base::samples::frame::Frame> ro_ptr;
 
     public:
-        /** TaskContext constructor for MarsCamera
+        /** TaskContext constructor for Camera
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsCamera(std::string const& name = "simulation::MarsCamera");
+        Camera(std::string const& name = "mars::Camera");
 
-        /** TaskContext constructor for MarsCamera 
+        /** TaskContext constructor for Camera 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsCamera(std::string const& name, RTT::ExecutionEngine* engine);
+        Camera(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsCamera
+        /** Default deconstructor of Camera
          */
-	~MarsCamera();
+	~Camera();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

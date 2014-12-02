@@ -1,45 +1,63 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef SIMULATION_MARSROTATINGLASERRANGEFINDER_TASK_HPP
-#define SIMULATION_MARSROTATINGLASERRANGEFINDER_TASK_HPP
+#ifndef SIMULATION_MARSIMU_TASK_HPP
+#define SIMULATION_MARSIMU_TASK_HPP
 
-#include "simulation/MarsRotatingLaserRangeFinderBase.hpp"
+#include "mars/IMUBase.hpp"
+#include <boost/random/normal_distribution.hpp>
+#include <boost/random/mersenne_twister.hpp>
 
-namespace mars{
-    namespace sim{
-        class  RotatingRaySensor;
-    };
-};
+namespace mars {
 
-namespace simulation {
+    class IMUPlugin;
 
-    /*! \class MarsRotatingLaserRangeFinder 
-     * \brief Rock module to receive Mars RotatingRaySensor data.
+    /*! \class IMU 
+     * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
+     * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
+     * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
+     * 
+     * \details
+     * The name of a TaskContext is primarily defined via:
+     \verbatim
+     deployment 'deployment_name'
+         task('custom_task_name','mars::IMU')
+     end
+     \endverbatim
+     *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsRotatingLaserRangeFinder : public MarsRotatingLaserRangeFinderBase
+    class IMU : public IMUBase
     {
-	friend class MarsRotatingLaserRangeFinderBase;
-    protected:
-        int mSensorID;
-        mars::sim::RotatingRaySensor* mSensor;
+	friend class IMUBase;
 
-    public:    
-        /** TaskContext constructor for MarsRotatingLaserRangeFinder
+    protected:
+        long node_id;
+        base::samples::RigidBodyState rbs;
+        base::samples::IMUSensors imusens;
+	boost::mt19937 rnd_generator;
+	boost::normal_distribution<double> translation_noise;
+	boost::normal_distribution<double> rotation_noise;
+	boost::normal_distribution<double> velocity_noise;
+	boost::normal_distribution<double> angular_velocity_noise;
+        void update( double time );
+
+
+    public:
+        /** TaskContext constructor for IMU
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsRotatingLaserRangeFinder(std::string const& name = "simulation::MarsRotatingLaserRangeFinder");
+        IMU(std::string const& name = "mars::IMU");
 
-        /** TaskContext constructor for MarsRotatingLaserRangeFinder 
+        /** TaskContext constructor for IMU 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsRotatingLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
+        IMU(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsRotatingLaserRangeFinder
+        /** Default deconstructor of IMU
          */
-	    ~MarsRotatingLaserRangeFinder();
+	~IMU();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -55,7 +73,7 @@ namespace simulation {
          end
          \endverbatim
          */
-        bool configureHook();
+        // bool configureHook();
 
         /** This hook is called by Orocos when the state machine transitions
          * from Stopped to Running. If it returns false, then the component will
@@ -86,7 +104,7 @@ namespace simulation {
          *
          * Call recover() to go back in the Runtime state.
          */
-        void errorHook();
+        // void errorHook();
 
         /** This hook is called by Orocos when the state machine transitions
          * from Running to Stopped after stop() has been called.
@@ -97,12 +115,7 @@ namespace simulation {
          * from Stopped to PreOperational, requiring the call to configureHook()
          * before calling start() again.
          */
-        void cleanupHook();
-        
-        /**
-         * Overwrites update() of class MarsPlugin to publish the sensor data.  
-         */
-        void update(double delta_t);
+        // void cleanupHook();
     };
 }
 

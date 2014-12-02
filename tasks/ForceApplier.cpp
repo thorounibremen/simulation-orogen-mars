@@ -4,7 +4,7 @@
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 
 using namespace base::actuators;
-using namespace simulation;
+using namespace mars;
 using namespace mars::utils;
 
 

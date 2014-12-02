@@ -1,31 +1,31 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsLaserRangeFinder.hpp"
-#include "MarsPlugin.hpp"
+#include "LaserRangeFinder.hpp"
+#include "Plugin.hpp"
 #include <mars/sim/RaySensor.h>
 #include <base/time.h>
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
 
-using namespace simulation;
+using namespace mars;
 
-MarsLaserRangeFinder::MarsLaserRangeFinder(std::string const& name)
-    : MarsLaserRangeFinderBase(name)
+LaserRangeFinder::LaserRangeFinder(std::string const& name)
+    : LaserRangeFinderBase(name)
 {
 }
 
-MarsLaserRangeFinder::MarsLaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsLaserRangeFinderBase(name, engine)
+LaserRangeFinder::LaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine)
+    : LaserRangeFinderBase(name, engine)
 {
 }
 
-MarsLaserRangeFinder::~MarsLaserRangeFinder()
+LaserRangeFinder::~LaserRangeFinder()
 {
 }
 
-bool MarsLaserRangeFinder::startHook()
+bool LaserRangeFinder::startHook()
 {
-    if (! MarsLaserRangeFinderBase::startHook())
+    if (! LaserRangeFinderBase::startHook())
         return false;
 
     int sensor_id = control->sensors->getSensorID( _name.value() );
@@ -43,12 +43,12 @@ bool MarsLaserRangeFinder::startHook()
     return true;
 }
 
-void MarsLaserRangeFinder::stopHook()
+void LaserRangeFinder::stopHook()
 {
-    MarsLaserRangeFinderBase::stopHook();
+    LaserRangeFinderBase::stopHook();
 }
 
-void  MarsLaserRangeFinder::update( double time )
+void  LaserRangeFinder::update( double time )
 {
     if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
     scan.time = getTime();

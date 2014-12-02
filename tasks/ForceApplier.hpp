@@ -4,9 +4,9 @@
 #define SIMULATION_FORCE_APPLIER_TASK_HPP
 
 #include "Mars.hpp"
-#include "simulation/ForceApplierBase.hpp"
+#include "mars/ForceApplierBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     class ForceApplier : public ForceApplierBase
     {
@@ -27,7 +27,7 @@ namespace simulation {
         base::commands::Joints command;
 
     public:
-        ForceApplier(std::string const& name = "simulation::ForceApplier");
+        ForceApplier(std::string const& name = "mars::ForceApplier");
         ForceApplier(std::string const& name, RTT::ExecutionEngine* engine);
 
 	~ForceApplier();

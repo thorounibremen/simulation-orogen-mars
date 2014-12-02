@@ -3,7 +3,7 @@
 #include "AuvMotion.hpp"
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 
-using namespace simulation;
+using namespace mars;
 
 AuvMotion::AuvMotion(std::string const& name)
     : AuvMotionBase(name)

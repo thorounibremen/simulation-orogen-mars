@@ -1,50 +1,50 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
-#include "MarsTrigger.hpp"
+#include "Trigger.hpp"
 
-using namespace simulation;
+using namespace mars;
 
-MarsTrigger::MarsTrigger(std::string const& name)
-    : MarsTriggerBase(name)
+Trigger::Trigger(std::string const& name)
+    : TriggerBase(name)
 {
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&mutex_cv, NULL);
 }
 
-MarsTrigger::MarsTrigger(std::string const& name, RTT::ExecutionEngine* engine)
-    : MarsTriggerBase(name, engine)
+Trigger::Trigger(std::string const& name, RTT::ExecutionEngine* engine)
+    : TriggerBase(name, engine)
 {
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&mutex_cv, NULL);
 }
 
-MarsTrigger::~MarsTrigger()
+Trigger::~Trigger()
 {
 }
 
 /// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See MarsTrigger.hpp for more detailed
+// hooks defined by Orocos::RTT. See Trigger.hpp for more detailed
 // documentation about them.
-bool MarsTrigger::configureHook()
+bool Trigger::configureHook()
 {
-    if (! simulation::MarsPlugin::configureHook())
+    if (! mars::Plugin::configureHook())
         return false;
     return true;
 }
 
 
-bool MarsTrigger::startHook()
+bool Trigger::startHook()
 {
-    if (! simulation::MarsPlugin::startHook())
+    if (! mars::Plugin::startHook())
         return false;
     return control->dataBroker->registerTriggeredReceiver(this,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1);
     
 }
 
 
-void MarsTrigger::updateHook()
+void Trigger::updateHook()
 {
-    simulation::MarsPlugin::updateHook();
+    mars::Plugin::updateHook();
     if(!_do_step.get()) return; 
     RTT::TaskContext::updateHook();
     pthread_mutex_lock(&mutex);
@@ -54,23 +54,23 @@ void MarsTrigger::updateHook()
 }
 
 
-void MarsTrigger::errorHook()
+void Trigger::errorHook()
 {
-    simulation::MarsPlugin::errorHook();
+    mars::Plugin::errorHook();
 }
 
-void MarsTrigger::stopHook()
+void Trigger::stopHook()
 {
-    simulation::MarsPlugin::stopHook();
+    mars::Plugin::stopHook();
 }
 
-void MarsTrigger::cleanupHook()
+void Trigger::cleanupHook()
 {
-    simulation::MarsPlugin::cleanupHook();
+    mars::Plugin::cleanupHook();
 }
 
 
-void MarsTrigger::receiveData(
+void Trigger::receiveData(
         const mars::data_broker::DataInfo& info,
         const mars::data_broker::DataPackage& package,
         int id) 

@@ -6,7 +6,7 @@
 #include <mars/interfaces/graphics/GraphicsManagerInterface.h>
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
-using namespace simulation;
+using namespace mars;
 
 CameraPlugin::CameraPlugin(std::string const& name)
     : CameraPluginBase(name),
@@ -45,7 +45,7 @@ CameraPlugin::~CameraPlugin()
 // documentation about them.
 bool CameraPlugin::configureHook()
 {
-    if (! simulation::MarsPlugin::configureHook())
+    if (! mars::Plugin::configureHook())
         return false;
     
     
@@ -56,7 +56,7 @@ bool CameraPlugin::startHook()
 {
 
     
-    if (! simulation::MarsPlugin::startHook())
+    if (! mars::Plugin::startHook())
         return false;
     
     sensor_id = control->sensors->getSensorID( _name.value() );
@@ -87,21 +87,21 @@ bool CameraPlugin::startHook()
 
 void CameraPlugin::updateHook()
 {
-    simulation::MarsPlugin::updateHook();
+    mars::Plugin::updateHook();
     
     getData();
 }
 
 void CameraPlugin::errorHook()
 {
-    simulation::MarsPlugin::errorHook();
+    mars::Plugin::errorHook();
 }
 
 
 
 void CameraPlugin::stopHook()
 {
-    simulation::MarsPlugin::stopHook();
+    mars::Plugin::stopHook();
     camera->deactivateRendering();
 }
 
@@ -109,7 +109,7 @@ void CameraPlugin::stopHook()
 
 void CameraPlugin::cleanupHook()
 {
-    simulation::MarsPlugin::cleanupHook();
+    mars::Plugin::cleanupHook();
 }
 
 void CameraPlugin::update(mars::interfaces::sReal time_ms)

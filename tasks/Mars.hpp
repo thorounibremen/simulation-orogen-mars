@@ -1,10 +1,10 @@
 #ifndef SIMULATION_MARS_TASK_HPP
 #define SIMULATION_MARS_TASK_HPP
 
-#include "simulation/MarsBase.hpp"
+#include "mars/MarsBase.hpp"
 #include <vector>
 #include <mars/data_broker/ReceiverInterface.h>
-#include "MarsPlugin.hpp"
+#include "Plugin.hpp"
 #include <boost/thread/mutex.hpp>
 
 class QApplication;
@@ -29,13 +29,13 @@ namespace mars{
 
 class SimulationTime
 {
-    /** lock for simulation time */
+    /** lock for mars time */
     boost::mutex timeLock;
-    /** time offset to use for the simulation time */
+    /** time offset to use for the mars time */
     base::Time startTime;
-    /** simulation time including offset */
-    base::Time simulationTime;
-    /** time elapsed in ms since start of simulation */ 
+    /** mars time including offset */
+    base::Time marsTime;
+    /** time elapsed in ms since start of mars */ 
     double msElapsed;
     /** Check wether the time is initialized or not */
     bool initialized;
@@ -59,25 +59,25 @@ public:
     {
 	this->startTime = startTime;
 	msElapsed = 0 ;
-        simulationTime = startTime;
+        marsTime = startTime;
         initialized = true;
     }	
 
-    /** @return the simulation time, which is offset by t
-     * the time the simulation was started
+    /** @return the mars time, which is offset by t
+     * the time the mars was started
      */
     base::Time get()
     {
 	boost::mutex::scoped_lock lock( timeLock );
 	if(!initialized || useNow){
-            //This prevent some wiered states in the timestamp estimator if the simulation is
+            //This prevent some wiered states in the timestamp estimator if the mars is
             //not completly setup so far.
             return base::Time::now();
         }
-        return simulationTime;
+        return marsTime;
     }
 
-    /** set the time since the simulation was started in ms
+    /** set the time since the mars was started in ms
      */
     void setElapsedMs( double ms )
     {
@@ -86,10 +86,10 @@ public:
         }
 	boost::mutex::scoped_lock lock( timeLock );
 	msElapsed = ms;
-	simulationTime = startTime + base::Time::fromMilliseconds( msElapsed );
+	marsTime = startTime + base::Time::fromMilliseconds( msElapsed );
     }
 
-    /** @return the time in milliseconds since the start of the simulation
+    /** @return the time in milliseconds since the start of the mars
      */
     double getElapsedMs()
     {
@@ -98,7 +98,7 @@ public:
     }
 };
 
-namespace simulation {
+namespace mars {
 
     class Mars;
 
@@ -108,7 +108,7 @@ namespace simulation {
 	    Mars* mars;
 	    bool enable_gui;
         int controller_port;
-        std::vector<SimulationProperty> simulation_property_list;
+        std::vector<SimulationProperty> mars_property_list;
         std::string config_dir;
         bool initialized;
         bool add_floor;
@@ -121,13 +121,13 @@ namespace simulation {
 
 
     /**
-    * Core module that brings up the mars simulation and
+    * Core module that brings up the mars mars and
     * makes it accessible as a orogen module
     *
     * use subclassing to derive robot specific modules, e.g.
     * 
     * task_context 'RobotSimulation' do
-    *         subclasses 'simulation::Mars'
+    *         subclasses 'mars::Mars'
     * ..
     * end
     *
@@ -140,7 +140,7 @@ namespace simulation {
         QApplication* app; 
     	static mars::app::GraphicsTimer *graphicsTimer;
 	static mars::interfaces::SimulatorInterface* simulatorInterface;
-	static simulation::Mars* taskInterface;
+	static mars::Mars* taskInterface;
 	static void* startMarsFunc(void *);
         static std::string configDir;
 	static bool marsRunning;
@@ -154,7 +154,7 @@ namespace simulation {
         
         /* This operation moves a node to a specific position, simpliar to the positions property but can be used during runtime
          */
-        virtual void move_node(::simulation::Positions const & arg);
+        virtual void move_node(::mars::Positions const & arg);
 
         char** setOptions(const std::vector<Option>& options);
 
@@ -162,7 +162,7 @@ namespace simulation {
          */
         virtual void loadScene(::std::string const & path);
 
-        std::vector<MarsPlugin*> plugins;
+        std::vector<Plugin*> plugins;
         
         /* Dynamic Property setter of show_coordinate_system
          */
@@ -186,16 +186,16 @@ namespace simulation {
 	/** get the singleton instance of the simulator interface
 	 */
 	static mars::interfaces::SimulatorInterface* getSimulatorInterface();
-	static simulation::Mars* getTaskInterface();
+	static mars::Mars* getTaskInterface();
 	static SimulationTime simTime;
 
-        Mars(std::string const& name = "simulation::Mars");
+        Mars(std::string const& name = "mars::Mars");
         Mars(std::string const& name, RTT::ExecutionEngine* engine);
 
 	~Mars();
 
-        void registerPlugin(MarsPlugin* plugin);
-        void unregisterPlugin(MarsPlugin* plugin);
+        void registerPlugin(Plugin* plugin);
+        void unregisterPlugin(Plugin* plugin);
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

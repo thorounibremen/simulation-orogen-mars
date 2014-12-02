@@ -6,19 +6,19 @@
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 
-using namespace simulation;
+using namespace mars;
 
 
 Sonar::Sonar(std::string const& name)
     : SonarBase(name), sonar_update_mutex(new pthread_mutex_t)
 {
-	sonar_config = new simulation::SonarConfig();
+	sonar_config = new SonarConfig();
 }
 
 Sonar::Sonar(std::string const& name, RTT::ExecutionEngine* engine)
     : SonarBase(name, engine), sonar_update_mutex(new pthread_mutex_t)
 {
-	sonar_config = new simulation::SonarConfig();
+	sonar_config = new SonarConfig();
 }
 
 Sonar::~Sonar()
@@ -40,7 +40,7 @@ void Sonar::updateHook()
     SonarBase::updateHook();
 
     pthread_mutex_lock(sonar_update_mutex);
-    mars::sim::ScanningSonar* sonar = dynamic_cast<mars::sim::ScanningSonar*>(control->sensors->getSimSensor(node_id));
+    sim::ScanningSonar* sonar = dynamic_cast<sim::ScanningSonar*>(control->sensors->getSimSensor(node_id));
     sonar->setPingPongConfig(sonar_config->ping_pong_mode, sonar_config->start_angle, sonar_config->end_angle);
     pthread_mutex_unlock(sonar_update_mutex);
 
@@ -83,11 +83,11 @@ void Sonar::updateHook()
 // }
 
 bool Sonar::getSonarData(base::samples::SonarBeam &sonar_beam){
-    //just return false if the simulation is not running
+    //just return false if the mars is not running
     if(!control->sim->isSimRunning())
       return false;
 
-    mars::interfaces::sReal *sensor_data=0;
+    interfaces::sReal *sensor_data=0;
 
     //get data
     pthread_mutex_lock(sonar_update_mutex);

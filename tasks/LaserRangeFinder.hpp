@@ -1,57 +1,57 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef SIMULATION_MARSTRIGGER_TASK_HPP
-#define SIMULATION_MARSTRIGGER_TASK_HPP
+#ifndef SIMULATION_MARSLASERRANGEFINDER_TASK_HPP
+#define SIMULATION_MARSLASERRANGEFINDER_TASK_HPP
 
-#include "simulation/MarsTriggerBase.hpp"
-#include <pthread.h>
+#include "mars/LaserRangeFinderBase.hpp"
+        
+namespace mars{
+    namespace sim{
+        class  RaySensor;
+    };
+};
 
-namespace simulation {
+namespace mars {
 
-    /*! \class MarsTrigger 
+    /*! \class LaserRangeFinder 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * This components triggeres the mars simulation cycle if the update-hook is called, 
-        this is useful if an sequence between componentes is needed, like it is possible with the
-        trigger_component
+     * 
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsTrigger')
+         task('custom_task_name','mars::LaserRangeFinder')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsTrigger : public MarsTriggerBase
+    class LaserRangeFinder : public LaserRangeFinderBase
     {
-	friend class MarsTriggerBase;
+	friend class LaserRangeFinderBase;
     protected:
-         pthread_mutex_t mutex;
-         pthread_cond_t mutex_cv;
+        base::samples::LaserScan scan;
+        mars::sim::RaySensor* sensor;
 
-         void receiveData(const mars::data_broker::DataInfo& info,const mars::data_broker::DataPackage& package,int id);
-
-
-
+        void update( double time );
     public:
-        /** TaskContext constructor for MarsTrigger
+        /** TaskContext constructor for LaserRangeFinder
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsTrigger(std::string const& name = "simulation::MarsTrigger");
+        LaserRangeFinder(std::string const& name = "mars::LaserRangeFinder");
 
-        /** TaskContext constructor for MarsTrigger 
+        /** TaskContext constructor for LaserRangeFinder 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsTrigger(std::string const& name, RTT::ExecutionEngine* engine);
+        LaserRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsTrigger
+        /** Default deconstructor of LaserRangeFinder
          */
-	~MarsTrigger();
+	~LaserRangeFinder();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -67,7 +67,7 @@ namespace simulation {
          end
          \endverbatim
          */
-        bool configureHook();
+        // bool configureHook();
 
         /** This hook is called by Orocos when the state machine transitions
          * from Stopped to Running. If it returns false, then the component will
@@ -90,7 +90,7 @@ namespace simulation {
          * component is stopped and recover() needs to be called before starting
          * it again. Finally, FatalError cannot be recovered.
          */
-        void updateHook();
+        // void updateHook();
 
         /** This hook is called by Orocos when the component is in the
          * RunTimeError state, at each activity step. See the discussion in
@@ -98,7 +98,7 @@ namespace simulation {
          *
          * Call recover() to go back in the Runtime state.
          */
-        void errorHook();
+        // void errorHook();
 
         /** This hook is called by Orocos when the state machine transitions
          * from Running to Stopped after stop() has been called.
@@ -109,7 +109,7 @@ namespace simulation {
          * from Stopped to PreOperational, requiring the call to configureHook()
          * before calling start() again.
          */
-        void cleanupHook();
+        // void cleanupHook();
     };
 }
 

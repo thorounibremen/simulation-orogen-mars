@@ -3,11 +3,9 @@
 #ifndef SIMULATION_SONAR_TASK_HPP
 #define SIMULATION_SONAR_TASK_HPP
 
-#include "simulation/SonarBase.hpp"
+#include "mars/SonarBase.hpp"
 
-namespace simulation {
-
-namespace simulation
+namespace mars
 {
     //sonar configuration should be implemented in mars
     struct SonarConfig
@@ -46,7 +44,6 @@ namespace simulation
         unsigned char default_response_value;
         unsigned char default_value;
     };
-}
 
     class Sonar : public SonarBase
     {
@@ -54,7 +51,7 @@ namespace simulation
     protected:
 		base::samples::SonarBeam sonar_beam;
 		unsigned long node_id;
-        simulation::SonarConfig *sonar_config;
+        mars::SonarConfig *sonar_config;
         int sonar_motor_direction;
         pthread_mutex_t* sonar_update_mutex;
 
@@ -62,7 +59,7 @@ namespace simulation
 
 
     public:
-        Sonar(std::string const& name = "simulation::Sonar");
+        Sonar(std::string const& name = "mars::Sonar");
         Sonar(std::string const& name, RTT::ExecutionEngine* engine);
 
         double getSonarBeamBearing(unsigned long sonar_mounting_id);

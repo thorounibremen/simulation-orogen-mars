@@ -3,11 +3,11 @@
 #ifndef SIMULATION_MARSHIGHRESRANGEFINDER_TASK_HPP
 #define SIMULATION_MARSHIGHRESRANGEFINDER_TASK_HPP
 
-#include "simulation/MarsHighResRangeFinderBase.hpp"
+#include "mars/HighResRangeFinderBase.hpp"
 
-namespace simulation {
+namespace mars {
 
-    /*! \class MarsHighResRangeFinder 
+    /*! \class HighResRangeFinder 
      * Allows to simulate 360deg laserscanners using distance images to increase performance.
      * At the moment each camera sensor in MARS provides an opening angle of 90deg, so 
      * four cameras are required to cover the complete 360deg. Initially a single camera
@@ -25,9 +25,9 @@ namespace simulation {
      * The z-axis of the image scene coordinate system points towards the image plane,
      * the x-axis points right and the y-axis down.
      */
-    class MarsHighResRangeFinder : public MarsHighResRangeFinderBase
+    class HighResRangeFinder : public HighResRangeFinderBase
     {
-	friend class MarsHighResRangeFinderBase;
+	friend class HighResRangeFinderBase;
     protected:
         struct Camera {
             /**
@@ -120,22 +120,22 @@ namespace simulation {
         void calcCamParameters(Camera* camera);
 
     public:
-        /** TaskContext constructor for MarsHighResRangeFinder
+        /** TaskContext constructor for HighResRangeFinder
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsHighResRangeFinder(std::string const& name = "simulation::MarsHighResRangeFinder");
+        HighResRangeFinder(std::string const& name = "mars::HighResRangeFinder");
 
-        /** TaskContext constructor for MarsHighResRangeFinder 
+        /** TaskContext constructor for HighResRangeFinder 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsHighResRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
+        HighResRangeFinder(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsHighResRangeFinder
+        /** Default deconstructor of HighResRangeFinder
          */
-         ~MarsHighResRangeFinder();
+         ~HighResRangeFinder();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -196,7 +196,7 @@ namespace simulation {
         void cleanupHook();
         
         /**
-         * Requests the distance image by calling MarsDepthCamera::getData() 
+         * Requests the distance image by calling DepthCamera::getData() 
          * and generates the pointcloud using the image data.
          */
         virtual void getData();

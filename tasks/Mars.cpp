@@ -4,7 +4,7 @@
 #include <mars/utils/mathUtils.h>
 #include <mars/interfaces/sim/SimulatorInterface.h>
 
-#include <simulation/tasks/MarsControl.hpp>
+#include <mars/tasks/MarsControl.hpp>
 #include <mars/gui/MarsGui.h>
 #include <mars/main_gui/MainGUI.h>
 #include <mars/main_gui/GuiInterface.h>
@@ -22,11 +22,11 @@
 #include <QApplication>
 #include <QPlastiqueStyle>
 
-using namespace simulation;
+using namespace mars;
 using namespace mars;
 
 mars::interfaces::SimulatorInterface *Mars::simulatorInterface = 0;
-simulation::Mars *Mars::taskInterface = 0;
+mars::Mars *Mars::taskInterface = 0;
 mars::app::GraphicsTimer *Mars::graphicsTimer = 0;
 mars::lib_manager::LibManager* Mars::libManager = 0; 
 SimulationTime Mars::simTime;
@@ -72,7 +72,7 @@ mars::interfaces::SimulatorInterface* Mars::getSimulatorInterface()
     return simulatorInterface;
 }
 
-simulation::Mars* Mars::getTaskInterface(){
+mars::Mars* Mars::getTaskInterface(){
     return taskInterface;
 }
 
@@ -106,7 +106,7 @@ void* Mars::startMarsFunc(void* argument)
     }
  
     // Prepare Qt Application Thread which is required  
-    // for core simulation and gui
+    // for core mars and gui
     int argc = count + 1;
     if(!Mars::getTaskInterface()->app){
         //Initialize Qapplication only once! and keep the instance
@@ -211,7 +211,7 @@ void* Mars::startMarsFunc(void* argument)
     }
 
 
-    // Prepare the simulation instance, load the argument and run
+    // Prepare the mars instance, load the argument and run
     mars->simulatorInterface = dynamic_cast<sim::Simulator*>(lib); 
     if(!mars->simulatorInterface)
     {
@@ -294,13 +294,13 @@ void* Mars::startMarsFunc(void* argument)
     for(std::list<std::string>::iterator it = lib_names.begin(); it != lib_names.end(); ++it){
     }*/
 
-    // set simulation properties, if specified
+    // set mars properties, if specified
     lib = libManager->getLibrary(std::string("cfg_manager"));
     if(lib)
     {
         cfg_manager::CFGManagerInterface* cfg = dynamic_cast<cfg_manager::CFGManagerInterface*>(lib);
         if(cfg){
-            std::vector<SimulationProperty> props = marsArguments->simulation_property_list;
+            std::vector<SimulationProperty> props = marsArguments->mars_property_list;
             for(std::vector<SimulationProperty>::iterator prop_it = props.begin(); prop_it != props.end(); ++prop_it){
                 // get or create property
                 cfg_manager::cfgPropertyStruct cfg_prop_struct;
@@ -324,6 +324,7 @@ void* Mars::startMarsFunc(void* argument)
     }
     //assert(mars->simulatorInterface->getControlCenter()->dataBroker->registerTriggeredReceiver(mars,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1));
     int result = mars->simulatorInterface->getControlCenter()->dataBroker->registerTriggeredReceiver(mars,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1);
+    (void)result;
     assert(result);
     
     // is realtime calc requested?
@@ -391,7 +392,7 @@ bool Mars::setShow_coordinate_system(bool value)
         else
             marsGraphics->showCoords();
 
-	return(simulation::MarsBase::setShow_coordinate_system(value));
+	return(mars::MarsBase::setShow_coordinate_system(value));
 }
 
 bool Mars::setReaction_to_physics_error(::std::string const & value)
@@ -405,13 +406,13 @@ bool Mars::setReaction_to_physics_error(::std::string const & value)
             if(value == "abort" || value == "reset" || value == "warn" || value == "shutdown"){
                 simulatorInterface->getControlCenter()->cfg->setPropertyValue("Simulator", "onPhysicsError","value", value);
             }else{
-                fprintf(stderr,"Could not ser rection to physics: Possible Values: abort (killing sim), reset (ressing scene and simulation), warn (keep simulation running an print warnings), shutdown (stop physics but keep mars-running and set this tas to the error state)");
+                fprintf(stderr,"Could not ser rection to physics: Possible Values: abort (killing sim), reset (ressing scene and mars), warn (keep mars running an print warnings), shutdown (stop physics but keep mars-running and set this tas to the error state)");
                 return false;
             }
         }
         
         //Call the base function, DO-NOT Remove
-	return(simulation::MarsBase::setReaction_to_physics_error(value));
+	return(mars::MarsBase::setReaction_to_physics_error(value));
 }
 
 char** Mars::setOptions(const std::vector<Option>& options)
@@ -468,14 +469,14 @@ bool Mars::configureHook()
     //    throw std::runtime_error(std::string("Config directory ") +_config_dir.get() +" does not exist. Can not start mars.");    
     //}
 
-    // Startup of simulation
+    // Startup of mars
     MarsArguments argument;
     argument.mars = this;
     argument.enable_gui = _enable_gui.get();
     argument.controller_port = _controller_port.get();
     argument.raw_options = _raw_options.get();
     argument.config_dir = _config_dir.get();
-    argument.simulation_property_list = _simulation_property_list.get();
+    argument.mars_property_list = _simulation_property_list.get();
     argument.initialized = false;
     argument.add_floor = _add_floor.get();
     argument.failed_to_init=false;
@@ -506,12 +507,12 @@ bool Mars::configureHook()
     RTT::log(RTT::Info) << "Mars running" << RTT::endlog();
 
     // Simulation is now up and running and plugins can be added
-    // Configure basic functionality of simulation
-    // Check if distributed simulation should be activated
+    // Configure basic functionality of mars
+    // Check if distributed mars should be activated
 
     // todo: should be loaded via lib_manager
     /*
-    if(_distributed_simulation.get())
+    if(_distributed_mars.get())
     {
         RTT::log(RTT::Info) << "Loading MultiSimPlugin" << RTT::endlog();
         multisimPlugin = new MultiSimPlugin(libManager);
@@ -539,11 +540,11 @@ bool Mars::configureHook()
     }
 
 
-    simulation::Pose initial_pose = _initial_pose.get();
+    mars::Pose initial_pose = _initial_pose.get();
     if(!initial_pose.empty()){
     	mars::interfaces::ControlCenter* control = simulatorInterface->getControlCenter();
     	if (control){
-			for (simulation::Pose::iterator pos = initial_pose.begin(); pos != initial_pose.end();pos++){
+			for (mars::Pose::iterator pos = initial_pose.begin(); pos != initial_pose.end();pos++){
 				int marsMotorId = control->motors->getID( pos->name );
 				mars::sim::SimMotor *motor = control->motors->getSimMotor( marsMotorId );
 				if (motor){
@@ -558,7 +559,7 @@ bool Mars::configureHook()
     }
 
 
-    {//Setting the Step-with for the simulation
+    {//Setting the Step-with for the mars
     cfg_manager::cfgPropertyStruct c = simulatorInterface->getControlCenter()->cfg->getOrCreateProperty("Simulator", "calc_ms", _sim_step_size.get()*1000.0);
     c.dValue = _sim_step_size.get()*1000.0;
     simulatorInterface->getControlCenter()->cfg->setProperty(c);
@@ -594,7 +595,7 @@ bool Mars::startHook()
 
 void Mars::updateHook()
 {
-    simulation::Control controlAction;
+    mars::Control controlAction;
     if(_control_action.read(controlAction) == RTT::NewData)
     {
         switch(controlAction)
@@ -653,11 +654,11 @@ void Mars::stopHook()
     */
 }
         
-void Mars::registerPlugin(MarsPlugin* plugin){
+void Mars::registerPlugin(Plugin* plugin){
     plugins.push_back(plugin);
 }
 
-void Mars::unregisterPlugin(MarsPlugin* plugin){
+void Mars::unregisterPlugin(Plugin* plugin){
     plugins.push_back(plugin);
 }
 
@@ -710,7 +711,7 @@ void Mars::receiveData(
 {
     double ms;
     package.get("simTime", &ms);
-    // update the simulation time
+    // update the mars time
     simTime.setElapsedMs( ms );
 
     //update the time output ports
@@ -726,11 +727,11 @@ bool Mars::setGravity(::base::Vector3d const & value)
 {
  if(!isConfigured()){
      //The configuration will be done within the configure hook later
-     return(simulation::MarsBase::setGravity(value));
+     return(mars::MarsBase::setGravity(value));
  }
  
  setGravity_internal(value);
- return(simulation::MarsBase::setGravity(value));
+ return(mars::MarsBase::setGravity(value));
 }
 
 
@@ -740,15 +741,15 @@ bool Mars::setSim_step_size(double value)
     value *= 1000.0;
     if(!isConfigured()){
         //The configuration will be done within the configure hook later
-        return(simulation::MarsBase::setSim_step_size(value));
+        return(mars::MarsBase::setSim_step_size(value));
     }
     cfg_manager::cfgPropertyStruct c = simulatorInterface->getControlCenter()->cfg->getOrCreateProperty("Simulator", "calc_ms", value);
     c.dValue = value;
     simulatorInterface->getControlCenter()->cfg->setProperty(c);
-    return(simulation::MarsBase::setSim_step_size(value));
+    return(mars::MarsBase::setSim_step_size(value));
 }
 
-void Mars::move_node(::simulation::Positions const & arg)
+void Mars::move_node(::mars::Positions const & arg)
 {
     mars::interfaces::NodeManagerInterface* nodes = simulatorInterface->getControlCenter()->nodes;
     mars::interfaces::NodeId id = nodes->getID(arg.nodename);

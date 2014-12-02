@@ -3,9 +3,9 @@
 #ifndef SIMULATION_FORCETORQUE6DOF_TASK_HPP
 #define SIMULATION_FORCETORQUE6DOF_TASK_HPP
 
-#include "simulation/ForceTorque6DOFBase.hpp"
+#include "mars/ForceTorque6DOFBase.hpp"
 
-namespace simulation {
+namespace mars {
 
     /*! \class ForceTorque6DOF 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -16,7 +16,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::ForceTorque6DOF')
+         task('custom_task_name','mars::ForceTorque6DOF')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -33,7 +33,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        ForceTorque6DOF(std::string const& name = "simulation::ForceTorque6DOF");
+        ForceTorque6DOF(std::string const& name = "mars::ForceTorque6DOF");
 
         /** TaskContext constructor for ForceTorque6DOF 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
@@ -48,11 +48,11 @@ namespace simulation {
 
 
 	/**
-	 * init called from mars simulation
+	 * init called from mars mars
 	 */
     virtual void init();
     /**
-	 * update called from mars simulation
+	 * update called from mars mars
 	 */
     virtual void update(double delta_t);
 

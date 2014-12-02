@@ -1,17 +1,18 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef SIMULATION_MARSIMU_TASK_HPP
-#define SIMULATION_MARSIMU_TASK_HPP
+#ifndef SIMULATION_MARSPLUGIN_TASK_HPP
+#define SIMULATION_MARSPLUGIN_TASK_HPP
 
-#include "simulation/MarsIMUBase.hpp"
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random/mersenne_twister.hpp>
+#include "mars/PluginBase.hpp"
+#include "Mars.hpp"
+#include <mars/lib_manager/LibManager.h>
+#include <mars/interfaces/sim/SimulatorInterface.h>
+#include <mars/interfaces/sim/ControlCenter.h>
+#include <mars/data_broker/ReceiverInterface.h>
 
-namespace simulation {
+namespace mars {
 
-    class IMUPlugin;
-
-    /*! \class MarsIMU 
+    /*! \class Plugin 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -20,44 +21,34 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::MarsIMU')
+         task('custom_task_name','mars::Plugin')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    class MarsIMU : public MarsIMUBase
+    class Plugin : public PluginBase, public mars::interfaces::PluginInterface, public mars::data_broker::ReceiverInterface
     {
-	friend class MarsIMUBase;
-
+	friend class PluginBase;
     protected:
-        long node_id;
-        base::samples::RigidBodyState rbs;
-        base::samples::IMUSensors imusens;
-	boost::mt19937 rnd_generator;
-	boost::normal_distribution<double> translation_noise;
-	boost::normal_distribution<double> rotation_noise;
-	boost::normal_distribution<double> velocity_noise;
-	boost::normal_distribution<double> angular_velocity_noise;
-        void update( double time );
-
+        mars::interfaces::SimulatorInterface *sim;
 
     public:
-        /** TaskContext constructor for MarsIMU
+        /** TaskContext constructor for Plugin
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MarsIMU(std::string const& name = "simulation::MarsIMU");
+        Plugin(std::string const& name = "mars::Plugin");
 
-        /** TaskContext constructor for MarsIMU 
+        /** TaskContext constructor for Plugin 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
          * 
          */
-        MarsIMU(std::string const& name, RTT::ExecutionEngine* engine);
+        Plugin(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of MarsIMU
+        /** Default deconstructor of Plugin
          */
-	~MarsIMU();
+	~Plugin();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -73,7 +64,7 @@ namespace simulation {
          end
          \endverbatim
          */
-        // bool configureHook();
+        bool configureHook();
 
         /** This hook is called by Orocos when the state machine transitions
          * from Stopped to Running. If it returns false, then the component will
@@ -104,7 +95,7 @@ namespace simulation {
          *
          * Call recover() to go back in the Runtime state.
          */
-        // void errorHook();
+        void errorHook();
 
         /** This hook is called by Orocos when the state machine transitions
          * from Running to Stopped after stop() has been called.
@@ -115,9 +106,36 @@ namespace simulation {
          * from Stopped to PreOperational, requiring the call to configureHook()
          * before calling start() again.
          */
-        // void cleanupHook();
+        void cleanupHook();
+
+	/**
+	 * @brief provides the mars time to be used as timestamps 
+	 *
+	 * Returns the mars time, which is a combination of the wall time 
+	 * when the mars was started, and the mars time elapsed since then.
+	 *
+	 * Use ONLY this time for setting the timestamps of the output data
+	 *
+	 * @return the mars time to be used as timestamps
+	 */
+        base::Time getTime();
+
+	/**
+	 * @brief return the mars time in ms since the start of the mars
+	 *
+	 * @note do not use this for generating timestamps
+	 */
+        double getSimTime();
+
+        bool connect();
+        void disconnect();
+        virtual void reset();
+        virtual void receiveData(const mars::data_broker::DataInfo& info,const mars::data_broker::DataPackage& package,int id);
+        virtual void handleMarsShudown();
+        virtual void init();
+        virtual void update(double delta_t);
     };
-}
+};
 
 #endif
 

@@ -3,12 +3,12 @@
 #ifndef SIMULATION_CAMERAPLUGIN_TASK_HPP
 #define SIMULATION_CAMERAPLUGIN_TASK_HPP
 
-#include "simulation/CameraPluginBase.hpp"
+#include "mars/CameraPluginBase.hpp"
 #include <mars/interfaces/sim/SimulatorInterface.h>
 #include <mars/interfaces/graphics/GraphicsManagerInterface.h>
 #include <mars/sim/CameraSensor.h>
 
-namespace simulation {
+namespace mars {
 
     /*! \class CameraPlugin 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -19,7 +19,7 @@ namespace simulation {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','simulation::CameraPlugin')
+         task('custom_task_name','mars::CameraPlugin')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
@@ -45,7 +45,7 @@ namespace simulation {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        CameraPlugin(std::string const& name = "simulation::CameraPlugin");
+        CameraPlugin(std::string const& name = "mars::CameraPlugin");
 
         /** TaskContext constructor for CameraPlugin 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 

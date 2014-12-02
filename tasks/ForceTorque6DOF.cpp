@@ -5,7 +5,7 @@
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 #include <mars/sim/Joint6DOFSensor.h>
 
-using namespace simulation;
+using namespace mars;
 
 ForceTorque6DOF::ForceTorque6DOF(std::string const& name)
     : ForceTorque6DOFBase(name)
