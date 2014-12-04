@@ -80,7 +80,6 @@ void MarsRotatingLaserRangeFinder::updateHook()
     
     if(_laser_scans.connected() && mSensor->getMultiLevelLaserScan(mScan)) {
         std::cout << "Write mlls" << std::endl;
-        mScan.time = getTime();
         _laser_scans.write(mScan);
     }
 }
