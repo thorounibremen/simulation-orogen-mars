@@ -120,13 +120,6 @@ namespace mars {
 	 */
         base::Time getTime();
 
-	/**
-	 * @brief return the mars time in ms since the start of the mars
-	 *
-	 * @note do not use this for generating timestamps
-	 */
-        double getSimTime();
-
         bool connect();
         void disconnect();
         virtual void reset();

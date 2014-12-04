@@ -27,76 +27,6 @@ namespace mars{
     };
 };
 
-class SimulationTime
-{
-    /** lock for mars time */
-    boost::mutex timeLock;
-    /** time offset to use for the mars time */
-    base::Time startTime;
-    /** mars time including offset */
-    base::Time marsTime;
-    /** time elapsed in ms since start of mars */ 
-    double msElapsed;
-    /** Check wether the time is initialized or not */
-    bool initialized;
-    /** Override calculation of time, using base::Time::now insted */
-    bool useNow;
-
-public:
-    SimulationTime()
-    {
-        initialized = false;
-        useNow = false;
-    }
-
-    void useNowInsteadOfSimTime(){
-        useNow = true;
-    }
-
-    /** @brief set the start time
-     */
-    void setStartTime( base::Time startTime )
-    {
-	this->startTime = startTime;
-	msElapsed = 0 ;
-        marsTime = startTime;
-        initialized = true;
-    }	
-
-    /** @return the mars time, which is offset by t
-     * the time the mars was started
-     */
-    base::Time get()
-    {
-	boost::mutex::scoped_lock lock( timeLock );
-	if(!initialized || useNow){
-            //This prevent some wiered states in the timestamp estimator if the mars is
-            //not completly setup so far.
-            return base::Time::now();
-        }
-        return marsTime;
-    }
-
-    /** set the time since the mars was started in ms
-     */
-    void setElapsedMs( double ms )
-    {
-        if(!initialized){
-	    setStartTime( base::Time::now() );
-        }
-	boost::mutex::scoped_lock lock( timeLock );
-	msElapsed = ms;
-	marsTime = startTime + base::Time::fromMilliseconds( msElapsed );
-    }
-
-    /** @return the time in milliseconds since the start of the mars
-     */
-    double getElapsedMs()
-    {
-	boost::mutex::scoped_lock lock( timeLock );
-	return msElapsed;
-    }
-};
 
 namespace mars {
 
@@ -187,7 +117,6 @@ namespace mars {
 	 */
 	static mars::interfaces::SimulatorInterface* getSimulatorInterface();
 	static mars::Mars* getTaskInterface();
-	static SimulationTime simTime;
 
         Mars(std::string const& name = "mars::Mars");
         Mars(std::string const& name, RTT::ExecutionEngine* engine);
