@@ -3,7 +3,7 @@
 #ifndef SIMULATION_FORCE_APPLIER_TASK_HPP
 #define SIMULATION_FORCE_APPLIER_TASK_HPP
 
-#include "Mars.hpp"
+#include "Task.hpp"
 #include "mars/ForceApplierBase.hpp"
 
 namespace mars {

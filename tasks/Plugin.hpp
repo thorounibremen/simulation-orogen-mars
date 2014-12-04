@@ -4,7 +4,7 @@
 #define SIMULATION_MARSPLUGIN_TASK_HPP
 
 #include "mars/PluginBase.hpp"
-#include "Mars.hpp"
+#include "Task.hpp"
 #include <mars/lib_manager/LibManager.h>
 #include <mars/interfaces/sim/SimulatorInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>

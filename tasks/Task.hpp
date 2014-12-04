@@ -1,7 +1,7 @@
 #ifndef SIMULATION_MARS_TASK_HPP
 #define SIMULATION_MARS_TASK_HPP
 
-#include "mars/MarsBase.hpp"
+#include "mars/TaskBase.hpp"
 #include <vector>
 #include <mars/data_broker/ReceiverInterface.h>
 #include "Plugin.hpp"
@@ -30,12 +30,12 @@ namespace mars{
 
 namespace mars {
 
-    class Mars;
+    class Task;
 
-    // Argument to pass to startMarsFunc 
-    struct MarsArguments
+    // Argument to pass to startTaskFunc 
+    struct TaskArguments
     {
-	    Mars* mars;
+	    Task* mars;
 	    bool enable_gui;
         int controller_port;
         std::vector<SimulationProperty> mars_property_list;
@@ -57,21 +57,21 @@ namespace mars {
     * use subclassing to derive robot specific modules, e.g.
     * 
     * task_context 'RobotSimulation' do
-    *         subclasses 'mars::Mars'
+    *         subclasses 'mars::Task'
     * ..
     * end
     *
     */
-    class Mars : public MarsBase, public mars::data_broker::ReceiverInterface
+    class Task : public TaskBase, public mars::data_broker::ReceiverInterface
 
     {
-	friend class MarsBase;
+	friend class TaskBase;
     protected:
         QApplication* app; 
     	static mars::app::GraphicsTimer *graphicsTimer;
 	static mars::interfaces::SimulatorInterface* simulatorInterface;
-	static mars::Mars* taskInterface;
-	static void* startMarsFunc(void *);
+	static mars::Task* taskInterface;
+	static void* startTaskFunc(void *);
         static std::string configDir;
 	static bool marsRunning;
 
@@ -116,12 +116,12 @@ namespace mars {
 	/** get the singleton instance of the simulator interface
 	 */
 	static mars::interfaces::SimulatorInterface* getSimulatorInterface();
-	static mars::Mars* getTaskInterface();
+	static mars::Task* getTaskInterface();
 
-        Mars(std::string const& name = "mars::Mars");
-        Mars(std::string const& name, RTT::ExecutionEngine* engine);
+        Task(std::string const& name = "mars::Task");
+        Task(std::string const& name, RTT::ExecutionEngine* engine);
 
-	~Mars();
+	~Task();
 
         void registerPlugin(Plugin* plugin);
         void unregisterPlugin(Plugin* plugin);

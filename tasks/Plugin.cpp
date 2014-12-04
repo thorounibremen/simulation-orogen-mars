@@ -93,7 +93,7 @@ bool Plugin::connect()
         disconnect();
     else
     {
-        sim = Mars::getSimulatorInterface();
+        sim = Task::getSimulatorInterface();
         if( !sim ){
             std::cerr << "Plugin: could not get singleton instance of simulator interface." << std::endl;
             RTT::log(RTT::Error) << "Plugin: could not get singleton instance of simulator interface." << std::endl;
@@ -110,7 +110,7 @@ bool Plugin::connect()
 
     // get controlcenter
     control = sim->getControlCenter();
-    Mars::getTaskInterface()->registerPlugin(this);
+    Task::getTaskInterface()->registerPlugin(this);
 
     return true;
 }
@@ -119,7 +119,7 @@ void Plugin::disconnect()
 {
     if( sim ){
         sim->removePlugin( this );
-        Mars::getTaskInterface()->unregisterPlugin(this);
+        Task::getTaskInterface()->unregisterPlugin(this);
     }
 }
 

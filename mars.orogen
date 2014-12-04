@@ -27,12 +27,12 @@ using_library "actuator_dispatcher"
 # use subclassing to derive robot specific modules, e.g.
 #
 # task_context 'RobotSimulation' do
-#         subclasses 'mars::Mars'
+#         subclasses 'mars::Task'
 # end
 #
 # Pay attention that all these tasks have to be started within 
 # one deployment to be able to share their static resources.
-task_context "Mars" do
+task_context "Task" do
 	needs_configuration
 
         operation("loadScene").

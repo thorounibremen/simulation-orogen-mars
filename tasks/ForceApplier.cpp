@@ -31,7 +31,7 @@ bool ForceApplier::startHook()
     if (! ForceApplierBase::startHook())
         return false;
 
-    if(!Mars::getSimulatorInterface())
+    if(!Task::getSimulatorInterface())
         throw std::runtime_error("Cannot start Actuators. The simulator is not running in the same process.");
 	std::string node_name;
 
@@ -78,7 +78,7 @@ void ForceApplier::updateHook()
     {
         //we have to check it here otherwise the port
         //might be no longer triggeres
-        if (!Mars::getSimulatorInterface()->isSimRunning())
+        if (!Task::getSimulatorInterface()->isSimRunning())
             return;
 
         //check we have n actuator commands
