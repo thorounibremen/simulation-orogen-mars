@@ -79,12 +79,11 @@ void MarsPlugin::init()
 
 base::Time MarsPlugin::getTime()
 {
-    return Mars::simTime.get();
-}
-
-double MarsPlugin::getSimTime()
-{
-    return Mars::simTime.getElapsedMs();
+    if(!sim){
+        RTT::log(RTT::Error) << "Cannot request sim-time, no simulator running";
+        fatal();
+    }
+    return base::Time::fromMilliseconds(sim->getTime());
 }
 
 bool MarsPlugin::connect()

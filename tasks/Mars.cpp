@@ -26,7 +26,6 @@ mars::interfaces::SimulatorInterface *Mars::simulatorInterface = 0;
 simulation::Mars *Mars::taskInterface = 0;
 mars::app::GraphicsTimer *Mars::graphicsTimer = 0;
 mars::lib_manager::LibManager* Mars::libManager = 0; 
-SimulationTime Mars::simTime;
 
 Mars::Mars(std::string const& name)
     : MarsBase(name)
@@ -323,7 +322,6 @@ void* Mars::startMarsFunc(void* argument)
     if(marsArguments->add_floor){
         mars->simulatorInterface->getControlCenter()->nodes->createPrimitiveNode("Boden",mars::interfaces::NODE_TYPE_PLANE,false,mars::utils::Vector(0,0,0.0),mars::utils::Vector(600,600,0));
     }
-    //assert(mars->simulatorInterface->getControlCenter()->dataBroker->registerTriggeredReceiver(mars,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1));
     int result = mars->simulatorInterface->getControlCenter()->dataBroker->registerTriggeredReceiver(mars,"mars_sim", "simTime","mars_sim/postPhysicsUpdate",1);
     assert(result);
     
@@ -450,9 +448,6 @@ bool Mars::configureHook()
         throw std::runtime_error("Config directory is not set! Can not start mars");     
     }
 
-    if(_use_now_instead_of_sim_time.get()){
-        simTime.useNowInsteadOfSimTime();
-    }
 
     //check if the environemnt was sourced more than once and the path has more than one entry
     int pos = _config_dir.get().rfind(":/");
@@ -555,6 +550,8 @@ bool Mars::configureHook()
         return false;
     }
     }
+    
+    simulatorInterface->getControlCenter()->cfg->setPropertyValue("Simulator","getTime:useNow","value",_use_now_instead_of_sim_time.get());
 
     setGravity_internal(_gravity.get());
 
@@ -689,14 +686,7 @@ void Mars::receiveData(
         const data_broker::DataPackage& package,
         int id) 
 {
-    double ms;
-    package.get("simTime", &ms);
-    // update the simulation time
-    simTime.setElapsedMs( ms );
-
-    //update the time output ports
-    _time.write( simTime.getElapsedMs() );
-    _simulated_time.write(simTime.get());
+    _simulated_time.write(base::Time::fromMilliseconds(simulatorInterface->getTime()));
 }
 
 bool Mars::setGravity_internal(::base::Vector3d const & value){

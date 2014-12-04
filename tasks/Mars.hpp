@@ -27,77 +27,6 @@ namespace mars{
     };
 };
 
-class SimulationTime
-{
-    /** lock for simulation time */
-    boost::mutex timeLock;
-    /** time offset to use for the simulation time */
-    base::Time startTime;
-    /** simulation time including offset */
-    base::Time simulationTime;
-    /** time elapsed in ms since start of simulation */ 
-    double msElapsed;
-    /** Check wether the time is initialized or not */
-    bool initialized;
-    /** Override calculation of time, using base::Time::now insted */
-    bool useNow;
-
-public:
-    SimulationTime()
-    {
-        initialized = false;
-        useNow = false;
-    }
-
-    void useNowInsteadOfSimTime(){
-        useNow = true;
-    }
-
-    /** @brief set the start time
-     */
-    void setStartTime( base::Time startTime )
-    {
-	this->startTime = startTime;
-	msElapsed = 0 ;
-        simulationTime = startTime;
-        initialized = true;
-    }	
-
-    /** @return the simulation time, which is offset by t
-     * the time the simulation was started
-     */
-    base::Time get()
-    {
-	boost::mutex::scoped_lock lock( timeLock );
-	if(!initialized || useNow){
-            //This prevent some wiered states in the timestamp estimator if the simulation is
-            //not completly setup so far.
-            return base::Time::now();
-        }
-        return simulationTime;
-    }
-
-    /** set the time since the simulation was started in ms
-     */
-    void setElapsedMs( double ms )
-    {
-        if(!initialized){
-	    setStartTime( base::Time::now() );
-        }
-	boost::mutex::scoped_lock lock( timeLock );
-	msElapsed = ms;
-	simulationTime = startTime + base::Time::fromMilliseconds( msElapsed );
-    }
-
-    /** @return the time in milliseconds since the start of the simulation
-     */
-    double getElapsedMs()
-    {
-	boost::mutex::scoped_lock lock( timeLock );
-	return msElapsed;
-    }
-};
-
 namespace simulation {
 
     class Mars;
@@ -187,7 +116,6 @@ namespace simulation {
 	 */
 	static mars::interfaces::SimulatorInterface* getSimulatorInterface();
 	static simulation::Mars* getTaskInterface();
-	static SimulationTime simTime;
 
         Mars(std::string const& name = "simulation::Mars");
         Mars(std::string const& name, RTT::ExecutionEngine* engine);
