@@ -120,13 +120,6 @@ namespace simulation {
 	 */
         base::Time getTime();
 
-	/**
-	 * @brief return the simulation time in ms since the start of the simulation
-	 *
-	 * @note do not use this for generating timestamps
-	 */
-        double getSimTime();
-
         bool connect();
         void disconnect();
         virtual void reset();
