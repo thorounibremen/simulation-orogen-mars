@@ -38,6 +38,9 @@ task_context "Task" do
         operation("loadScene").
             argument("path","/std/string")
 
+        operation("setPosition").
+            argument("positions", "mars/Positions")
+
         property('add_floor',"/bool",false)
 
         property('gravity',"/base/Vector3d").dynamic

@@ -529,7 +529,7 @@ bool Task::configureHook()
 
     std::vector<Positions> positions = _positions.get();
     if(!positions.empty()){
-    	for (std::vector< Positions >::iterator offset = positions.begin(); offset != positions.end();offset++){
+        for (std::vector< Positions >::iterator offset = positions.begin(); offset != positions.end();offset++){
             move_node(*offset);
         }
     }
@@ -724,6 +724,12 @@ bool Task::setGravity(::base::Vector3d const & value)
  return(mars::TaskBase::setGravity(value));
 }
 
+void Task::setPosition(::mars::Positions const & positions)
+{
+    if(simulatorInterface->isSimRunning())
+        move_node(positions);
+    return;
+}
 
 bool Task::setSim_step_size(double value)
 {
