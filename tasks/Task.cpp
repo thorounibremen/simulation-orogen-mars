@@ -22,6 +22,8 @@
 #include <QApplication>
 #include <QPlastiqueStyle>
 
+#include <base/logging.h>
+
 using namespace mars;
 using namespace mars;
 
@@ -726,8 +728,12 @@ bool Task::setGravity(::base::Vector3d const & value)
 
 void Task::setPosition(::mars::Positions const & positions)
 {
-    if(simulatorInterface->isSimRunning())
+    if(isRunning() || isConfigured()){
+        LOG_DEBUG("moving '%s' to %g/%g/%g\n", positions.nodename.c_str(), positions.posx, positions.posy, positions.posz);
         move_node(positions);
+    }else{
+        LOG_WARNING("setPosition called, but mars::Task is whether configured nor running ");
+    }
     return;
 }
 
@@ -772,5 +778,7 @@ void Task::move_node(::mars::Positions const & arg)
 
         nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_POS | mars::interfaces::EDIT_NODE_MOVE_ALL);
         nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_ROT | mars::interfaces::EDIT_NODE_MOVE_ALL);
+    }else{
+        LOG_WARN("node '%s' unknown\n", arg.nodename.c_str());
     }
 }
