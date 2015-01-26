@@ -11,6 +11,10 @@ class QApplication;
 
 /** From MARS */
 //
+namespace lib_manager{
+  class LibManager;
+};
+
 namespace mars{
     namespace interfaces{
         class SimulatorInterface;
@@ -19,9 +23,7 @@ namespace mars{
     namespace app{
         class GraphicsTimer;
     };
-    namespace lib_manager {
-        class LibManager;
-    }
+
     namespace graphics{
         class GraphicsManager;
     };
@@ -76,7 +78,7 @@ namespace mars {
 	static bool marsRunning;
 
 	pthread_t thread_info; 
-	static mars::lib_manager::LibManager* libManager;
+	static lib_manager::LibManager* libManager;
 
         mars::interfaces::PluginInterface* multisimPlugin;
 

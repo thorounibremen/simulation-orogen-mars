@@ -18,7 +18,7 @@
 
 //#include <mars/multisim-plugin/MultiSimPlugin.h>
 
-#include <mars/lib_manager/LibManager.h>
+#include <lib_manager/LibManager.hpp>
 #include <QApplication>
 #include <QPlastiqueStyle>
 
@@ -30,7 +30,7 @@ using namespace mars;
 mars::interfaces::SimulatorInterface *Task::simulatorInterface = 0;
 mars::Task *Task::taskInterface = 0;
 mars::app::GraphicsTimer *Task::graphicsTimer = 0;
-mars::lib_manager::LibManager* Task::libManager = 0; 
+lib_manager::LibManager* Task::libManager = 0; 
 
 Task::Task(std::string const& name)
     : TaskBase(name)
@@ -128,7 +128,7 @@ void* Task::startTaskFunc(void* argument)
     }
 
     // Prepare the LibManager and required configuration files
-    libManager = new mars::lib_manager::LibManager();
+    libManager = new lib_manager::LibManager();
 
     std::string corelibsConfigPath;
     // If the graphical interface should be disabled, the configuration 
@@ -144,7 +144,7 @@ void* Task::startTaskFunc(void* argument)
     libManager->loadConfigFile(corelibsConfigPath);
 
     // Setting the configuration directory and loading the preferences
-    mars::lib_manager::LibInterface* lib = libManager->getLibrary(std::string("cfg_manager"));
+    lib_manager::LibInterface* lib = libManager->getLibrary(std::string("cfg_manager"));
     if(lib)
     {
  	cfg_manager::CFGManagerInterface* cfg = dynamic_cast<cfg_manager::CFGManagerInterface*>(lib);
