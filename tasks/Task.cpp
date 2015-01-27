@@ -345,7 +345,6 @@ void* Task::startTaskFunc(void* argument)
    
     //Workaround release waht whereever is acquired
     libManager->releaseLibrary("data_broker");
-    libManager->releaseLibrary("avalonplugin");
     libManager->releaseLibrary("mars_sim");
     libManager->releaseLibrary("main_gui");
 
@@ -704,7 +703,8 @@ void Task::receiveData(
 }
 
 bool Task::setGravity_internal(::base::Vector3d const & value){
- simulatorInterface->setGravity(value);
+    simulatorInterface->setGravity(value);
+    return true;
 }
 
 bool Task::setGravity(::base::Vector3d const & value)
