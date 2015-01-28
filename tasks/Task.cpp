@@ -20,7 +20,11 @@
 
 #include <lib_manager/LibManager.hpp>
 #include <QApplication>
+#if QT_VERSION >= 0x050000
+#include <QStyleFactory>
+#else
 #include <QPlastiqueStyle>
+#endif
 
 #include <base/logging.h>
 
@@ -112,7 +116,17 @@ void* Task::startTaskFunc(void* argument)
     if(!Task::getTaskInterface()->app){
         //Initialize Qapplication only once! and keep the instance
         Task::getTaskInterface()->app = new QApplication(argc, argv);
+#if QT_VERSION >= 0x050000
+        QStyle* style = QStyleFactory::create("plastique");
+        if(style)
+        {
+            Task::getTaskInterface()->app->setStyle(style);
+        } else {
+            LOG_WARN_S << "QStyle 'plastique' is not available";
+        }
+#else
         Task::getTaskInterface()->app->setStyle(new QPlastiqueStyle);
+#endif
     }
 
     setlocale(LC_ALL,"C");
