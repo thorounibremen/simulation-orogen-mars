@@ -180,13 +180,6 @@ void* Task::startTaskFunc(void* argument)
 	    // overriding any defaults 
             configPath.sValue = marsArguments->config_dir;
             cfg->setProperty(configPath);
- 	    /*
-            if(!cfg->setProperty(configPath))
-            {
-                LOG_ERROR_S << "Configuration path property could not be set";
-                exit(1);
-            } 
-            */
             configPath = cfg->getOrCreateProperty("Config", "config_path", marsArguments->config_dir);
 
             if(configPath.sValue != marsArguments->config_dir)
