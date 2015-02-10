@@ -67,6 +67,12 @@ task_context "Task" do
         property('config_dir', '/std/string', "#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/configuration/mars_default").
 	    doc('the full path to the main configuration folder')
 
+        property('plugin_dir', '/std/string', "#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/lib").
+	    doc('the full path where the plugins can be found')
+
+	property('plugins', '/std/vector</std/string>').
+	    doc('additional mars plugins to load. This can be a relative path to the plugin_dir, or absolute.')
+
         property('simulation_property_list', '/std/vector</mars/SimulationProperty>').
 	    doc('list of attributes containing plugin and property name as well as the desired value')
 
