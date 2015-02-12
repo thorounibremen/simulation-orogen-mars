@@ -49,27 +49,32 @@ task_context "Task" do
         property("use_now_instead_of_sim_time","/bool",false)
 
         property("reaction_to_physics_error","/std/string","shutdown").
-            doc("Possible Values: abort (killing sim), reset (ressing scene and simulation), warn (keep simulation running an print warnings), shutdown (stop physics but keep mars-running and set this tas to the error state)").
+            doc("Possible Values: abort (killing sim), reset (ressing scene and simulation), warn (keep simulation running an print warnings), shutdown (stop physics but keep mars-running and set this task to the error state)").
             dynamic
 
         property('initial_scene', '/std/string').
 	    doc('the full path to the initial scene, this is needed because operations are not accessible during configuration within syskit (deadlock)')
 
-	    property('initial_scenes', '/std/vector</std/string>').
+	property('initial_scenes', '/std/vector</std/string>').
 	    doc('the full path to the initial scene, this is needed because operations are not accessible during configuration within syskit (deadlock)')
 
         property('positions', 'std/vector<mars/Positions>' ).
 	    doc('override positions in the scene (scn) file, e.g. move the terrain to create different experiment setups without changing the scene file itself')
 
-		property('initial_pose', 'mars/Pose' ).
+	property('initial_pose', 'mars/Pose' ).
 	    doc('override initial joint positions in the scene (scn) file, i.e. set an initial pose')
 
-
-        property('config_dir', '/std/string',"#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/configuration/mars_default").
+        property('config_dir', '/std/string', "#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/configuration/mars_default").
 	    doc('the full path to the main configuration folder')
 
+        property('plugin_dir', '/std/string', "#{ENV['AUTOPROJ_CURRENT_ROOT']}/install/lib").
+	    doc('the full path where the plugins can be found')
+
+	property('plugins', '/std/vector</std/string>').
+	    doc('additional mars plugins to load. This can be a relative path to the plugin_dir, or absolute.')
+
         property('simulation_property_list', '/std/vector</mars/SimulationProperty>').
-        doc('list of attributes containing plugin and property name as well as the desired value')
+	    doc('list of attributes containing plugin and property name as well as the desired value')
 
         property('distributed_simulation', 'bool').
 	    doc('switch to active the distributed simulation if needed')
@@ -87,11 +92,11 @@ task_context "Task" do
         property('raw_options', '/std/vector<mars::Option>').
             doc('forward the original mars arguments, such as -c 1600 for setting the ode port - option consists of name, here: -c and parameter: here 1600')
 
-		property('realtime_calc', 'bool', false).
-            doc('if true, simulation runs in real time or slower, but not faster')
+	property('realtime_calc', 'bool', false).
+	    doc('if true, simulation runs in real time or slower, but not faster')
 
-		property('start_sim', 'bool', false).
-			doc('starts the simulation after loading the initial scene(s)')
+	property('start_sim', 'bool', false).
+	    doc('starts the simulation after loading the initial scene(s)')
 
         # Add a task context
         # operation('addPlugin').

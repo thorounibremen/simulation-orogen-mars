@@ -26,6 +26,8 @@
 #include <QPlastiqueStyle>
 #endif
 
+#include <boost/filesystem.hpp>
+
 #include <base/logging.h>
 
 using namespace mars;
@@ -157,6 +159,13 @@ void* Task::startTaskFunc(void* argument)
 
     libManager->loadConfigFile(corelibsConfigPath);
 
+    // load the additionally specified plugins
+    for( std::vector<std::string>::iterator it = marsArguments->mars_plugins.begin(); 
+          it != marsArguments->mars_plugins.end(); ++it )
+    {
+       libManager->loadLibrary( *it );
+    }
+
     // Setting the configuration directory and loading the preferences
     lib_manager::LibInterface* lib = libManager->getLibrary(std::string("cfg_manager"));
     if(lib)
@@ -171,13 +180,6 @@ void* Task::startTaskFunc(void* argument)
 	    // overriding any defaults 
             configPath.sValue = marsArguments->config_dir;
             cfg->setProperty(configPath);
- 	    /*
-            if(!cfg->setProperty(configPath))
-            {
-                LOG_ERROR_S << "Configuration path property could not be set";
-                exit(1);
-            } 
-            */
             configPath = cfg->getOrCreateProperty("Config", "config_path", marsArguments->config_dir);
 
             if(configPath.sValue != marsArguments->config_dir)
@@ -489,6 +491,16 @@ bool Task::configureHook()
     argument.add_floor = _add_floor.get();
     argument.failed_to_init=false;
     argument.realtime_calc = _realtime_calc.get();
+    argument.mars_plugins = _plugins.get();
+
+    // go through list of plugins, and see if they have an absolute path
+    for( std::vector<std::string>::iterator it = argument.mars_plugins.begin(); 
+          it != argument.mars_plugins.end(); ++it )
+    {
+       *it = boost::filesystem::absolute( 
+             boost::filesystem::path( *it ), 
+             boost::filesystem::path( _plugin_dir.get() ) ).string();
+    }
 
     int ret = pthread_create(&thread_info, NULL, startTaskFunc, &argument);
     if(ret)

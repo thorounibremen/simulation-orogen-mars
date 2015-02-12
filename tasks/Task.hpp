@@ -37,10 +37,11 @@ namespace mars {
     // Argument to pass to startTaskFunc 
     struct TaskArguments
     {
-	    Task* mars;
-	    bool enable_gui;
+        Task* mars;
+        bool enable_gui;
         int controller_port;
         std::vector<SimulationProperty> mars_property_list;
+        std::vector<std::string> mars_plugins;
         std::string config_dir;
         bool initialized;
         bool add_floor;
