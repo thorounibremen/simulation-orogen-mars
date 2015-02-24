@@ -110,7 +110,11 @@ void* Task::startTaskFunc(void* argument)
         Option confDirOption("-C", marsArguments->config_dir);
         rawOptions.push_back(confDirOption);
     }
-
+    if(!marsArguments->enable_gui)
+    {
+      Option noGUIOption("--no-gui", "");
+      rawOptions.push_back(noGUIOption);
+    }
     char** argv = mars->setOptions(rawOptions);
     int count = mars->getOptionCount(rawOptions);
     // Plus one for executable name
@@ -151,22 +155,6 @@ void* Task::startTaskFunc(void* argument)
         LOG_ERROR_S << "Current locale conflicts with mars";
         marsArguments->failed_to_init = true;
         return 0;
-    }
-
-    // todo: change this in a configuration of MARS
-    if(marsArguments->enable_gui)
-    {
-        std::string cmd;
-        cmd = "cp ";
-        cmd += marsArguments->config_dir + "/core_libs.txt.example ";
-        cmd += marsArguments->config_dir + "/core_libs.txt ";
-        system(cmd.c_str());
-    } else {
-        std::string cmd;
-        cmd = "cp ";
-        cmd += marsArguments->config_dir + "/core_libs-nogui.txt ";
-        cmd += marsArguments->config_dir + "/core_libs.txt ";
-        system(cmd.c_str());
     }
 
     std::string cmd;
