@@ -3,6 +3,8 @@
 The mars-core module provides the base for other modules that require the simulation mars.
   </description>
   <author>Thomas Roehr/thomas.roehr@dfki.de</author>
+  <author>Matthias Goldhoorn/matthias@goldhoorn.eu</author>
+  <maintainer>Matthias Goldhoorn/matthias@goldhoorn.eu</maintainer>
   <license></license>
   <url>http://</url>
   <logo>http://</logo>
