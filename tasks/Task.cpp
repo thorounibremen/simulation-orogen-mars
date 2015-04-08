@@ -116,19 +116,20 @@ void* Task::startTaskFunc(void* argument)
       rawOptions.push_back(noGUIOption);
     }
     char** argv = mars->setOptions(rawOptions);
-    int count = mars->getOptionCount(rawOptions);
+    int argc = mars->getOptionCount(rawOptions);
+    // incrememt arcument counter since setOptions adds mars_core to arguments
+    argc += 1;
     // Plus one for executable name
-    for(int i = 0; i < count + 1; i++)
+    for(int i = 0; i < argc; i++)
     {
         LOG_INFO_S << "Simulator: argument #" << i << " " << argv[i];
     }
 
     mars::app::MARS *simulation = new mars::app::MARS();
-    simulation->readArguments(count, argv);
+    simulation->readArguments(argc, argv);
 
     // Prepare Qt Application Thread which is required
     // for core mars and gui
-    int argc = count + 1;
     if(!Task::getTaskInterface()->app){
         //Initialize Qapplication only once! and keep the instance
         Task::getTaskInterface()->app = new QApplication(argc, argv);
@@ -158,14 +159,12 @@ void* Task::startTaskFunc(void* argument)
     }
 
     std::string cmd;
-    for(int i = 0; i < count+1;++i)
+    for(int i = 0; i < argc;++i)
     {
         cmd += std::string(argv[i]);
         cmd += " ";
     }
-
     LOG_INFO_S << "Starting mars with: " << cmd;
-
     simulation->start(argc, argv);
 
     // Prepare the LibManager and required configuration files
