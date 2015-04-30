@@ -1,5 +1,5 @@
-#ifndef POSE_TYPE_HH
-#define POSE_TYPE_HH
+#ifndef MARS_POSE_TYPE_HH
+#define MARS_POSE_TYPE_HH
 
 #include <vector>
 #include <string>

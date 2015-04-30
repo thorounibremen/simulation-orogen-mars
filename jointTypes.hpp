@@ -1,5 +1,5 @@
-#ifndef JOINT_TYPES_HH
-#define JOINT_TYPES_HH
+#ifndef MARS_JOINT_TYPES_HH
+#define MARS_JOINT_TYPES_HH
 
 #include <string>
 #include <base/NamedVector.hpp>

@@ -9,7 +9,6 @@ using_library "lib_manager", :typekit => false
 using_library "mars_graphics", :typekit => false
 
 import_types_from "tasks/MarsControl.hpp"
-import_types_from "servoTypes.hpp"
 import_types_from "jointTypes.hpp"
 import_types_from "poseType.hpp"
 import_types_from "base"
