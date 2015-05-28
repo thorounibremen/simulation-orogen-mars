@@ -4,6 +4,7 @@
 #define SIMULATION_MARSHIGHRESRANGEFINDER_TASK_HPP
 
 #include "mars/HighResRangeFinderBase.hpp"
+#include <base/samples/DistanceImage.hpp>
 
 namespace mars {
 

@@ -4,6 +4,7 @@
 #define SIMULATION_JOINTS_TASK_HPP
 
 #include "mars/JointsBase.hpp"
+#include <base/commands/Joints.hpp>
 
 namespace mars {
 

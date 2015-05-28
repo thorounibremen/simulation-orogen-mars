@@ -5,6 +5,7 @@
 
 #include "Task.hpp"
 #include "mars/ForceApplierBase.hpp"
+#include <base/commands/Joints.hpp>
 
 namespace mars {
 
