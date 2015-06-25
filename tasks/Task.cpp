@@ -524,6 +524,8 @@ void Task::errorHook()
 
 void Task::stopHook()
 {
+
+
     /*
     std::cout << "STOP HOOK" << std::endl;
     for(unsigned int i=0;i<plugins.size();i++){
@@ -555,7 +557,12 @@ void Task::cleanupHook()
     simulatorInterface->exitMars();
     while( simulatorInterface->isSimRunning()) ;
 
-    QCoreApplication::quit(); //Quitting QApplication too
+    if (app){
+    	//QCoreApplication::quit(); //Quitting QApplication too
+    	app->quit();
+    }
+
+
 
     LOG_DEBUG_S << "CLEANUP HOOK quitting qapp finish";
 
