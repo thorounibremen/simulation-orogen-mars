@@ -524,8 +524,6 @@ void Task::errorHook()
 
 void Task::stopHook()
 {
-
-
     /*
     std::cout << "STOP HOOK" << std::endl;
     for(unsigned int i=0;i<plugins.size();i++){
@@ -558,7 +556,6 @@ void Task::cleanupHook()
     while( simulatorInterface->isSimRunning()) ;
 
     if (app){
-    	//QCoreApplication::quit(); //Quitting QApplication too
     	app->quit();
     }
 
