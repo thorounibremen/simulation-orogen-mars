@@ -3,10 +3,8 @@ name 'mars'
 using_library "mars_interfaces", :typekit => false
 using_library "mars_gui", :typekit => false
 using_library "mars_app", :typekit => false
-using_library "main_gui", :typekit => false
 using_library "mars_sim", :typekit => false
 using_library "lib_manager", :typekit => false
-using_library "mars_graphics", :typekit => false
 
 import_types_from "tasks/MarsControl.hpp"
 import_types_from "jointTypes.hpp"

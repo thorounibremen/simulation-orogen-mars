@@ -10,7 +10,8 @@
 #include <mars/main_gui/MainGUI.h>
 #include <mars/main_gui/GuiInterface.h>
 #include <mars/cfg_manager/CFGManagerInterface.h>
-#include <mars/graphics/GraphicsManager.h>
+#include <mars/interfaces/graphics/GraphicsManagerInterface.h>
+//#include <mars/graphics/GraphicsManager.h>
 #include <mars/app/GraphicsTimer.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 
@@ -218,7 +219,7 @@ void* Task::startTaskFunc(void* argument)
         mars->simulatorInterface->getControlCenter()->cfg->setPropertyValue("Simulator", "realtime calc", "value", marsArguments->realtime_calc);
     }
 
-    mars->marsGraphics = libManager->getLibraryAs<mars::graphics::GraphicsManager>("mars_graphics");
+    mars->marsGraphics = libManager->getLibraryAs<mars::interfaces::GraphicsManagerInterface>("mars_graphics");
 
     // Synchronize with configureHook
     marsArguments->initialized = true;

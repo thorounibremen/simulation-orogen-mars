@@ -19,13 +19,10 @@ namespace mars{
     namespace interfaces{
         class SimulatorInterface;
         class PluginInterface;
+        class GraphicsManagerInterface;
     };
     namespace app{
         class GraphicsTimer;
-    };
-
-    namespace graphics{
-        class GraphicsManager;
     };
 };
 
@@ -109,7 +106,7 @@ namespace mars {
 
         // GraphicsTimer will be later called with the marsGraphics reference
         // which can be also NULL for a disabled gui
-        mars::graphics::GraphicsManager* marsGraphics;
+        mars::interfaces::GraphicsManagerInterface* marsGraphics;
         
         virtual bool setSim_step_size(double value);
         virtual bool setGravity(::base::Vector3d const & value);
