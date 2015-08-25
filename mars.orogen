@@ -283,6 +283,16 @@ end
 task_context "IMU" do
     subclasses "Plugin"
     
+    property("provide_position", "/bool",false).
+        doc("Set to true is this Sensor should output position readings")
+
+    property("provide_orientation", "/bool",true).
+        doc("Set to true is this Sensor should output orientation readings")
+
+    property("provide_velocity", "/bool",true).
+        doc("Set to true is this Sensor should output angular/translational velocities")
+
+
     property("imu_frame", "std/string", "imu").
 	doc "The name of the imu frame."
     property("world_frame", "std/string", "world").
@@ -307,9 +317,6 @@ task_context "IMU" do
     
     property('name', '/std/string', 'imu').
 	doc('name of the node in the scene file from which to get the imu data')
-
-    output_port('pose_samples', '/base/samples/RigidBodyState').
-        doc 'provides timestamped IMUReading samples containing the complete pose'
 end
 
 
