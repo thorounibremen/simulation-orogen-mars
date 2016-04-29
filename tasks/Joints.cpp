@@ -4,6 +4,7 @@
 #include <boost/foreach.hpp>
 #include <mars/sim/SimMotor.h>
 #include <mars/interfaces/sim/MotorManagerInterface.h>
+#include <mars/interfaces/sim/JointManagerInterface.h>
 #include <base/Logging.hpp>
 #include <base/samples/RigidBodyState.hpp>
 
@@ -28,12 +29,21 @@ void Joints::init()
     // for each of the names, get the mars motor id
     for( size_t i=0; i<mars_ids.size(); ++i )
     {
-	std::string &name( mars_ids[i].marsName );
+        std::string &name( mars_ids[i].marsName );
         int marsMotorId = control->motors->getID( name );
-        if( marsMotorId )
-	    mars_ids[i].mars_id = marsMotorId;
-	else
-	    throw std::runtime_error("there is no motor by the name of " + name);
+        if( marsMotorId ){
+            mars_ids[i].mars_id = marsMotorId;
+            joint_types.push_back(MOTOR);
+        }else{
+            int marsJointId = control->joints->getID( name );
+            if (marsJointId){
+                mars_ids[i].mars_id = marsJointId;
+                joint_types.push_back(PASSIVE);
+            }else{
+                throw std::runtime_error("there is no motor or joint by the name of " + name);
+            }
+        }
+
     }
 }
 
@@ -45,7 +55,11 @@ void Joints::update(double delta_t)
     {
 	for( size_t i=0; i<mars_ids.size(); ++i )
 	{
-            
+        //passive joints can't take commands
+	    if (joint_types [i] == PASSIVE){
+	        continue;
+	    }
+
 	    // for each command input look up the name in the mars_ids structure
 	    JointConversion conv = mars_ids[i];
 
@@ -86,7 +100,7 @@ void Joints::update(double delta_t)
     // in any case read out the status
     for( size_t i=0; i<mars_ids.size(); ++i )
     {
-   	JointConversion *conv = NULL;
+        JointConversion *conv = NULL;
 
         if (parallel_kinematics.empty()){
             conv = &(mars_ids[i]);
@@ -94,23 +108,37 @@ void Joints::update(double delta_t)
             //mars_id does not fit the index of status,
             //find the conv by status name
             for (std::vector<JointConversion>::iterator it = mars_ids.begin();it != mars_ids.end();it++){
-                    if (it->externalName == status.names[i]){
-                            conv = &(*it);
-                            break;
-                    }
+                if (it->externalName == status.names[i]){
+                    conv = &(*it);
+                    break;
+                }
             }
 
         }
-        mars::sim::SimMotor *motor = control->motors->getSimMotor( conv->mars_id );
 
-	base::JointState state;
-	state.position = conv->fromMars(conv->updateAbsolutePosition( motor->getActualPosition() ));
-	state.speed = motor->getJoint()->getVelocity() * conv->scaling;
-	state.effort = conv->fromMars( motor->getTorque() );
+        base::JointState state;
 
-	currents[conv->externalName] = motor->getCurrent();
+        if (joint_types[i] == MOTOR){
+            mars::sim::SimMotor *motor = control->motors->getSimMotor( conv->mars_id );
 
-	status[conv->externalName] = state;
+            state.position = conv->fromMars(conv->updateAbsolutePosition( motor->getActualPosition() ));
+            state.speed = motor->getJoint()->getVelocity() * conv->scaling;
+            state.effort = conv->fromMars( motor->getTorque() );
+
+            currents[conv->externalName] = motor->getCurrent();
+
+            status[conv->externalName] = state;
+        }else{
+            mars::sim::SimJoint* joint = control->joints->getSimJoint( conv->mars_id );
+
+            state.position = conv->fromMars(conv->updateAbsolutePosition( joint->getActualAngle1() ));
+            state.speed = joint->getVelocity() * conv->scaling;
+            state.effort = 0;
+
+            currents[conv->externalName] = 0;
+            status[conv->externalName] = state;
+
+        }
     }
 
     // and write it to the output port

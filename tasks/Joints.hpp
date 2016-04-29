@@ -82,6 +82,8 @@ namespace mars {
             bool gotPosition;
 	};
 	std::vector<JointConversion> mars_ids;
+	enum JointTypes{MOTOR,PASSIVE};
+	std::vector<JointTypes> joint_types;
 
 	base::samples::Joints status;
 	mars::JointCurrents currents;
