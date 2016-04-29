@@ -556,7 +556,11 @@ void Task::cleanupHook()
     simulatorInterface->exitMars();
     while( simulatorInterface->isSimRunning()) ;
 
-    QCoreApplication::quit(); //Quitting QApplication too
+    if (app){
+    	app->quit();
+    }
+
+
 
     LOG_DEBUG_S << "CLEANUP HOOK quitting qapp finish";
 
