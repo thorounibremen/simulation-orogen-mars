@@ -42,7 +42,7 @@ void ForceTorque6DOF::update(double delta_t)
     if(!isRunning()) return;
 
     //normally this should not result in a resize
-	wrenches.resize(mars_ids.size());
+	wrenches_deprecated.resize(mars_ids.size());
 
     for( size_t i=0; i<mars_ids.size(); ++i ){
     	mars::interfaces::BaseSensor* base = control->sensors->getSimSensor(mars_ids[i]);
@@ -58,12 +58,15 @@ void ForceTorque6DOF::update(double delta_t)
 
 				wrench.time = getTime();
 
-				wrenches[i] = wrench;
+				wrenches_deprecated[i] = wrench;
+				wrenches.elements[i] = wrench;
+				wrenches.names[i] = mars_names[i];
 			}
     	}
     }
 
     //TODO: convert to new wrench base type, when available
+    _wrenches_deprecated.write(wrenches_deprecated);
     _wrenches.write(wrenches);
 
 }

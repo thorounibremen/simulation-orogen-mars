@@ -216,7 +216,8 @@ task_context "ForceTorque6DOF" do
 	
 	subclasses "Plugin"
 	
-	output_port("wrenches", "std/vector< /base/samples/Wrench >")
+	output_port("wrenches_deprecated", "std/vector< /base/samples/Wrench >")
+	output_port("wrenches", "/base/samples/Wrenches")
 	
 	property('names', 'std/vector</std/string>').
         doc('Array of names of the ft sensors in the scene file.')
