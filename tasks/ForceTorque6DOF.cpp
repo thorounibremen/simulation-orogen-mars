@@ -50,15 +50,18 @@ void ForceTorque6DOF::update(double delta_t)
     		mars::sim::Joint6DOFSensor* sensor = dynamic_cast<mars::sim::Joint6DOFSensor*>(base);
 			if (sensor){
 				//printf("sensor %s found\n",mars_names[i].c_str());
-				base::samples::Wrench wrench;
+				base::samples::Wrench wrench_deprecated;
 				//mars::utils::Vector is the same typedef as base::Vector3d
 				//so we can use the base::Vector3d directly
-				sensor->getForceData(&wrench.force);
-				sensor->getTorqueData(&wrench.torque);
+				sensor->getForceData(&wrench_deprecated.force);
+				sensor->getTorqueData(&wrench_deprecated.torque);
+				wrench_deprecated.time = getTime();
+				wrenches_deprecated[i] = wrench_deprecated;
 
-				wrench.time = getTime();
-
-				wrenches_deprecated[i] = wrench;
+				base::Wrench wrench;
+                sensor->getForceData(&wrench.force);
+                sensor->getTorqueData(&wrench.torque);
+                wrenches.time = getTime();
 				wrenches.elements[i] = wrench;
 				wrenches.names[i] = mars_names[i];
 			}
