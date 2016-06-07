@@ -319,6 +319,13 @@ task_context "IMU" do
     
     property('name', '/std/string', 'imu').
 	doc('name of the node in the scene file from which to get the imu data')
+	
+    operation('estimate_bias').
+        argument('duration', '/uint16_t').
+        returns('/bool').
+        doc("Normally triggers bias estimation on the xsens imu, in simulation thios does nothing") 
+
+	
 end
 
 

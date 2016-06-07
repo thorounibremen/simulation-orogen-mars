@@ -30,6 +30,11 @@ namespace mars {
 	friend class IMUBase;
 
     protected:
+
+    /* Normally triggers bias estimation on the xsens imu, in simulation thios does nothing
+     */
+    virtual bool estimate_bias(boost::uint16_t duration){};
+
         long node_id;
         base::samples::RigidBodyState rbs;
         base::samples::IMUSensors imusens;
