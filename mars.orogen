@@ -220,6 +220,8 @@ task_context "ForceTorque6DOF" do
 	
 	property('names', 'std/vector</std/string>').
         doc('Array of names of the ft sensors in the scene file.')
+        property('name_remap', 'std/vector</std/string>').
+            doc('If this array is set the sensors will be renamed for the external interface')
 	
 end
 

@@ -63,7 +63,12 @@ void ForceTorque6DOF::update(double delta_t)
                 sensor->getTorqueData(&wrench.torque);
                 wrenches.time = getTime();
 				wrenches.elements[i] = wrench;
-				wrenches.names[i] = mars_names[i];
+                if(external_names.empty()){
+                    wrenches.names[i] = mars_names[i];
+                }
+                else{
+                    wrenches.names[i] = external_names[i];
+                }
 			}
     	}
     }
@@ -90,6 +95,10 @@ bool ForceTorque6DOF::configureHook()
     mars_ids.resize(num_sensors);
     mars_names.clear();
     mars_names = _names.value();
+    external_names = _name_remap.get();
+    if(!external_names.empty() && external_names.size() != mars_names.size()){
+        throw(std::runtime_error("Sizes of the properties 'name_remap' and 'names' differ. If 'name_remap' is given, it must have the same size as 'names'."));
+    }
 
 	wrenches.resize(num_sensors);
 
