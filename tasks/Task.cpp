@@ -30,7 +30,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include <base/logging.h>
+#include <base/Logging.hpp>
 
 using namespace mars;
 using namespace mars;

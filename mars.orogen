@@ -12,8 +12,6 @@ import_types_from "jointTypes.hpp"
 import_types_from "poseType.hpp"
 import_types_from "base"
 
-using_library "actuator_dispatcher"
-
 #Disable default deployments, most of the time stand_alone deployments are useless
 #since the simulation needs plugins within the same deployment to work
 #self.define_default_deployments = false

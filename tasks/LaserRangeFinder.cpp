@@ -3,7 +3,7 @@
 #include "LaserRangeFinder.hpp"
 #include "Plugin.hpp"
 #include <mars/sim/RaySensor.h>
-#include <base/time.h>
+#include <base/Time.hpp>
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
 
