@@ -5,13 +5,13 @@ using_library "mars_gui", :typekit => false
 using_library "mars_app", :typekit => false
 using_library "mars_sim", :typekit => false
 using_library "lib_manager", :typekit => false
+using_library "configmaps", :typekit => false
 
 import_types_from "tasks/MarsControl.hpp"
 import_types_from "jointTypes.hpp"
 import_types_from "poseType.hpp"
 import_types_from "base"
 
-#using_library "actuator_dispatcher"
 
 #Disable default deployments, most of the time stand_alone deployments are useless
 #since the simulation needs plugins within the same deployment to work
@@ -215,7 +215,8 @@ task_context "ForceTorque6DOF" do
 	
 	subclasses "Plugin"
 	
-	output_port("wrenches", "std/vector< /base/samples/Wrench >")
+	output_port("wrenches_deprecated", "std/vector< /base/samples/Wrench >")
+	output_port("wrenches", "/base/samples/Wrenches")
 	
 	property('names', 'std/vector</std/string>').
         doc('Array of names of the ft sensors in the scene file.')
@@ -317,6 +318,13 @@ task_context "IMU" do
     
     property('name', '/std/string', 'imu').
 	doc('name of the node in the scene file from which to get the imu data')
+	
+    operation('estimate_bias').
+        argument('duration', '/uint16_t').
+        returns('/bool').
+        doc("Normally triggers bias estimation on the xsens imu, in simulation thios does nothing") 
+
+	
 end
 
 

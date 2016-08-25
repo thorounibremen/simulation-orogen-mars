@@ -42,7 +42,7 @@ void ForceTorque6DOF::update(double delta_t)
     if(!isRunning()) return;
 
     //normally this should not result in a resize
-	wrenches.resize(mars_ids.size());
+	wrenches_deprecated.resize(mars_ids.size());
 
     for( size_t i=0; i<mars_ids.size(); ++i ){
     	mars::interfaces::BaseSensor* base = control->sensors->getSimSensor(mars_ids[i]);
@@ -50,20 +50,26 @@ void ForceTorque6DOF::update(double delta_t)
     		mars::sim::Joint6DOFSensor* sensor = dynamic_cast<mars::sim::Joint6DOFSensor*>(base);
 			if (sensor){
 				//printf("sensor %s found\n",mars_names[i].c_str());
-				base::samples::Wrench wrench;
+				base::samples::Wrench wrench_deprecated;
 				//mars::utils::Vector is the same typedef as base::Vector3d
 				//so we can use the base::Vector3d directly
-				sensor->getForceData(&wrench.force);
-				sensor->getTorqueData(&wrench.torque);
+				sensor->getForceData(&wrench_deprecated.force);
+				sensor->getTorqueData(&wrench_deprecated.torque);
+				wrench_deprecated.time = getTime();
+				wrenches_deprecated[i] = wrench_deprecated;
 
-				wrench.time = getTime();
-
-				wrenches[i] = wrench;
+				base::Wrench wrench;
+                sensor->getForceData(&wrench.force);
+                sensor->getTorqueData(&wrench.torque);
+                wrenches.time = getTime();
+				wrenches.elements[i] = wrench;
+				wrenches.names[i] = mars_names[i];
 			}
     	}
     }
 
     //TODO: convert to new wrench base type, when available
+    _wrenches_deprecated.write(wrenches_deprecated);
     _wrenches.write(wrenches);
 
 }
