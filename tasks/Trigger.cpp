@@ -1,6 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "Trigger.hpp"
+#include <mars/interfaces/sim/ControlCenter.h>
 
 using namespace mars;
 

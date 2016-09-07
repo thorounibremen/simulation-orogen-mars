@@ -7,6 +7,7 @@
 #include <mars/interfaces/sim/JointManagerInterface.h>
 #include <base/Logging.hpp>
 #include <base/samples/RigidBodyState.hpp>
+#include <mars/interfaces/sim/ControlCenter.h>
 
 using namespace mars;
 

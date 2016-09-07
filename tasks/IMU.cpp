@@ -5,6 +5,7 @@
 #include <mars/interfaces/sim/MotorManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 #include <mars/utils/mathUtils.h>
+#include <mars/interfaces/sim/ControlCenter.h>
 
 using namespace mars;
 
