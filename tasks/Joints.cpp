@@ -165,9 +165,6 @@ void Joints::update(double delta_t)
 
 bool Joints::configureHook()
 {
-    if (! JointsBase::configureHook())
-        return false;
-
     size_t num_joints = _names.value().size();
 
     // test if scaling is valid
@@ -269,8 +266,9 @@ bool Joints::configureHook()
 
     }
 
-
-    return true;
+    //this needs to be called here, or we get a race condition
+    //between the init of the plugin and the filling of mars_ids
+    return JointsBase::configureHook();
 }
 bool Joints::startHook()
 {
