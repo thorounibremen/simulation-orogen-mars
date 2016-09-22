@@ -26,9 +26,13 @@ namespace mars {
     */
    struct Positions
    {
+       Positions(){
+           edit_all = true;
+       }
 	   std::string nodename;
 	   float posx,posy,posz;
 	   float rotx,roty,rotz;
+	   bool edit_all;
    };
 
     struct SimulationProperty

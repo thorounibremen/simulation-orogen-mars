@@ -661,8 +661,14 @@ void Task::move_node(::mars::Positions const & arg)
         nodedata.pos = pos;
         nodedata.rot = newrot;
 
-        nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_POS | mars::interfaces::EDIT_NODE_MOVE_ALL);
-        nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_ROT | mars::interfaces::EDIT_NODE_MOVE_ALL);
+        if (arg.edit_all){
+            nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_POS | mars::interfaces::EDIT_NODE_MOVE_ALL);
+            nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_ROT | mars::interfaces::EDIT_NODE_MOVE_ALL);
+        }else{
+            printf("edit node only %s\n",arg.nodename.c_str());
+            nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_POS);
+            nodes->editNode(&nodedata, mars::interfaces::EDIT_NODE_ROT);
+        }
     }else{
         LOG_ERROR("node '%s' unknown\n", arg.nodename.c_str());
     }
