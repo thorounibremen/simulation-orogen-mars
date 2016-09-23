@@ -19,6 +19,7 @@ Joints::Joints(std::string const& name)
 Joints::Joints(std::string const& name, RTT::ExecutionEngine* engine)
     : JointsBase(name, engine)
 {
+    controlMode = mars::IGNORE;
 }
 
 Joints::~Joints()
@@ -77,9 +78,14 @@ void Joints::update(double delta_t)
 	    if( curCmd.hasPosition() )
             {
                 //set maximum speed that is allowed for turning
-                //if(curCmd.hasSpeed())
-                //    motor->setMaximumVelocity(curCmd.speed);
 
+                if(curCmd.hasSpeed()){
+                    switch (controlMode){
+                    case IGNORE:break;
+                    case MAX_SPEED:motor->setMaximumVelocity(curCmd.speed);break;
+                    //case SPEED_AT_POS: RTT::log(RTT::Error) << "SPEED_AT_POS" << RTT::endlog();break
+                    }
+	            }
                 motor->setValue( conv.toMars( curCmd.position ) );
             }
             else
@@ -266,6 +272,9 @@ bool Joints::configureHook()
         }
 
     }
+
+    controlMode = _controlMode.value();
+
 
     //this needs to be called here, or we get a race condition
     //between the init of the plugin and the filling of mars_ids

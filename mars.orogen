@@ -194,6 +194,8 @@ task_context "Joints" do
     # optional configuration for the rigid_body_states 
     # this module will generate on the 
     property "joint_transform", "base/JointTransformVector"
+    
+    property("controlMode", "/mars/JointPositionAndSpeedControlMode", :IGNORE).doc('sets the how speed is interpreted in case speed and position is set :MAX_SPEED :IGNORE. unsupported: :SPEED_AT_POS')
 
     output_port( "status_samples", "base/samples/Joints" ).
 	doc "status values for the joints"

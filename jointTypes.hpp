@@ -9,6 +9,8 @@
 namespace mars 
 {
 
+enum JointPositionAndSpeedControlMode{MAX_SPEED,IGNORE}; //SPEED_AT_POS still unsupported
+
 struct ParallelKinematic{
 	std::string externalName;
 	std::string internalName1;
