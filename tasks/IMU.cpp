@@ -148,8 +148,10 @@ void IMU::update( double time )
     _orientation_samples.write( rbs );
 
     imusens.time = getTime();
-    imusens.acc = control->nodes->getLinearAcceleration( node_id );
-    imusens.gyro = control->nodes->getAngularVelocity( node_id);
+    // transform acceleration and rotation to IMU frame:
+    imusens.acc  = imuPos.transform.orientation.conjugate() * (control->nodes->getLinearAcceleration( node_id ) - control->sim->getGravity());
+    imusens.gyro = imuPos.transform.orientation.conjugate() * control->nodes->getAngularVelocity( node_id);
+    // TODO add noise?
     _calibrated_sensors.write( imusens );
 
 }
