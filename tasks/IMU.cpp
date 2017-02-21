@@ -112,8 +112,9 @@ void IMU::update( double time )
                                                     Eigen::AngleAxisd(rotation_noise(rnd_generator), Eigen::Vector3d::UnitZ());
             rbs.orientation = orientation_error * rbs.orientation;
         }
-        if(_provide_velocity.get()){
-            rbs.angular_velocity =  rbs.orientation.inverse() * control->nodes->getAngularVelocity( node_id);
+        if(_provide_velocity.get())
+        {
+            rbs.angular_velocity = rbs.orientation.conjugate() * imuNodePtr->getAngularVelocity();
             rbs.cov_angular_velocity = base::Matrix3d::Identity() * std::max(std::pow(angular_velocity_noise.sigma(), 2), 1e-6);
             if( angular_velocity_noise.sigma() > 0.0 )
             {
