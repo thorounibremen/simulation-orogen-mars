@@ -114,7 +114,7 @@ void IMU::update( double time )
         }
         if(_provide_velocity.get())
         {
-            rbs.angular_velocity = rbs.orientation.conjugate() * imuNodePtr->getAngularVelocity();
+            rbs.angular_velocity = rbs.orientation.conjugate() * control->nodes->getAngularVelocity( node_id);
             rbs.cov_angular_velocity = base::Matrix3d::Identity() * std::max(std::pow(angular_velocity_noise.sigma(), 2), 1e-6);
             if( angular_velocity_noise.sigma() > 0.0 )
             {
@@ -149,8 +149,9 @@ void IMU::update( double time )
 
     imusens.time = getTime();
     // transform acceleration and rotation to IMU frame:
-    imusens.acc  = imuPos.transform.orientation.conjugate() * (control->nodes->getLinearAcceleration( node_id ) - control->sim->getGravity());
-    imusens.gyro = imuPos.transform.orientation.conjugate() * control->nodes->getAngularVelocity( node_id);
+    base::Orientation orientation_con = control->nodes->getRotation( node_id ).normalized().conjugate();
+    imusens.acc  = orientation_con * (control->nodes->getLinearAcceleration( node_id ) - control->sim->getGravity());
+    imusens.gyro = orientation_con * control->nodes->getAngularVelocity( node_id);
     // TODO add noise?
     _calibrated_sensors.write( imusens );
 
