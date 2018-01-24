@@ -1,4 +1,5 @@
 # Generated from orogen/lib/orogen/templates/tasks/CMakeLists.txt
+find_package( Boost COMPONENTS filesystem)
 
 include(marsTaskLib)
 ADD_LIBRARY(${MARS_TASKLIB_NAME} SHARED 
@@ -8,6 +9,7 @@ add_dependencies(${MARS_TASKLIB_NAME}
 
 TARGET_LINK_LIBRARIES(${MARS_TASKLIB_NAME}
     ${OrocosRTT_LIBRARIES}
+    ${Boost_FILESYSTEM_LIBRARY}
     ${MARS_TASKLIB_DEPENDENT_LIBRARIES})
 SET_TARGET_PROPERTIES(${MARS_TASKLIB_NAME}
     PROPERTIES LINK_INTERFACE_LIBRARIES "${MARS_TASKLIB_INTERFACE_LIBRARIES}")
