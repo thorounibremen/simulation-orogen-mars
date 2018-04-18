@@ -10,6 +10,7 @@ using_library "configmaps", :typekit => false
 import_types_from "tasks/MarsControl.hpp"
 import_types_from "jointTypes.hpp"
 import_types_from "poseType.hpp"
+import_types_from "objectDetectionTypes.hpp"
 import_types_from "base"
 
 
@@ -336,10 +337,8 @@ task_context "EntityFakeDetection" do
 
     property("frame", "std/string", 'GLOBAL').
         doc("'GLOBAL' for coordinates in world coordinates. Other options not yet defined.")
-		property("max_objects", "/uint16_t", 10).
-        doc("'GLOBAL' for coordinates in world coordinates. Other options not yet defined.")
 
-    output_port('detectionArray', '/mars/EntityFakeDetection/Detection3DArray').
+    output_port('detectionArray', '/mars/Detection3DArray').
         doc 'Puts out the entities in a ROS similar detection format.'
 
     needs_configuration

@@ -8,7 +8,6 @@
 #include <base/Pose.hpp>
 #include <base/Time.hpp>
 #include "objectDetectionTypes.hpp"
-#include "snmesh.h"
 
 
 namespace mars {
@@ -34,10 +33,9 @@ namespace mars {
 	friend class EntityFakeDetectionBase;
 
     protected:
-      std::map<unsigned long, SimEntity*> all_entities;
+      const std::map<unsigned long, sim::SimEntity*>* all_entities;
       unsigned long seq = 0;
       Detection3DArray* detectionArray;
-      unsigned int max_objects = 10;
 
     public:
       virtual void init();
