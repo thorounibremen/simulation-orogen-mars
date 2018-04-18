@@ -42,7 +42,6 @@ void EntityFakeDetection::update(double delta_t)
   // get data from entities
   all_entities = control->entities->getEntities();
   //set general header
-  Detection3DArray* detectionArray = new Detection3DArray(max_objects)
   detectionArray->header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
   detectionArray->header.seq = seq++;
   //generate detections
@@ -90,6 +89,7 @@ bool EntityFakeDetection::startHook()
     return true;
 
     max_objects = _max_objects.get()
+    detectionArray = new Detection3DArray(max_objects);
 }
 void EntityFakeDetection::updateHook()
 {

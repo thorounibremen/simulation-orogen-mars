@@ -7,63 +7,11 @@
 #include <mars/sim/SimEntity.h>
 #include <base/Pose.hpp>
 #include <base/Time.hpp>
+#include "objectDetectionTypes.hpp"
 #include "snmesh.h"
 
 
 namespace mars {
-
-  struct Header {
-    base::Time stamp;
-    unsigned long seq = 0;
-    std::string frame_id = "1";
-  };
-
-  struct PoseWithCovariance{
-    base::pose pose;
-    float[36] covariance = {0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0};
-  };
-
-  struct ObjectHypothesisWithPose {
-    unsigned long id;
-    float score = 1.0;
-    PoseWithCovariance pose;
-  };
-
-  struct BoundingBox3D {
-    base::Pose center;
-    base::Vector3D size;
-  };
-
-  struct PointCloud {
-    base::Time time;
-
-    std::vector<base::Vector3d> points;
-    std::vector<base::Vector4d> colors;
-
-    void init(interfaces:::snmesh mesh) {
-      for (mesh.vertices)
-    }
-  };
-
-  struct Detection3D {
-    Header header;
-    ObjectHypothesisWithPose results[1];
-    BoundingBox3D bbox;
-    PointCloud source_cloud;
-  };
-
-  struct Detection3DArray {
-    Header header;
-    Detection3DArray(unsigned int max_objects) : detections(max_objects) {}
-    std::vector<Detection3D> detections;
-  }
 
     class EntityFakeDetectionPlugin;
 
@@ -88,6 +36,7 @@ namespace mars {
     protected:
       std::map<unsigned long, SimEntity*> all_entities;
       unsigned long seq = 0;
+      Detection3DArray* detectionArray;
       unsigned int max_objects = 10;
 
     public:
