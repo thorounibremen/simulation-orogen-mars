@@ -1,13 +1,13 @@
-/* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
+/* Generated from orogen/lib/orogen/templates/tasks/IMU.hpp */
 
-#ifndef SEntityBoundingBoxLATION_JOINTS_TASK_HPP
-#define SEntityBoundingBoxLATION_JOINTS_TASK_HPP
+#ifndef SEntityFakeDetectionLATION_JOINTS_TASK_HPP
+#define SEntityFakeDetectionLATION_JOINTS_TASK_HPP
 
-#include "mars/EntityBoundingBoxBase.hpp"
-#include <base/commands/EntityBoundingBox.hpp>
+#include "mars/EntityFakeDetectionBase.hpp"
 #include <mars/sim/SimEntity.h>
 #include <base/Pose.hpp>
 #include <base/Time.hpp>
+#include "snmesh.h"
 
 
 namespace mars {
@@ -27,7 +27,7 @@ namespace mars {
                             0,0,0,0,0,0,0,0,
                             0,0,0,0,0,0,0,0,
                             0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0,};
+                            0,0,0,0,0,0,0,0};
   };
 
   struct ObjectHypothesisWithPose {
@@ -41,21 +41,33 @@ namespace mars {
     base::Vector3D size;
   };
 
+  struct PointCloud {
+    base::Time time;
+
+    std::vector<base::Vector3d> points;
+    std::vector<base::Vector4d> colors;
+
+    void init(interfaces:::snmesh mesh) {
+      for (mesh.vertices)
+    }
+  };
+
   struct Detection3D {
     Header header;
     ObjectHypothesisWithPose results[1];
     BoundingBox3D bbox;
-    //PointCloud source_cloud TODO
+    PointCloud source_cloud;
   };
 
   struct Detection3DArray {
     Header header;
-    Detection3D detections[20];
+    Detection3DArray(unsigned int max_objects) : detections(max_objects) {}
+    std::vector<Detection3D> detections;
   }
 
-    class EntityBoundingBoxPlugin;
+    class EntityFakeDetectionPlugin;
 
-    /*! \class EntityBoundingBox
+    /*! \class EntityFakeDetection
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -64,39 +76,39 @@ namespace mars {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','mars::EntityBoundingBox')
+         task('custom_task_name','mars::EntityFakeDetection')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument.
      */
-    class EntityBoundingBox : public EntityBoundingBoxBase
+    class EntityFakeDetection : public EntityFakeDetectionBase
     {
-	friend class EntityBoundingBoxBase;
+	friend class EntityFakeDetectionBase;
 
     protected:
       std::map<unsigned long, SimEntity*> all_entities;
-      Detection3DArray detectionArray;
       unsigned long seq = 0;
+      unsigned int max_objects = 10;
 
     public:
       virtual void init();
       virtual void update(double delta_t);
-      /** TaskContext constructor for EntityBoundingBox
+      /** TaskContext constructor for EntityFakeDetection
        * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
        * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
        */
-      EntityBoundingBox(std::string const& name = "mars::EntityBoundingBox");
+      EntityFakeDetection(std::string const& name = "mars::EntityFakeDetection");
 
-      /** TaskContext constructor for EntityBoundingBox
+      /** TaskContext constructor for EntityFakeDetection
        * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
        * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
        *
        */
-      EntityBoundingBox(std::string const& name, RTT::ExecutionEngine* engine);
+      EntityFakeDetection(std::string const& name, RTT::ExecutionEngine* engine);
 
-      /** Default deconstructor of EntityBoundingBox
+      /** Default deconstructor of EntityFakeDetection
        */
-      ~EntityBoundingBox();
+      ~EntityFakeDetection();
 
       /** This hook is called by Orocos when the state machine transitions
        * from PreOperational to Stopped. If it returns false, then the
