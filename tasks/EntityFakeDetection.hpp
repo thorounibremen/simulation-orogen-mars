@@ -1,7 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/IMU.hpp */
 
-#ifndef SEntityFakeDetectionLATION_JOINTS_TASK_HPP
-#define SEntityFakeDetectionLATION_JOINTS_TASK_HPP
+#ifndef SIMULATION_ENTITYFAKEDETECTION_TASK_HPP
+#define SIMULATION_ENTITYFAKEDETECTION_TASK_HPP
 
 #include "mars/EntityFakeDetectionBase.hpp"
 #include <mars/sim/SimEntity.h>
@@ -71,7 +71,7 @@ namespace mars {
        end
        \endverbatim
        */
-      // bool configureHook();
+      bool configureHook();
 
       /** This hook is called by Orocos when the state machine transitions
        * from Stopped to Running. If it returns false, then the component will

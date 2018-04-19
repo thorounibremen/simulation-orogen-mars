@@ -4,10 +4,10 @@
 #include "Plugin.hpp"
 #include <mars/interfaces/sim/EntityManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
-#include <mars/interfaces/sim/SimulatorInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 #include <mars/sim/SimEntity.h>
-#include <mars/utils/mathUtils.h>
+
+#include <base-logging/Logging.hpp>
 
 namespace mars {
 
@@ -35,13 +35,14 @@ namespace mars {
 
   void EntityFakeDetection::update(double delta_t)
   {
+
     if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
 
     /* todo
     //get transformation from inputs
     //get camera position
     */
-
+    LOG_DEBUG_S << "EntityFakeDetection" << "update detections\n";
     //set general header
     detectionArray->header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
     detectionArray->header.seq = seq++;
@@ -49,12 +50,14 @@ namespace mars {
     unsigned int i = 0;
     for (std::map<unsigned long, sim::SimEntity*>::const_iterator iter = all_entities->begin();
          iter != all_entities->end(); ++iter) {
+      LOG_DEBUG_S << "EntityFakeDetection" << "detecting object "<<iter->second->getName()<<"\n";
       //Header
       detectionArray->detections[i].header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
       detectionArray->detections[i].header.seq = seq++;
       //ObjectHypothesisWithPose
       unsigned int rootId = iter->second->getRootestId("collision"); //returns the highest node with collision in the name
-      detectionArray->detections[i].results[0].id = iter->first;
+      detectionArray->detections[i].results[0].id = (iter->first);
+      detectionArray->detections[i].results[0].type = iter->second->getName();
       detectionArray->detections[i].results[0].pose.pose.position = control->nodes->getPosition(rootId);
       detectionArray->detections[i].results[0].pose.pose.orientation = control->nodes->getRotation(rootId);
       //BoundingBox3D
@@ -68,7 +71,6 @@ namespace mars {
       //detectionArray->detections[i].source_cloud.points = control->nodes->getFullNode(rootId).mesh.vertices;// REVIEW+
       i++;
     }
-
     //write to rock outputs
     _detectionArray.write(*detectionArray);
 
@@ -78,22 +80,23 @@ namespace mars {
   // hooks defined by Orocos::RTT. See EntityFakeDetection.hpp for more detailed
   // documentation about them.
 
-  // bool EntityFakeDetection::configureHook()
-  // {
-  //     if (! EntityFakeDetectionBase::configureHook())
-  //         return false;
-  //     return true;
-  // }
+  bool EntityFakeDetection::configureHook()
+  {
+        if (! EntityFakeDetectionBase::configureHook())
+      return false;
+    return true;
+  }
+
   bool EntityFakeDetection::startHook()
   {
       if (! EntityFakeDetectionBase::startHook())
           return false;
-      return true;
 
       // get data from entities
       all_entities = control->entities->subscribeToEntityCreation(nullptr);
       detectionArray = new Detection3DArray(all_entities->size());
 
+      return true;
   }
 
   void EntityFakeDetection::updateHook()

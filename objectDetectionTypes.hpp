@@ -29,6 +29,7 @@ namespace mars
 	struct ObjectHypothesisWithPose {
 		long int id;
 		float score = 1.0;
+		std::string type;
 		PoseWithCovariance pose;
 	};
 
