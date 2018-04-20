@@ -7,8 +7,6 @@
 #include <mars/interfaces/sim/ControlCenter.h>
 #include <mars/sim/SimEntity.h>
 
-#include <base-logging/Logging.hpp>
-
 namespace mars {
 
   using namespace interfaces;
@@ -42,7 +40,6 @@ namespace mars {
     //get transformation from inputs
     //get camera position
     */
-    LOG_DEBUG_S << "EntityFakeDetection" << "update detections\n";
     //set general header
     detectionArray->header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
     detectionArray->header.seq = seq++;
@@ -50,7 +47,6 @@ namespace mars {
     unsigned int i = 0;
     for (std::map<unsigned long, sim::SimEntity*>::const_iterator iter = all_entities->begin();
          iter != all_entities->end(); ++iter) {
-      LOG_DEBUG_S << "EntityFakeDetection" << "detecting object "<<iter->second->getName()<<"\n";
       //Header
       detectionArray->detections[i].header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
       detectionArray->detections[i].header.seq = seq++;
