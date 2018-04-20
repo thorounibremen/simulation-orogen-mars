@@ -28,48 +28,10 @@ namespace mars {
 
   void EntityFakeDetection::init()
   {
-
   }
 
   void EntityFakeDetection::update(double delta_t)
   {
-
-    if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
-
-    /* todo
-    //get transformation from inputs
-    //get camera position
-    */
-    //set general header
-    detectionArray->header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
-    detectionArray->header.seq = seq++;
-    //generate detections
-    unsigned int i = 0;
-    for (std::map<unsigned long, sim::SimEntity*>::const_iterator iter = all_entities->begin();
-         iter != all_entities->end(); ++iter) {
-      //Header
-      detectionArray->detections[i].header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
-      detectionArray->detections[i].header.seq = seq++;
-      //ObjectHypothesisWithPose
-      unsigned int rootId = iter->second->getRootestId("collision"); //returns the highest node with collision in the name
-      detectionArray->detections[i].results[0].id = (iter->first);
-      detectionArray->detections[i].results[0].type = iter->second->getName();
-      detectionArray->detections[i].results[0].pose.pose.position = control->nodes->getPosition(rootId);
-      detectionArray->detections[i].results[0].pose.pose.orientation = control->nodes->getRotation(rootId);
-      //BoundingBox3D
-      iter->second->getBoundingBox(detectionArray->detections[i].bbox.center.position,
-                                   detectionArray->detections[i].bbox.center.orientation,
-                                   detectionArray->detections[i].bbox.size);
-      //PointCloud
-      detectionArray->detections[i].source_cloud.header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
-      detectionArray->detections[i].source_cloud.header.seq = seq++;
-      detectionArray->detections[i].source_cloud.width = control->nodes->getFullNode(rootId).mesh.vertexcount;
-      //detectionArray->detections[i].source_cloud.points = control->nodes->getFullNode(rootId).mesh.vertices;// REVIEW+
-      i++;
-    }
-    //write to rock outputs
-    _detectionArray.write(*detectionArray);
-
   }
 
   /// The following lines are template definitions for the various state machine
@@ -98,6 +60,41 @@ namespace mars {
   void EntityFakeDetection::updateHook()
   {
       EntityFakeDetectionBase::updateHook();
+
+      if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
+      /* todo
+      //get transformation from inputs
+      //get camera position
+      */
+      //set general header
+      detectionArray->header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
+      detectionArray->header.seq = seq++;
+      //generate detections
+      unsigned int i = 0;
+      for (std::map<unsigned long, sim::SimEntity*>::const_iterator iter = all_entities->begin();
+           iter != all_entities->end(); ++iter) {
+        //Header
+        detectionArray->detections[i].header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
+        detectionArray->detections[i].header.seq = seq++;
+        //ObjectHypothesisWithPose
+        unsigned int rootId = iter->second->getRootestId("collision"); //returns the highest node with collision in the name
+        detectionArray->detections[i].results[0].id = (iter->first);
+        detectionArray->detections[i].results[0].type = iter->second->getName();
+        detectionArray->detections[i].results[0].pose.pose.position = control->nodes->getPosition(rootId);
+        detectionArray->detections[i].results[0].pose.pose.orientation = control->nodes->getRotation(rootId);
+        //BoundingBox3D
+        iter->second->getBoundingBox(detectionArray->detections[i].bbox.center.position,
+                                     detectionArray->detections[i].bbox.center.orientation,
+                                     detectionArray->detections[i].bbox.size);
+        //PointCloud
+        detectionArray->detections[i].source_cloud.header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
+        detectionArray->detections[i].source_cloud.header.seq = seq++;
+        detectionArray->detections[i].source_cloud.width = control->nodes->getFullNode(rootId).mesh.vertexcount;
+        //detectionArray->detections[i].source_cloud.points = control->nodes->getFullNode(rootId).mesh.vertices;// REVIEW+
+        i++;
+      }
+      //write to rock outputs
+      _detectionArray.write(*detectionArray);
   }
   // void EntityFakeDetection::errorHook()
   // {
