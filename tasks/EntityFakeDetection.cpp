@@ -61,9 +61,9 @@ namespace mars {
       detectionArray->detections[i].results[0].pose.pose.position = control->nodes->getPosition(rootId);
       detectionArray->detections[i].results[0].pose.pose.orientation = control->nodes->getRotation(rootId);
       //BoundingBox3D
-      detectionArray->detections[i].bbox.center.position = detectionArray->detections[i].results[0].pose.pose.position;
-      detectionArray->detections[i].bbox.center.orientation = detectionArray->detections[i].results[0].pose.pose.orientation;
-      detectionArray->detections[i].bbox.size = control->nodes->getFullNode(rootId).ext;
+      iter->second->getBoundingBox(detectionArray->detections[i].bbox.center.position,
+                                   detectionArray->detections[i].bbox.center.orientation,
+                                   detectionArray->detections[i].bbox.size);
       //PointCloud
       detectionArray->detections[i].source_cloud.header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
       detectionArray->detections[i].source_cloud.header.seq = seq++;
