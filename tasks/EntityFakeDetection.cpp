@@ -4,8 +4,11 @@
 #include "Plugin.hpp"
 #include <mars/interfaces/sim/EntityManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
+#include <mars/interfaces/sim/SensorManagerInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 #include <mars/sim/SimEntity.h>
+
+#include <base/Logging.hpp>
 
 namespace mars {
 
@@ -40,8 +43,20 @@ namespace mars {
 
   bool EntityFakeDetection::configureHook()
   {
-        if (! EntityFakeDetectionBase::configureHook())
+    if (! EntityFakeDetectionBase::configureHook())
       return false;
+
+    frame = FrameId(_frame.get());
+    visible_if = VisibleIf(_visible_if.get());
+    use_camera = VisibleIf(_use_camera.get());
+    camera_id = VisibleIf(_camera_id.get());
+
+    if (use_camera && !control->sensors->exists(camera_id)) {
+      frame = FrameId::GLOBAL;
+      use_camera = false;
+      LOG_ERROR_S << "EntityFakeDetection" << "Camera sensor with the given id not found!\n";
+    }
+
     return true;
   }
 
@@ -51,8 +66,11 @@ namespace mars {
           return false;
 
       // get data from entities
-      all_entities = control->entities->subscribeToEntityCreation(nullptr);
-      detectionArray = new Detection3DArray(all_entities->size());
+      /*if (use_camera) {
+        visible_entities //TODO get entities from camera sensor
+      }*/
+      visible_entities = control->entities->subscribeToEntityCreation(nullptr);
+      detectionArray = new Detection3DArray(visible_entities->size());
 
       return true;
   }
@@ -62,17 +80,17 @@ namespace mars {
       EntityFakeDetectionBase::updateHook();
 
       if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
-      /* todo
-      //get transformation from inputs
-      //get camera position
+
+      /* TODO add switch depending on frame to apply the respective transformations
       */
+
       //set general header
       detectionArray->header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
       detectionArray->header.seq = seq++;
       //generate detections
       unsigned int i = 0;
-      for (std::map<unsigned long, sim::SimEntity*>::const_iterator iter = all_entities->begin();
-           iter != all_entities->end(); ++iter) {
+      for (std::map<unsigned long, sim::SimEntity*>::const_iterator iter = visible_entities->begin();
+           iter != visible_entities->end(); ++iter) {
         //Header
         detectionArray->detections[i].header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
         detectionArray->detections[i].header.seq = seq++;
@@ -93,6 +111,7 @@ namespace mars {
         //detectionArray->detections[i].source_cloud.points = control->nodes->getFullNode(rootId).mesh.vertices;// REVIEW+
         i++;
       }
+
       //write to rock outputs
       _detectionArray.write(*detectionArray);
   }

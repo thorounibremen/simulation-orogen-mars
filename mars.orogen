@@ -335,8 +335,17 @@ end
 task_context "EntityFakeDetection" do
     subclasses "Plugin"
 
-    property("frame", "std/string", 'GLOBAL').
-        doc("'GLOBAL' for coordinates in world coordinates. Other options not yet defined.")
+    property("frame", "/uint16_t", 0).
+        doc("0 for coordinates in world frame. 1 for coordinates in camera frame.")
+		property("visible_if", "/uint16_t", 3).
+        doc("'CENTER'         0  The center of the bounding box has to be visible to list it\n
+						 'VERTEX_OF_BBOX' 1 At least one vertex of the bounding box has to be visible to list it\n
+						 'EVERYTHING'     2 Everxthing of the entity has to be visible to list it\n
+						 'NOTHING'        3 Nothing of the entity has to be visible to list it")
+		property("use_camera", "/bool", false).
+		   doc("Whether the camera should be used.")
+		property("camera_id", "/uint16_t", false).
+		   doc("The sensor id of the camera.")
 
     output_port('detectionArray', '/mars/Detection3DArray').
         doc 'Puts out the entities in a ROS similar detection format.'

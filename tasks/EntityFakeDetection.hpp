@@ -12,30 +12,46 @@
 
 namespace mars {
 
-    class EntityFakeDetectionPlugin;
+  class EntityFakeDetectionPlugin;
 
-    /*! \class EntityFakeDetection
-     * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
-     * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
-     * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     *
-     * \details
-     * The name of a TaskContext is primarily defined via:
-     \verbatim
-     deployment 'deployment_name'
-         task('custom_task_name','mars::EntityFakeDetection')
-     end
-     \endverbatim
-     *  It can be dynamically adapted when the deployment is called with a prefix argument.
-     */
-    class EntityFakeDetection : public EntityFakeDetectionBase
-    {
-	friend class EntityFakeDetectionBase;
+  /*! \class EntityFakeDetection
+   * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
+   * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
+   * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
+   *
+   * \details
+   * The name of a TaskContext is primarily defined via:
+   \verbatim
+   deployment 'deployment_name'
+       task('custom_task_name','mars::EntityFakeDetection')
+   end
+   \endverbatim
+   *  It can be dynamically adapted when the deployment is called with a prefix argument.
+   */
+  class EntityFakeDetection : public EntityFakeDetectionBase
+  {
+    friend class EntityFakeDetectionBase;
 
     protected:
-      const std::map<unsigned long, sim::SimEntity*>* all_entities;
+      enum FrameId {
+        GLOBAL,
+        CAMERA
+      };
+
+      enum VisibleIf {
+        CENTER,
+        VERTEX_OF_BBOX,
+        EVERYTHING,
+        NOTHING
+      };
+
+      const std::map<unsigned long, sim::SimEntity*>* visible_entities;
       unsigned long seq = 0;
       Detection3DArray* detectionArray;
+      FrameId frame;
+      VisibleIf visible_if;
+      bool use_camera;
+      bool camera_id;
 
     public:
       virtual void init();
