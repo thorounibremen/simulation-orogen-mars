@@ -34,24 +34,18 @@ namespace mars {
 
     protected:
       enum FrameId {
+	NO_FRAME,
         GLOBAL,
         CAMERA
       };
 
-      enum VisibleIf {
-        CENTER,
-        VERTEX_OF_BBOX,
-        EVERYTHING,
-        NOTHING
-      };
 
-      const std::map<unsigned long, sim::SimEntity*>* visible_entities;
+      std::map<unsigned long, sim::SimEntity*> visible_entities;
       unsigned long seq = 0;
       Detection3DArray* detectionArray;
-      FrameId frame;
-      VisibleIf visible_if;
-      bool use_camera;
-      bool camera_id;
+      FrameId frame_id;
+      mars::sim::ViewMode visible_if;
+      bool camera_available, use_camera;
 
     public:
       virtual void init();
@@ -130,6 +124,7 @@ namespace mars {
        * before calling start() again.
        */
       // void cleanupHook();
+      void getData();
     };
 }
 
