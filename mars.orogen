@@ -337,11 +337,8 @@ task_context "EntityFakeDetection" do
 
     property("frame_id", "/uint16_t", 1).
         doc("0 for coordinates in world frame. 1 for coordinates in camera frame.")
-    property("visible_if", "/uint16_t", 3).
-        doc("'CENTER'         0  The center of the bounding box has to be visible to list it\n
-						 'VERTEX_OF_BBOX' 1 At least one vertex of the bounding box has to be visible to list it\n
-						 'EVERYTHING'     2 Everxthing of the entity has to be visible to list it\n
-						 'NOTHING'        3 Nothing of the entity has to be visible to list it")
+    property("minVisibleVertices", "/uint16_t", 5).
+        doc("Number of vertices that have to be in the viewing frustum to be counted as seen. Center is counted as vertex.")
     property("use_camera", "/bool", false).
 		   doc("Whether the camera should be used.")
 

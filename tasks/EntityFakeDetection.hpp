@@ -34,17 +34,16 @@ namespace mars {
 
     protected:
       enum FrameId {
-	NO_FRAME,
+	      NO_FRAME,
         GLOBAL,
         CAMERA
       };
-
 
       std::map<unsigned long, sim::SimEntity*> visible_entities;
       unsigned long seq = 0;
       Detection3DArray* detectionArray;
       FrameId frame_id;
-      mars::sim::ViewMode visible_if;
+      unsigned int minVisibleVertices;
       bool camera_available, use_camera;
 
     public:

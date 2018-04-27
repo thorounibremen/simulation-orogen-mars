@@ -47,7 +47,7 @@ namespace mars {
       return false;
 
     frame_id = FrameId(_frame_id.get());
-    visible_if = mars::sim::ViewMode(_visible_if.get());
+    minVisibleVertices = _minVisibleVertices.get();
     use_camera = (bool) _use_camera.get();
 
     if (use_camera == false) {
@@ -87,7 +87,8 @@ namespace mars {
       LOG_DEBUG_S << "EntityFakeDetection"<< "Running updateHook!";
 
       if (use_camera == true) { // then fill the buffer only with the entities seen by the camera
-        camera->getEntitiesInView(visible_entities, visible_if);
+        LOG_DEBUG_S << "0";
+        camera->getEntitiesInView(visible_entities, minVisibleVertices);
         LOG_DEBUG_S << "1";
         if (visible_entities.size()!=detectionArray->detections.size()) {
           LOG_DEBUG_S << "2";
@@ -98,24 +99,25 @@ namespace mars {
         }
       } else {
         frame_id = FrameId::GLOBAL;
-        visible_if = mars::sim::ViewMode::NOTHING;
+        minVisibleVertices = 0;
       }
 
-      LOG_DEBUG_S<<"EntityFakeDetection"<< "got entities updateHook()";
+      LOG_DEBUG_S<<"EntityFakeDetection"<< "got " << visible_entities.size() << " entities updateHook()";
       //set general header
       detectionArray->header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
       detectionArray->header.seq = seq++;
-      detectionArray->header.frame_id = frame_id;
+      detectionArray->header.frame_id = (int) frame_id;
       //generate detections
       utils::Vector center;
       utils::Quaternion rotation;
       unsigned int i = 0;
       for (std::map<unsigned long, sim::SimEntity*>::iterator iter = visible_entities.begin();
           iter != visible_entities.end(); ++iter) {
+        LOG_DEBUG_S << "detecting";
         //Header
         detectionArray->detections[i].header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
         detectionArray->detections[i].header.seq = seq++;
-        detectionArray->detections[i].header.frame_id = frame_id;
+        detectionArray->detections[i].header.frame_id = (int) frame_id;
         //BoundingBox3D
         iter->second->getBoundingBox(center,
                                      rotation,
@@ -130,7 +132,7 @@ namespace mars {
         //PointCloud
         detectionArray->detections[i].source_cloud.header.stamp = base::Time::fromMilliseconds(control->sim->getTime());
         detectionArray->detections[i].source_cloud.header.seq = seq++;
-        detectionArray->detections[i].source_cloud.header.frame_id = frame_id;
+        detectionArray->detections[i].source_cloud.header.frame_id = (int) frame_id;
         //TODO detectionArray->detections[i].source_cloud.width = control->nodes->getFullNode(rootId).mesh.vertexcount;
         //detectionArray->detections[i].source_cloud.points = control->nodes->getFullNode(rootId).mesh.vertices;// REVIEW+
         i++;
