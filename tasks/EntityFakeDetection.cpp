@@ -147,7 +147,11 @@ namespace mars {
   // }
   void EntityFakeDetection::stopHook()
   {
-      EntityFakeDetectionBase::stopHook();
+      if (use_camera == true) {
+        EntityFakeDetectionBase::stopHook();
+      }
+      mars::Plugin::stopHook();
+
   }
   // void EntityFakeDetection::cleanupHook()
   // {
