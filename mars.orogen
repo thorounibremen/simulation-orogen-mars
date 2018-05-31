@@ -345,17 +345,9 @@ task_context "RobotTeleportation" do
         doc 'Puts the robot to the given rotation.'
     input_port('position_id', '/uint16_t').
         doc 'Puts the robot to the given preconfigured position.'
-		input_port('anchor_to_world', '/bool').
+		input_port('anchor', '/bool', false).
         doc 'Fixes the robot at the given position.'
-		input_port('trigger_teleport', '/bool').
-        doc 'If set true the given position is applied.'
 
-		output_port('set_position', '/base/Vector3d').
-        doc 'The set position.'
-		output_port('set_rotation', '/base/Quaterniond').
-        doc 'The set rotation.'
-		output_port('anchored', '/bool').
-        doc 'The current anchor state.'
     needs_configuration
 
 end

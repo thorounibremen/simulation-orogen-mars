@@ -33,27 +33,27 @@ namespace mars {
     friend class RobotTeleportationBase;
 
     protected:
-      std::string robot_name, anchor;
+      std::string robot_name;
       sim::SimEntity* robot_entity;
-      NodeId robot_root;
       unsigned int pos_mode;
-      short unsigned int curr_id;
-      bool anchored;
-      configmaps::ConfigMap config, cmap;
+      configmaps::ConfigMap cmap;
       JointData joint;
       JointId joint_id;
 
-      //targets must have keys list[3] position, bool anchored the id follows from the order of the list
+      //input
+      short unsigned int curr_id;
+      utils::Vector pos;
+      utils::Quaternion rot;
+      bool anchor;
+
       struct Target {
         unsigned int id;
-        bool anchored;
-        utils::Vector pos;
-        utils::Quaternion rot;
+        configmaps::ConfigMap cfg;
       };
 
+      Target target;
       std::vector<Target> targets;
-      Target target, current_state;
-      bool triggered;
+
 
     public:
       virtual void init();
