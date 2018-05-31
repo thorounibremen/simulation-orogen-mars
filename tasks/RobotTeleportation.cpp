@@ -117,9 +117,8 @@ namespace mars {
         } else {
           target.cfg["anchor"] = "none";
         }
-        fprintf(stderr, "anchor %s\n", target.cfg["anchor"].c_str());
       }
-      robot_entity->setInitialPose(false, &target.cfg);
+      robot_entity->setInitialPose(robot_entity->hasAnchorJoint(), &target.cfg);
 
       LOG_DEBUG_S << "RobotTeleportation"<< "Robot teleportation done!";
     }
