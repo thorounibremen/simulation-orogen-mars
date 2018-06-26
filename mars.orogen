@@ -375,8 +375,8 @@ end
 task_context "ObjectHighlighter" do
     subclasses "Plugin"
 
-    input_port('object_id', '/uint16_t').
-        doc 'Highlights object with given id'
+    input_port('obj_id', '/uint16_t').
+        doc 'Highlights entity with given id'
 
     needs_configuration
 end

@@ -47,7 +47,7 @@ namespace mars {
   bool ObjectHighlighter::configureHook()
   {
     if (! ObjectHighlighterBase::configureHook()) return false;
-    
+
     return true;
   }
 
@@ -64,17 +64,26 @@ namespace mars {
 
     //if triggered load new position
     short unsigned int old_id = object_id;
-    if (_object_id.readNewest(object_id) == RTT::NewData)
+    if (_obj_id.readNewest(object_id) == RTT::NewData)
     {
       LOG_DEBUG_S << "ObjectHighlighter"<< "updateHook triggered!";
-      
-      mars::interfaces::GraphicsManagerInterface* graphics = control->graphics;
-      
-      if (graphics) {
-        graphics->setDrawObjectSelected(old_id, false);
-        graphics->setDrawObjectSelected(object_id, true);
+      std::map<unsigned long, std::string> old_ids, new_ids;
+      if (old_id != 0) {
+        old_entity = control->entities->getEntity(old_id);
+        old_ids = old_entity->getAllNodes();
+        for (auto it=old_ids.begin(); it!=old_ids.end(); ++it) {
+          control->graphics->setDrawObjectSelected(control->nodes->getDrawID(it->first), false);
+        }
       }
-            
+      if (object_id != 0) {
+        new_entity = control->entities->getEntity(object_id);
+        new_ids = new_entity->getAllNodes();
+        for (auto it=new_ids.begin(); it!=new_ids.end(); ++it) {
+          control->graphics->setDrawObjectSelected(control->nodes->getDrawID(it->first), true);
+          LOG_DEBUG_S<<"highlighting node "<<it->first<<" of entity "<< object_id;
+        }
+      }
+
       LOG_DEBUG_S << "ObjectHighlighter"<< "Object highlighting done!";
     }
   }

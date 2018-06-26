@@ -34,14 +34,15 @@ namespace mars {
 
     protected:
       std::string robot_name;
-      sim::SimEntity* robot_entity;
+      sim::SimEntity* old_entity;
+      sim::SimEntity* new_entity;
       unsigned int pos_mode;
       configmaps::ConfigMap cmap;
       JointData joint;
       JointId joint_id;
 
       //input
-      short unsigned int object_id;
+      short unsigned int object_id = 0;
 
     public:
       virtual void init();
