@@ -366,6 +366,7 @@ task_context "RobotTeleportation" do
         doc 'Puts the robot to the given preconfigured position.'
     input_port('anchor', '/bool', false).
         doc 'Fixes the robot at the given position.'
+	port_driven
 
     needs_configuration
 
@@ -377,6 +378,7 @@ task_context "ObjectHighlighter" do
 
     input_port('obj_id', '/uint16_t').
         doc 'Highlights entity with given id'
+	port_driven
 
     needs_configuration
 end
