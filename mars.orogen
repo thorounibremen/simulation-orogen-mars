@@ -10,6 +10,7 @@ using_library "configmaps", :typekit => false
 import_types_from "tasks/MarsControl.hpp"
 import_types_from "jointTypes.hpp"
 import_types_from "poseType.hpp"
+import_types_from "objectDetectionTypes.hpp"
 import_types_from "base"
 
 
@@ -25,7 +26,7 @@ import_types_from "base"
 #         subclasses 'mars::Task'
 # end
 #
-# Pay attention that all these tasks have to be started within 
+# Pay attention that all these tasks have to be started within
 # one deployment to be able to share their static resources.
 task_context "Task" do
 	needs_configuration
@@ -107,7 +108,7 @@ task_context "Task" do
         #This operation moves a node to a specific position, simpliar to the positions property but can be used during runtime
         operation("move_node").
             argument("arg","/mars/Positions")
-        
+
         output_port('time', 'double')
         output_port('simulated_time', '/base/Time')
 
@@ -141,7 +142,7 @@ end
 task_context "DepthCamera" do
     subclasses "CameraPlugin"
     needs_configuration
-    
+
     output_port 'distance_image', ro_ptr('base::samples::DistanceImage')
 end
 
@@ -172,7 +173,7 @@ task_context "HighResRangeFinder" do
         doc('Adds another camera which will be used for pointcloud creation').
         returns("bool").
         argument('name', 'std::string', "Name of the camera within the scene file").
-        argument('orientation', 'double', "To get a full 360 degree view you have to add four 90-cameras with 0, 90, 180 and 270") 
+        argument('orientation', 'double', "To get a full 360 degree view you have to add four 90-cameras with 0, 90, 180 and 270")
 
     output_port('pointcloud', '/base/samples/Pointcloud').
         doc 'Created by using the distance image of the DepthCamera'
@@ -191,10 +192,10 @@ task_context "Joints" do
 	doc('Optional array of scale values that are applied to the mars joint values. Needs to be empty or the same size as names.')
     property('offset', 'std/vector<double>').
 	doc('Optional array of offset values that added to the scaled mars joint values. Needs to be empty or the same size as names.')
-    # optional configuration for the rigid_body_states 
-    # this module will generate on the 
+    # optional configuration for the rigid_body_states
+    # this module will generate on the
     property "joint_transform", "base/JointTransformVector"
-    
+
     property("controlMode", "/mars/JointPositionAndSpeedControlMode", :IGNORE).doc('sets the how speed is interpreted in case speed and position is set :MAX_SPEED :IGNORE. unsupported: :SPEED_AT_POS')
 
     output_port( "status_samples", "base/samples/Joints" ).
@@ -214,27 +215,27 @@ task_context "Joints" do
 end
 
 task_context "ForceTorque6DOF" do
-	
+
 	subclasses "Plugin"
-	
+
 	output_port("wrenches_deprecated", "std/vector< /base/samples/Wrench >")
 	output_port("wrenches", "/base/samples/Wrenches")
-	
+
 	property('names', 'std/vector</std/string>').
         doc('Array of names of the ft sensors in the scene file.')
         property('name_remap', 'std/vector</std/string>').
             doc('If this array is set the sensors will be renamed for the external interface')
-	
+
 end
 
 # This plugin can be used to "trigger" a simlation cycle,
-# it can be useful for operating mars with more-than-realtime 
+# it can be useful for operating mars with more-than-realtime
 # mode and use the task_scheduler for a fixed execution sequence
 task_context "Trigger" do
     subclasses "Plugin"
 
     property "do_step","bool",false
-    doc("This components triggeres the mars simulation cycle if the update-hook is called, 
+    doc("This components triggeres the mars simulation cycle if the update-hook is called,
         this is useful if an sequence between componentes is needed, like it is possible with the
         trigger_component")
 end
@@ -274,10 +275,10 @@ task_context "RotatingLaserRangeFinder" do
 
     property('name', '/std/string', 'unknown_ray_sensor').
 	    doc('Name of the RotatingRaySensor in the scene file')
-	    
+
     property('min_range', 'double', 0.0).
         doc("Minimum valid range of the laser range finder")
-        
+
     property('max_range', 'double', 20.0).
         doc("Maximum valid range of the laser range finder")
 
@@ -287,7 +288,7 @@ end
 
 task_context "IMU" do
     subclasses "Plugin"
-    
+
     property("provide_position", "/bool",false).
         doc("Set to true is this Sensor should output position readings")
 
@@ -303,7 +304,7 @@ task_context "IMU" do
     property("world_frame", "std/string", "world").
 	doc "The name of the world frame."
     property('rotate_node_relative', '/std/vector<double>' ).
-	doc('if the robot is moved my mars (yaml), rotation of the IMU may be wrong and can be set here (in degrees)')	
+	doc('if the robot is moved my mars (yaml), rotation of the IMU may be wrong and can be set here (in degrees)')
     property("position_sigma", "double", 0.0).
 	doc "Standard deviation of the position, that will be applied to the measurement."
     property("orientation_sigma", "double", 0.0).
@@ -317,18 +318,69 @@ task_context "IMU" do
         doc 'provides timestamped IMUReading samples containing the orientation estimate as reported by the IMU.'
     output_port('calibrated_sensors', '/base/samples/IMUSensors').
         doc 'provides timestamped IMUReading samples containing the calibrated sensor readings.'
-    
+
     needs_configuration
-    
+
     property('name', '/std/string', 'imu').
 	doc('name of the node in the scene file from which to get the imu data')
-	
+
     operation('estimate_bias').
         argument('duration', '/uint16_t').
         returns('/bool').
-        doc("Normally triggers bias estimation on the xsens imu, in simulation thios does nothing") 
+        doc("Normally triggers bias estimation on the xsens imu, in simulation thios does nothing")
 
-	
+
+end
+
+
+task_context "EntityFakeDetection" do
+    subclasses "CameraPlugin"
+
+    property("frame_id", "/uint16_t", 1).
+        doc("0 for coordinates in world frame. 1 for coordinates in camera frame.")
+    property("minVisibleVertices", "/uint16_t", 5).
+        doc("Number of vertices that have to be in the viewing frustum to be counted as seen. Center is counted as vertex.")
+    property("use_camera", "/bool", false).
+		   doc("Whether the camera should be used.")
+
+    output_port('detectionArray', '/mars/Detection3DArray').
+        doc 'Puts out the entities in a ROS similar detection format.'
+
+    needs_configuration
+
+end
+
+task_context "RobotTeleportation" do
+    subclasses "Plugin"
+
+    property("robot_name", "/std/string").
+        doc("Name of the robot.")
+    property("position_mode", "/uint16_t", 1).
+        doc("0 for manual: needs coordinates in world frame. 1 for configured: needs id of preconfigured coordinates.")
+
+    input_port('position', '/base/Vector3d').
+        doc 'Puts the robot to the given position.'
+    input_port('rotation', '/base/Quaterniond').
+        doc 'Puts the robot to the given rotation.'
+    input_port('position_id', '/uint16_t').
+        doc 'Puts the robot to the given preconfigured position.'
+    input_port('anchor', '/bool', false).
+        doc 'Fixes the robot at the given position.'
+	port_driven
+
+    needs_configuration
+
+end
+
+
+task_context "ObjectHighlighter" do
+    subclasses "Plugin"
+
+    input_port('obj_id', '/uint16_t').
+        doc 'Highlights entity with given id'
+	port_driven
+
+    needs_configuration
 end
 
 
@@ -376,16 +428,16 @@ end
 task_context "ForceApplier" do
     subclasses "Plugin"
     needs_configuration
-    
+
     property('node_name', 'std/string')
 	doc 'the name of the vehicle in the scene file'
-	
+
     property('amount_of_actuators', 'int')
 	doc 'the amount of actuators the vehicle has'
-	
+
     property('maximum_thruster_force', 'std/vector<double>')
 	doc 'The maximum thruster foce for each actuator. Is also used as a factor. The size of the vector must equal to amount_of_actuators'
-	
+
     property('thruster_position', 'std/vector</base/Vector3d>')
 	doc 'Positions of the thrusters on the vehicle. The size of the vector must equal to amount_of_actuators'
 
@@ -394,7 +446,7 @@ task_context "ForceApplier" do
 
     property('thruster_direction', 'std/vector</base/Vector3d>')
 	doc 'Directions of the thruster force on the vehicle. The size of the vector must equal to amount_of_actuators'
-	
+
     input_port("command", "base/commands/Joints").
         doc("actuator command as joint type").
         needs_buffered_connection
@@ -431,22 +483,22 @@ task_context "AuvMotion" do
 	  For more information about the model, see: Fossen, T.I.: Guidance and control of ocean vehicles")
 
     subclasses "ForceApplier"
-    
+
     property("linear_damp", "/base/Vector6d").
-      doc("Linear damping coefficients, in 6 degrees of freedom")    
-    
+      doc("Linear damping coefficients, in 6 degrees of freedom")
+
     property("square_damp", "/base/Vector6d").
       doc("Square damping coefficients, in 6 degrees of freedom")
-    
+
     property("thruster_coefficients" , "/std/vector<double>").
       doc("The square coefficients of the thrusters, the size of the list must be the amount of actuators")
-        
+
     property("voltage", "double", 0).
       doc("Maximum volatage of the thrusters, used for pwm to force calculation")
-      
+
     property("cob", "/base/Vector3d").
       doc("Center of Bouyancy, with respect to the origin of the vehicle")
-      
+
     property("buoyancy_force", "double", 0).
       doc("Buoyancy force applied to the vehicle")
 

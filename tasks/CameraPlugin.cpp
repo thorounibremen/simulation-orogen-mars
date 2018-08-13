@@ -6,6 +6,8 @@
 #include <mars/interfaces/graphics/GraphicsManagerInterface.h>
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 
+#include <base/Logging.hpp>
+
 using namespace mars;
 
 CameraPlugin::CameraPlugin(std::string const& name)
@@ -47,39 +49,40 @@ bool CameraPlugin::configureHook()
 {
     if (! mars::Plugin::configureHook())
         return false;
-    
-    
+
+
     return true;
 }
 
 bool CameraPlugin::startHook()
 {
 
-    
+
     if (! mars::Plugin::startHook())
         return false;
-    
+
     sensor_id = control->sensors->getSensorID( _name.value() );
     if( !sensor_id ){
-	std::cerr << "CameraPlugin: There is no camera by the name of " + _name.value() + " in the scene";
+	    LOG_ERROR_S << "CameraPlugin" << "CameraPlugin: There is no camera by the name of " + _name.value() + " in the scene";
         return false;
     }
-    
+    LOG_DEBUG_S << "CameraPlugin" << "Camera '"<< _name.value() <<"' found!";
+
     camera = dynamic_cast<mars::sim::CameraSensor *>(control->sensors->getSimSensor(sensor_id));
     if( !camera){
-	std::cerr << "CameraPlugin: Given sensor name is not a camera";
-        return false;
+	    LOG_ERROR_S << "CameraPlugin" << "CameraPlugin: Given sensor name is not a camera";
+      return false;
     }
-    
+
     camera->activateRendering();
     width = camera->getConfig().width;
     height = camera->getConfig().height;
-    
+
     control->graphics->addGraphicsUpdateInterface(this);
-    
-    // Used in postGraphicsUpdate() to trigger the updateHook every 'frameDelay' ms. 
+
+    // Used in postGraphicsUpdate() to trigger the updateHook every 'frameDelay' ms.
     frameDelay = 1000 / camera->getConfig().updateRate;
-    
+
     RTT::base::ActivityInterface* activity = this->getActivity();
     isPeriodic = activity->isPeriodic();
     return true;
@@ -88,7 +91,7 @@ bool CameraPlugin::startHook()
 void CameraPlugin::updateHook()
 {
     mars::Plugin::updateHook();
-    
+
     getData();
 }
 
@@ -127,8 +130,8 @@ void CameraPlugin::postGraphicsUpdate(void )
 	    return;
 
     // Triggers the updateHook/image request every 'frameDelay' ms.
-	trigger(); 
-    
+	trigger();
+
     lastGrabTime = lastUpdateTime;
 }
 
