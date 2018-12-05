@@ -52,7 +52,9 @@ namespace mars {
     //get robot data
     robot_name = _robot_name.get();
     robot_entity = control->entities->getEntity(robot_name);
-    LOG_DEBUG_S << "RobotTeleportation: " << "got robot";
+    LOG_DEBUG_S << "RobotTeleportation: " << "got robot: "<< robot_name;
+    reset_node_name = _reset_node_name.get();
+    LOG_DEBUG_S << "RobotTeleportation: " << "got robot: "<< reset_node_name;
     //get config properties
     pos_mode = _position_mode.get();
     LOG_DEBUG_S << "RobotTeleportation: " << "got config";
@@ -73,7 +75,7 @@ namespace mars {
         t.cfg = target.cfg;
         for (FIFOMap<std::string, ConfigItem>::iterator it = mIt->beginMap(); it!=mIt->endMap(); ++it) {
           if (it->first == "file") {
-            int pos = ((std::string)it->second).find_last_of("/")+1;
+            unsigned int pos = ((std::string)it->second).find_last_of("/")+1;
             if (pos != std::string::npos) {
               t.cfg["file"] = ((std::string)it->second).substr(pos);
               t.cfg["path"] = (std::string)target.cfg["load_path"]+((std::string)it->second).substr(0,pos);
@@ -110,7 +112,8 @@ namespace mars {
     if (_position_id.readNewest(curr_id) == RTT::NewData ||
         _position.readNewest(pos) == RTT::NewData ||
         _rotation.readNewest(rot) == RTT::NewData ||
-        _anchor.readNewest(anchor) == RTT::NewData
+        _anchor.readNewest(anchor) == RTT::NewData ||
+        _reset_node.readNewest(reset_node) == RTT::NewData
        )
     {
       LOG_DEBUG_S << "RobotTeleportation: " << "updateHook triggered!";
@@ -137,14 +140,57 @@ namespace mars {
         } else {
           target.cfg["anchor"] = "none";
         }
+        target.cfg["reset_node"] = reset_node;
       }
+
       if (reloadScene) {
         LOG_DEBUG_S << "RobotTeleportation: Reloading the following cfg:\n" << target.cfg.toYamlString();
         control->entities->removeEntity(robot_name);
         control->sim->loadScene((std::string)target.cfg["path"]+(std::string)target.cfg["file"], robot_name);
         robot_entity = control->entities->getEntity(robot_name);
       }
+
       robot_entity->setInitialPose(robot_entity->hasAnchorJoint(), &target.cfg);
+
+      /* if the robot has suspension joints we have to teleport the root node to
+       the new position as well*/
+      NodeId id = control->nodes->getID(reset_node_name);
+      if (id == INVALID_ID) LOG_DEBUG_S << "RobotTeleportation: "<< "Reset node not found: "<< reset_node_name <<"!";
+      if (target.cfg.find("reset_node") != target.cfg.end() && target.cfg["reset_node"] && id != INVALID_ID) {
+        LOG_DEBUG_S << "RobotTeleportation: "<< "Resetting node "<< reset_node_name <<"!";
+        Quaternion tmpQ(1, 0, 0, 0);
+        Vector tmpV;
+        NodeData rootNode = control->nodes->getFullNode(id);
+        if(target.cfg.find("position") != target.cfg.end()) {
+          rootNode.pos.x() = target.cfg["position"][0];
+          rootNode.pos.y() = target.cfg["position"][1];
+          rootNode.pos.z() = target.cfg["position"][2];
+          control->nodes->editNode(&rootNode, EDIT_NODE_POS | EDIT_NODE_MOVE_ALL);
+        }
+        if(target.cfg.find("rotation") != target.cfg.end()) {
+          // check if euler angles or quaternion is provided; rotate around z
+          // if only one angle is provided
+          switch (target.cfg["rotation"].size()) {
+          case 1: tmpV[0] = 0;
+            tmpV[1] = 0;
+            tmpV[2] = target.cfg["rotation"][0];
+            tmpQ = eulerToQuaternion(tmpV);
+            break;
+          case 3: tmpV[0] = target.cfg["rotation"][0];
+            tmpV[1] = target.cfg["rotation"][1];
+            tmpV[2] = target.cfg["rotation"][2];
+            tmpQ = utils::eulerToQuaternion(tmpV);
+            break;
+          case 4: tmpQ.x() = (sReal)target.cfg["rotation"][1];
+            tmpQ.y() = (sReal)target.cfg["rotation"][2];
+            tmpQ.z() = (sReal)target.cfg["rotation"][3];
+            tmpQ.w() = (sReal)target.cfg["rotation"][0];
+            break;
+          }
+          rootNode.rot = tmpQ;
+          control->nodes->editNode(&rootNode, EDIT_NODE_ROT | EDIT_NODE_MOVE_ALL);
+        }
+      }
 
       LOG_DEBUG_S << "RobotTeleportation: "<< "Robot teleportation done!";
     }
