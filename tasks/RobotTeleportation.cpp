@@ -5,11 +5,14 @@
 #include <mars/interfaces/sim/EntityManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 #include <mars/interfaces/sim/JointManagerInterface.h>
+#include <mars/interfaces/sim/LoadSceneInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
-//#include <mars/interfaces/sim/LoadCenter.h>
-//#include <mars/interfaces/sim/LoadSceneInterface.h>
-//#include <mars/smurf_loader/SMURFLoader.h>
+#include <mars/interfaces/sim/LoadCenter.h>
+#include <mars/interfaces/sim/LoadSceneInterface.h>
+#include <mars/utils/misc.h>
+#include <mars/smurf_loader/SMURFLoader.h>
 #include <mars/sim/SimEntity.h>
+#include <unistd.h>
 
 #include <base-logging/Logging.hpp>
 
@@ -49,47 +52,53 @@ namespace mars {
   bool RobotTeleportation::configureHook()
   {
     if (! RobotTeleportationBase::configureHook()) return false;
-    //get robot data
+    scene_path = _scene_path.get();
     robot_name = _robot_name.get();
+    pos_mode = _position_mode.get();
+    // Parse the cfg and save the relevant parts
+    configmaps::ConfigMap map = configmaps::ConfigMap::fromYamlFile(scene_path);
+    configmaps::ConfigVector cfg;
+    if (map.hasKey("smurfs")) {
+      cfg = map["smurfs"];
+    } else if (map.hasKey("entities")) {
+      cfg = map["entities"];
+    } else {
+      throw std::invalid_argument ("Scene file invalid!");
+    }
+
+    bool found = false;
+    for (configmaps::ConfigVector::iterator it = cfg.begin(); it!=cfg.end(); it++) {
+      configmaps::ConfigMap m = *it;
+      if (m.hasKey("name") && m["name"] == robot_name) {
+        map = (configmaps::ConfigMap) m;
+        found = true;
+      }
+    }
+    if (!found) {
+      throw std::invalid_argument ("Scene file invalid. robot_name not found!");
+    }
+
+    if (!map.hasKey("teleportation_targets") && pos_mode != 0)
+      throw std::invalid_argument ("No targets given!");
+    target.id = 0;
+    target.cfg = map;
+    reloadScene = false;
+    targets.push_back(target);
+    for (auto it: map["teleportation_targets"]) {
+      //go through the teleportation_targets and save the changed configurations
+      target.id++;
+      configmaps::ConfigMap m = it;
+      for (auto it2 = m.begin(); it2!=m.end(); it2++) {
+        target.cfg[it2->first] = it2->second;
+      }
+      targets.push_back(target);
+      if (it.hasKey("file") || it.hasKey("path")) reloadScene = true;
+    }
+    // initialize with target 0
     robot_entity = control->entities->getEntity(robot_name);
     LOG_DEBUG_S << "RobotTeleportation: " << "got robot: "<< robot_name;
     reset_node_name = _reset_node_name.get();
     LOG_DEBUG_S << "RobotTeleportation: " << "got robot: "<< reset_node_name;
-    //get config properties
-    pos_mode = _position_mode.get();
-    LOG_DEBUG_S << "RobotTeleportation: " << "got config";
-    //save initial position
-    target.id = 0;
-    target.cfg = robot_entity->getConfig();
-    //initiate target vector
-    targets.push_back(target);
-    LOG_DEBUG_S << "RobotTeleportation: " << "got current state";
-    //get target positions from file
-    if (pos_mode == 1) {
-      //load target config list
-      ConfigVector::iterator mIt = target.cfg["teleportation_targets"].begin();
-      unsigned int id = 1; //first item is initial position
-      for (; mIt != target.cfg["teleportation_targets"].end(); ++mIt) {
-        Target t;
-        t.id = ++id;
-        t.cfg = target.cfg;
-        for (FIFOMap<std::string, ConfigItem>::iterator it = mIt->beginMap(); it!=mIt->endMap(); ++it) {
-          if (it->first == "file") {
-            unsigned int pos = ((std::string)it->second).find_last_of("/")+1;
-            if (pos != std::string::npos) {
-              t.cfg["file"] = ((std::string)it->second).substr(pos);
-              t.cfg["path"] = (std::string)target.cfg["load_path"]+((std::string)it->second).substr(0,pos);
-            } else {
-              t.cfg[it->first] = it->second;
-            }
-          } else {
-            t.cfg[it->first] = it->second;
-          }
-        }
-        targets.push_back(t);
-      }
-      LOG_DEBUG_S << "RobotTeleportation: " << "read targets";
-    }
 
     LOG_DEBUG_S << "RobotTeleportation: "<< "Task configured! " << (pos_mode ? "(Manual)":"(Preconfigured)");
 
@@ -104,34 +113,31 @@ namespace mars {
   void RobotTeleportation::updateHook()
   {
     RobotTeleportationBase::updateHook();
-    bool reloadScene = false;
 
     if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
 
     //if triggered load new position
-    if (_position_id.readNewest(curr_id) == RTT::NewData ||
-        _position.readNewest(pos) == RTT::NewData ||
-        _rotation.readNewest(rot) == RTT::NewData ||
-        _anchor.readNewest(anchor) == RTT::NewData ||
+    old_curr_id = curr_id;
+    old_pos = pos;
+    old_rot = rot;
+    old_anchor = anchor;
+    _position_id.readNewest(curr_id);
+    _position.readNewest(pos);
+    _rotation.readNewest(rot);
+    _anchor.readNewest(anchor);
+    if (old_curr_id != curr_id||
+        old_pos != pos||
+        old_rot.x() != rot.x() || old_rot.y() != rot.y() || old_rot.z() != rot.z() || old_rot.w() != rot.w() ||
+        old_anchor != anchor||
         _reset_node.readNewest(reset_node) == RTT::NewData
        )
     {
       LOG_DEBUG_S << "RobotTeleportation: " << "updateHook triggered!";
-      bool is_smurfa = false;
       if (pos_mode == 1){
         if (curr_id >=targets.size()) {
           LOG_DEBUG_S << "RobotTeleportation: " << "given to high id " << curr_id << ">=" <<targets.size()<<"!";
           curr_id = 0;
         }
-        std::string path = "";
-        if (targets[curr_id].cfg.hasKey("file")) {
-          path = (std::string) target.cfg["file"];
-        } else if (targets[curr_id].cfg.hasKey("path")) {
-          path = (std::string) target.cfg["path"];
-        }
-        is_smurfa = (path.substr(path.size()-6) == "smurfa");
-        reloadScene = (path != "" || is_smurfa);
-
         target = targets[curr_id];
       } else {
         target.id = -1;
@@ -151,22 +157,20 @@ namespace mars {
       }
 
       if (reloadScene) {
+        control->sim->physicsThreadLock();
         LOG_DEBUG_S << "RobotTeleportation: Reloading the following cfg:\n" << target.cfg.toYamlString();
-        if (target.cfg.hasKey("type") && target.cfg["type"] == "smurfa" || is_smurfa) {
-          control->entities->removeAssembly(robot_name);
-        } else {
-          control->entities->removeEntity(robot_name);
-        }
-        control->sim->loadScene((std::string)target.cfg["path"]+(std::string)target.cfg["file"], robot_name);
+        control->entities->removeEntity(robot_name, true /*remove the complete assembly*/);
+        dynamic_cast<mars::smurf::SMURFLoader*>(control->loadCenter->loadScene[".smurfs"])->loadEntity(&target.cfg, getPathOfFile(scene_path));
         robot_entity = control->entities->getEntity(robot_name);
+        control->sim->physicsThreadUnlock();
+      } else {
+        robot_entity->setInitialPose(robot_entity->hasAnchorJoint(), &target.cfg);
       }
-
-      robot_entity->setInitialPose(robot_entity->hasAnchorJoint(), &target.cfg);
 
       /* if the robot has suspension joints we have to teleport the root node to
        the new position as well*/
       NodeId id = control->nodes->getID(reset_node_name);
-      if (id == INVALID_ID) LOG_DEBUG_S << "RobotTeleportation: "<< "Reset node not found: "<< reset_node_name <<"!";
+      if (id == INVALID_ID) {LOG_DEBUG_S << "RobotTeleportation: "<< "Reset node not found: "<< reset_node_name <<"!";}
       if (target.cfg.find("reset_node") != target.cfg.end() && target.cfg["reset_node"] && id != INVALID_ID) {
         LOG_DEBUG_S << "RobotTeleportation: "<< "Resetting node "<< reset_node_name <<"!";
         Quaternion tmpQ(1, 0, 0, 0);

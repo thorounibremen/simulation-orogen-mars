@@ -33,7 +33,7 @@ namespace mars {
     friend class RobotTeleportationBase;
 
     protected:
-      std::string robot_name, reset_node_name;
+      std::string robot_name, reset_node_name, scene_path;
       sim::SimEntity* robot_entity;
       unsigned int pos_mode;
       configmaps::ConfigMap cmap;
@@ -41,10 +41,11 @@ namespace mars {
       JointId joint_id;
 
       //input
-      short unsigned int curr_id;
-      utils::Vector pos;
-      utils::Quaternion rot;
-      bool anchor, reset_node;
+      short unsigned int curr_id, old_curr_id;
+      utils::Vector pos, old_pos;
+      utils::Quaternion rot, old_rot;
+      bool anchor, reset_node, old_anchor;
+      bool reloadScene;
 
 
       struct Target {

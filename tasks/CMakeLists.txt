@@ -1,8 +1,14 @@
 # Generated from orogen/lib/orogen/templates/tasks/CMakeLists.txt
 find_package( Boost COMPONENTS filesystem)
+find_package(lib_manager)
+setup_qt()
+
+pkg_check_modules(PKGCONFIG REQUIRED
+    mars_smurf_loader
+)
 
 include(marsTaskLib)
-ADD_LIBRARY(${MARS_TASKLIB_NAME} SHARED 
+ADD_LIBRARY(${MARS_TASKLIB_NAME} SHARED
     ${MARS_TASKLIB_SOURCES})
 add_dependencies(${MARS_TASKLIB_NAME}
     regen-typekit)
@@ -10,6 +16,9 @@ add_dependencies(${MARS_TASKLIB_NAME}
 TARGET_LINK_LIBRARIES(${MARS_TASKLIB_NAME}
     ${OrocosRTT_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
+    ${QT_LIBRARIES}
+    ${PKGCONFIG_LIBRARIES}
+    ${QT_QTXML_LIBRARY}
     ${MARS_TASKLIB_DEPENDENT_LIBRARIES})
 SET_TARGET_PROPERTIES(${MARS_TASKLIB_NAME}
     PROPERTIES LINK_INTERFACE_LIBRARIES "${MARS_TASKLIB_INTERFACE_LIBRARIES}")

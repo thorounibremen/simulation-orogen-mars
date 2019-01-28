@@ -355,6 +355,8 @@ task_context "RobotTeleportation" do
 
     property("robot_name", "/std/string").
         doc("Name of the robot.")
+    property("scene_path", "/std/string").
+        doc("Path to smurfs")
     property("reset_node_name", "/std/string").
         doc("Name of the node that has to be resetted additionally.")
     property("position_mode", "/uint16_t", 1).
