@@ -258,10 +258,16 @@ int Task::getOptionCount(const std::vector<Option>& options)
 
 bool Task::setShow_coordinate_system(bool value)
 {
-    //TODO Add your code here
     if(!marsGraphics){
-        LOG_ERROR("Could not change view of coordinate systems without an Graphics interface\n");
-        return false;
+        if(!_enable_gui.get())
+        {
+            return true;
+        }
+        else
+        {
+            LOG_ERROR("Could not change view of coordinate systems without an Graphics interface\n");
+            return false;
+        }
     }
 
     //Call the base function, DO-NOT Remove
