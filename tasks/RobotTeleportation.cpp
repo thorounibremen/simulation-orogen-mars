@@ -117,14 +117,21 @@ namespace mars {
        )
     {
       LOG_DEBUG_S << "RobotTeleportation: " << "updateHook triggered!";
+      bool is_smurfa = false;
       if (pos_mode == 1){
         if (curr_id >=targets.size()) {
           LOG_DEBUG_S << "RobotTeleportation: " << "given to high id " << curr_id << ">=" <<targets.size()<<"!";
           curr_id = 0;
         }
-        if (targets[curr_id].cfg.hasKey("file") && (target.cfg["file"] != targets[curr_id].cfg["file"] || target.cfg["path"] != targets[curr_id].cfg["path"])) {
-          reloadScene = true;
+        std::string path = "";
+        if (targets[curr_id].cfg.hasKey("file")) {
+          path = (std::string) target.cfg["file"];
+        } else if (targets[curr_id].cfg.hasKey("path")) {
+          path = (std::string) target.cfg["path"];
         }
+        is_smurfa = (path.substr(path.size()-6) == "smurfa");
+        reloadScene = (path != "" || is_smurfa);
+
         target = targets[curr_id];
       } else {
         target.id = -1;
@@ -145,7 +152,11 @@ namespace mars {
 
       if (reloadScene) {
         LOG_DEBUG_S << "RobotTeleportation: Reloading the following cfg:\n" << target.cfg.toYamlString();
-        control->entities->removeEntity(robot_name);
+        if (target.cfg.hasKey("type") && target.cfg["type"] == "smurfa" || is_smurfa) {
+          control->entities->removeAssembly(robot_name);
+        } else {
+          control->entities->removeEntity(robot_name);
+        }
         control->sim->loadScene((std::string)target.cfg["path"]+(std::string)target.cfg["file"], robot_name);
         robot_entity = control->entities->getEntity(robot_name);
       }
