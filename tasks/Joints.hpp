@@ -29,7 +29,7 @@ namespace mars {
 	struct JointConversion
 	{
 	    JointConversion()
-		: mars_id(-1), scaling(1.0), offset(0.0), absolutePosition(0), lastPosition(0), gotPosition(false) {}
+		: mars_id(-1), scaling(1.0), offset(0.0), absolutePosition(0) {}
 
 	    double fromMars( double v )
 	    {
@@ -42,28 +42,7 @@ namespace mars {
 
             double updateAbsolutePosition( double v )
             {
-                if(!gotPosition)
-                {
-                    gotPosition = true;
-                    absolutePosition = v;
-                    lastPosition = v;
-                }
-                
-                double diff = v- lastPosition;
-                
-                if(diff > M_PI)
-                {
-                    diff -= 2* M_PI;
-                }
-                if(diff < -M_PI)
-                {
-                    diff += 2* M_PI;
-                }
-                
-                absolutePosition += diff;
-                
-                lastPosition = v;
-                
+                absolutePosition = v;
                 return absolutePosition;
             }
             double getAbsolutePosition()
@@ -78,8 +57,6 @@ namespace mars {
 	    double scaling;
 	    double offset;
             double absolutePosition;
-            double lastPosition;
-            bool gotPosition;
 	};
 	std::vector<JointConversion> mars_ids;
 	enum JointTypes{MOTOR,PASSIVE};
