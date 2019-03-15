@@ -101,8 +101,10 @@ void ContactForceSensor::update(double delta_t)
                 sensor->getSensorData(&sens_val);
 
                 for(const WrenchMapping &w : wrench_mappings){
-                    size_t idx = wrenches.mapNameToIndex(w.sensor_name);
-                    MapFTValue(w.ft_name, sens_val[w.sensor_index], wrenches[idx]);
+                    if(w.sensor_name == sensor_names[i]){
+                        size_t idx = wrenches.mapNameToIndex(w.sensor_name);
+                        MapFTValue(w.ft_name, sens_val[w.sensor_index], wrenches[idx]);
+                    }
                 }
                 wrenches.time = getTime();
             }
