@@ -4,6 +4,8 @@
 
 #include <mars/interfaces/sim/SensorManagerInterface.h>
 #include <mars/sim/Joint6DOFSensor.h>
+#include <mars/sim/NodeContactForceSensor.h>
+#include <base/Float.hpp>
 
 using namespace mars;
 
@@ -27,13 +29,14 @@ void ForceTorque6DOF::init()
 // for each of the names, get the mars motor id
     for( size_t i=0; i<mars_ids.size(); ++i )
     {
-	std::string &name( mars_names[i] );
-        int marsId = control->sensors->getSensorID( name );
+       std::string &name( mars_names[i] );
+       int marsId = control->sensors->getSensorID( name );
 
-        if( marsId )
-	    mars_ids[i] = marsId;
-	else
-	    throw std::runtime_error("there is no sensor by the name of " + name);
+        if( marsId ) {
+            mars_ids[i] = marsId;
+        }	else {
+            throw std::runtime_error("there is no sensor by the name of " + name);
+        }
     }
 }
 
@@ -42,41 +45,52 @@ void ForceTorque6DOF::update(double delta_t)
     if(!isRunning()) return;
 
     //normally this should not result in a resize
-	wrenches_deprecated.resize(mars_ids.size());
+	  wrenches_deprecated.resize(mars_ids.size());
 
     for( size_t i=0; i<mars_ids.size(); ++i ){
-    	mars::interfaces::BaseSensor* base = control->sensors->getSimSensor(mars_ids[i]);
-    	if (base){
-    		mars::sim::Joint6DOFSensor* sensor = dynamic_cast<mars::sim::Joint6DOFSensor*>(base);
-			if (sensor){
-				//printf("sensor %s found\n",mars_names[i].c_str());
-				base::samples::Wrench wrench_deprecated;
-				//mars::utils::Vector is the same typedef as base::Vector3d
-				//so we can use the base::Vector3d directly
-				sensor->getForceData(&wrench_deprecated.force);
-				sensor->getTorqueData(&wrench_deprecated.torque);
-				wrench_deprecated.time = getTime();
-				wrenches_deprecated[i] = wrench_deprecated;
+        mars::interfaces::BaseSensor* base = control->sensors->getSimSensor(mars_ids[i]);
+        if (base) {
+            // try to convert to a specific sensor
+            mars::sim::Joint6DOFSensor* sensor6dof = dynamic_cast<mars::sim::Joint6DOFSensor*>(base);
+            mars::sim::NodeContactForceSensor* sensor1dof = dynamic_cast<mars::sim::NodeContactForceSensor*>(base);
 
-				base::Wrench wrench;
-                sensor->getForceData(&wrench.force);
-                sensor->getTorqueData(&wrench.torque);
+            if (sensor1dof || sensor6dof) {
+
+                base::Wrench wrench;
+                wrench.force = base::Vector3d(base::unset<double>(), base::unset<double>(), base::unset<double>());
+                wrench.torque = base::Vector3d(base::unset<double>(), base::unset<double>(), base::unset<double>());
+
+                // just assign values to the valid sensor
+                if (sensor6dof) {
+                    sensor6dof->getForceData(&wrench.force);
+                    sensor6dof->getTorqueData(&wrench.torque);
+                } else {
+                    mars::interfaces::sReal *sens_val;
+                    sensor1dof->getSensorData(&sens_val);
+                    wrench.force.z() = *sens_val;
+                }
+
                 wrenches.time = getTime();
-				wrenches.elements[i] = wrench;
-                if(external_names.empty()){
+                wrenches.elements[i] = wrench;
+                if (external_names.empty()) {
                     wrenches.names[i] = mars_names[i];
                 }
-                else{
+                else {
                     wrenches.names[i] = external_names[i];
                 }
-			}
-    	}
+
+                // support old data type
+                base::samples::Wrench wrench_deprecated;
+                wrench_deprecated.force = wrench.force;
+                wrench_deprecated.torque = wrench.torque;
+                wrench_deprecated.time = getTime();
+                wrenches_deprecated[i] = wrench_deprecated;
+            }
+        }
     }
 
-    //TODO: convert to new wrench base type, when available
     _wrenches_deprecated.write(wrenches_deprecated);
     _wrenches.write(wrenches);
-
 }
 
 

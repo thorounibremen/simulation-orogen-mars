@@ -1,14 +1,14 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef SIMULATION_JOINTS_TASK_HPP
-#define SIMULATION_JOINTS_TASK_HPP
+#ifndef MARS_CONTACTFORCESENSOR_TASK_HPP
+#define MARS_CONTACTFORCESENSOR_TASK_HPP
 
-#include "mars/JointsBase.hpp"
-#include <base/commands/Joints.hpp>
+#include "mars/ContactForceSensorBase.hpp"
+#include "wrenchTypes.hpp"
 
-namespace mars {
+namespace mars{
 
-    /*! \class Joints 
+    /*! \class ContactForceSensor
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -17,78 +17,48 @@ namespace mars {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','mars::Joints')
+         task('custom_task_name','mars::ContactForceSensor')
      end
      \endverbatim
-     *  It can be dynamically adapted when the deployment is called with a prefix argument. 
+     *  It can be dynamically adapted when the deployment is called with a prefix argument.
      */
-    class Joints : public JointsBase
+    class ContactForceSensor : public ContactForceSensorBase
     {
-	friend class JointsBase;
+	friend class ContactForceSensorBase;
     protected:
-	struct JointConversion
-	{
-	    JointConversion()
-		: mars_id(-1), scaling(1.0), offset(0.0), absolutePosition(0) {}
 
-	    double fromMars( double v )
-	    {
-		return v * scaling + offset;
-	    }
-	    double toMars( double v )
-	    {
-		return (v - offset) / scaling;
-	    }
+        std::vector< mars::WrenchMapping > wrench_mappings;
+        base::samples::Wrenches wrenches;
+        std::vector<std::string> sensor_names;
+        std::vector<int> mars_ids;
 
-            double updateAbsolutePosition( double v )
-            {
-                absolutePosition = v;
-                return absolutePosition;
-            }
-            double getAbsolutePosition()
-            {
-                return absolutePosition;
-            }
-	    
-	    int mars_id;
-            std::string marsName;
-            std::string externalName;
-        /// Scale factor from Mars to Module
-	    double scaling;
-	    double offset;
-            double absolutePosition;
-	};
-	std::vector<JointConversion> mars_ids;
-	enum JointTypes{MOTOR,PASSIVE};
-	std::vector<JointTypes> joint_types;
-
-	base::samples::Joints status;
-	mars::JointCurrents currents;
-	base::commands::Joints cmd;
-
-	std::vector< mars::ParallelKinematic > parallel_kinematics;
-	mars::JointPositionAndSpeedControlMode controlMode;
-
+        void MapFTValue(const std::string ft_name, const double value, base::Wrench& wrench);
     public:
-        virtual void init();
-        virtual void update(double delta_t);
-
-        /** TaskContext constructor for Joints
+        /** TaskContext constructor for ContactForceSensor
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Joints(std::string const& name = "mars::Joints");
+        ContactForceSensor(std::string const& name = "mars::ContactForceSensor");
 
-        /** TaskContext constructor for Joints 
-         * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
-         * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
+        /** TaskContext constructor for ContactForceSensor
+         * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
+         * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
          * 
          */
-        Joints(std::string const& name, RTT::ExecutionEngine* engine);
+        ContactForceSensor(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of Joints
+        /** Default deconstructor of ContactForceSensor
          */
-	~Joints();
+        ~ContactForceSensor();
+
+        /**
+         * init called from mars mars
+         */
+        virtual void init();
+        /**
+         * update called from mars mars
+         */
+        virtual void update(double delta_t);
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -119,7 +89,7 @@ namespace mars {
          *
          * The error(), exception() and fatal() calls, when called in this hook,
          * allow to get into the associated RunTimeError, Exception and
-         * FatalError states. 
+         * FatalError states.
          *
          * In the first case, updateHook() is still called, and recover() allows
          * you to go back into the Running state.  In the second case, the

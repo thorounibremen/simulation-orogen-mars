@@ -11,6 +11,7 @@ import_types_from "tasks/MarsControl.hpp"
 import_types_from "jointTypes.hpp"
 import_types_from "poseType.hpp"
 import_types_from "objectDetectionTypes.hpp"
+import_types_from "wrenchTypes.hpp"
 import_types_from "base"
 
 
@@ -225,7 +226,15 @@ task_context "ForceTorque6DOF" do
         doc('Array of names of the ft sensors in the scene file.')
         property('name_remap', 'std/vector</std/string>').
             doc('If this array is set the sensors will be renamed for the external interface')
+end
 
+task_context "ContactForceSensor" do
+    subclasses "Plugin"
+
+    property('wrench_mappings', 'std::vector<mars/WrenchMapping>').
+        doc('Mapping from raw sensor data to base/samples/Wrenches type')
+
+    output_port("wrenches", "/base/samples/Wrenches")
 end
 
 # This plugin can be used to "trigger" a simlation cycle,
