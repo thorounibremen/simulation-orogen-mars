@@ -5,7 +5,6 @@
 #include <mars/interfaces/sim/EntityManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 #include <mars/interfaces/sim/JointManagerInterface.h>
-#include <mars/interfaces/sim/LoadSceneInterface.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 #include <mars/interfaces/sim/LoadCenter.h>
 #include <mars/interfaces/sim/LoadSceneInterface.h>
