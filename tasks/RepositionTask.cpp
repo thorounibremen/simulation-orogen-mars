@@ -1,5 +1,5 @@
 /* Generated from orogen/lib/orogen/templates/tasks/IMU.cpp */
-#define TEST 0
+
 #include "RepositionTask.hpp"
 #include "Plugin.hpp"
 #include <mars/interfaces/sim/EntityManagerInterface.h>
