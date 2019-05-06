@@ -378,6 +378,23 @@ task_context "RobotTeleportation" do
 
 end
 
+task_context "RepositionTask" do
+  # Repositions the named entities of the given scene in the current mars scene
+    subclasses "Plugin"
+
+    property("entity_names", "/std/vector<std/string>").
+        doc("Name of parts to move.")
+    property("scene_path", "/std/string").
+        doc("Path to smurf(a/s)")
+
+    input_port('poses', '/std/vector<base/Pose>').
+        doc 'Poses relative to the parent link'
+	port_driven
+
+    needs_configuration
+
+end
+
 
 task_context "ObjectHighlighter" do
     subclasses "Plugin"
