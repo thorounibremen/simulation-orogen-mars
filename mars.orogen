@@ -395,6 +395,8 @@ task_context "RepositionTask" do
         doc("Name of parts to move.")
     property("scene_path", "/std/string").
         doc("Path to smurf(a/s)")
+    property("ignore_position", "bool", false).
+        doc("Whether the position input shall be ignored")
 
     input_port('poses', '/std/vector<base/Pose>').
         doc 'Poses relative to the parent link'

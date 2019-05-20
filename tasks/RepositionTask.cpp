@@ -121,26 +121,19 @@ namespace mars {
     if(!isRunning()) return; //Seems Plugin is set up but not active yet, we are not sure that we are initialized correctly so retuning
 
     std::vector<base::Pose> poses;
-    _poses.readNewest(poses);
-    for (unsigned int i=0;i<6/*poses.size()*/;i++) {
-      // get current position
-      // #if TEST
-      //   applyPose(link_ids[entity_names[i]], poses[i]);
-      // #else
-        base::Pose tmp;
-        if (i<poses.size()) {
-          tmp.position = poses[i].position;
-          tmp.orientation = poses[i].orientation;
-        } else {
-          tmp.position = Eigen::Vector3d::Zero();
-          tmp.orientation = Eigen::Quaterniond(1,0,0,0);
-        }
-        tmp.orientation.normalize();
-        applyPose(entity_names[i], tmp);
-        // fprintf(stderr, "%s %d %f\n", entity_names[i].c_str(), link_ids[entity_names[i]], tmp.orientation.w());
-      // #endif
+    if (_poses.readNewest(poses)) {
+      assert(poses.size()==6);
+      for (unsigned int i=0;i<6/*poses.size()*/;i++) {
+          base::Pose tmp;
+          if (i<poses.size()) {
+            if (_ignore_position.get()) {tmp.position = Eigen::Vector3d::Zero();}
+            else {tmp.position = poses[i].position;}
+            tmp.orientation = poses[i].orientation;
+            tmp.orientation.normalize();
+            applyPose(entity_names[i], tmp);
+          }
+      }
     }
-
   }
 
   // void RepositionTask::errorHook()
@@ -158,4 +151,3 @@ namespace mars {
   //     RepositionTaskBase::cleanupHook();
   // }
 }
-
