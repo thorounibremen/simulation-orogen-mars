@@ -5,6 +5,7 @@
 #include <mars/interfaces/sim/EntityManagerInterface.h>
 #include <mars/interfaces/sim/NodeManagerInterface.h>
 #include <mars/interfaces/graphics/GraphicsManagerInterface.h>
+#include <mars/interfaces/graphics/draw_structs.h>
 #include <mars/interfaces/sim/ControlCenter.h>
 #include <mars/sim/SimEntity.h>
 #include <mars/utils/misc.h>
@@ -39,16 +40,53 @@ namespace mars {
 
   void ForceTorqueApplier::update(double delta_t)
   {
-    for (unsigned int i = 0; i<node_ids.size(); i++) {
-      if (apply[i]) {
-        control->nodes->applyForce(node_ids[i], wrenches[i].force);
-        control->nodes->applyTorque(node_ids[i], wrenches[i].torque);
+    draw_item item;
+    std::vector<long unsigned int> node_id;
+    draw.drawItems.clear();
+    auto n_it=wrenches.names.begin();
+    auto w_it=wrenches.elements.begin();
+    for (; n_it!=wrenches.names.end() && w_it!=wrenches.elements.end(); n_it++, w_it++) {
+      node_id.clear();
+      node_id.push_back(robot_entity->getNode(*n_it));
+      if (node_id[0] == 0) {
+        fprintf(stderr, "Node with name %s not found!\n", n_it->c_str());
       } else {
-        control->nodes->applyForce(node_ids[i], Vector(0, 0, 0));
-        control->nodes->applyTorque(node_ids[i], Vector(0, 0, 0));
-      }
-      if (visualize_wrenches) {
-        // TODO
+        control->nodes->applyForce(node_id[0], w_it->force);
+        control->nodes->applyTorque(node_id[0], w_it->torque);
+        if (visualize_wrenches && w_it->force.norm() > 0.01) {
+          item.id = 0;
+          item.type = DRAW_ARROW;
+          item.point_size = 10;
+          item.t_height = 0;
+          item.texture = "";
+          item.get_light = 0;
+          item.start = control->nodes->getCenterOfMass(node_id);
+          //force
+          item.myColor.r = 1;
+          item.myColor.g = 0;
+          item.myColor.b = 0;
+          item.myColor.a = 1;
+          char label[100];
+          sprintf(label, "(%f, %f, %f)",
+            w_it->force.x(), w_it->force.y(),
+            w_it->force.z()
+          );
+          item.label = std::string(label);
+          item.end = item.start + w_it->force*0.01;
+          draw.drawItems.push_back(item);
+          //torque
+          item.myColor.r = 0;
+          item.myColor.g = 0;
+          item.myColor.b = 1;
+          item.myColor.a = 1;
+          sprintf(label, "(%f, %f, %f)",
+            w_it->torque.x(), w_it->torque.y(),
+            w_it->torque.z()
+          );
+          item.label = std::string(label);
+          item.end = item.start + w_it->torque*0.1;
+          draw.drawItems.push_back(item);
+        }
       }
     }
   }
@@ -65,6 +103,8 @@ namespace mars {
 
     robot_entity = control->entities->getEntity(robot_name);
 
+    draw.ptr_draw = (DrawInterface*) this;
+
     return true;
   }
 
@@ -75,18 +115,13 @@ namespace mars {
 
   void ForceTorqueApplier::updateHook()
   {
+    fprintf(stderr, "test");
     ForceTorqueApplierBase::updateHook();
 
-    if (_link_names.readNewest(link_names) == RTT::NewData) {
-      node_ids.clear();
-      for (auto it=link_names.begin(); it!=link_names.end(); it++) {
-        node_ids.push_back(robot_entity->getNode(*it));
-      }
-    }
-
     _wrenches.readNewest(wrenches);
-    _apply.readNewest(apply);
 
+    //write outputs
+    _input_wrenches.write(wrenches);
   }
 
   // void ForceTorqueApplier::errorHook()

@@ -29,8 +29,7 @@ namespace mars {
    \endverbatim
    *  It can be dynamically adapted when the deployment is called with a prefix argument.
    */
-  class ForceTorqueApplier : public ForceTorqueApplierBase
-  {
+  class ForceTorqueApplier : public ForceTorqueApplierBase {
     friend class ForceTorqueApplierBase;
 
     protected:
@@ -39,10 +38,9 @@ namespace mars {
       bool visualize_wrenches;
 
       //input
-      std::vector<std::string> link_names;
       std::vector<unsigned int> node_ids;
-      std::vector<base::samples::Wrench> wrenches;
-      std::vector<bool> apply;
+      base::samples::Wrenches wrenches;
+      drawStruct draw;
 
 
     public:
