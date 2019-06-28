@@ -4,6 +4,7 @@
 #define SIMULATION_FORCETORQUEAPPLIER_TASK_HPP
 
 #include "mars/ForceTorqueApplierBase.hpp"
+#include <mars/utils/Mutex.h>
 #include <mars/sim/SimEntity.h>
 #include <mars/utils/mathUtils.h>
 #include <mars/interfaces/JointData.h>
@@ -29,7 +30,7 @@ namespace mars {
    \endverbatim
    *  It can be dynamically adapted when the deployment is called with a prefix argument.
    */
-  class ForceTorqueApplier : public ForceTorqueApplierBase {
+  class ForceTorqueApplier : public ForceTorqueApplierBase, public DrawInterface {
     friend class ForceTorqueApplierBase;
 
     protected:
@@ -41,7 +42,10 @@ namespace mars {
       std::vector<unsigned int> node_ids;
       base::samples::Wrenches wrenches;
       drawStruct draw;
-
+      utils::Mutex drawLock;
+      std::vector<interfaces::draw_item> draw_intern;
+      std::vector<interfaces::draw_item> draw_extern;
+      // DrawInterface draw_interface;
 
     public:
       virtual void init();
@@ -62,6 +66,8 @@ namespace mars {
       /** Default deconstructor of ForceTorqueApplier
        */
       ~ForceTorqueApplier();
+
+      void update(std::vector<draw_item> *drawItems);
 
       /** This hook is called by Orocos when the state machine transitions
        * from PreOperational to Stopped. If it returns false, then the
