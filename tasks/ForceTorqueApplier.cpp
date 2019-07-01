@@ -144,7 +144,6 @@ namespace mars {
 
   void ForceTorqueApplier::updateHook()
   {
-    fprintf(stderr, "test");
     ForceTorqueApplierBase::updateHook();
 
     _wrenches.readNewest(wrenches);
