@@ -34,7 +34,6 @@ namespace mars {
 
     protected:
       enum FrameId {
-	      NO_FRAME,
         GLOBAL,
         CAMERA
       };
@@ -128,4 +127,3 @@ namespace mars {
 }
 
 #endif
-

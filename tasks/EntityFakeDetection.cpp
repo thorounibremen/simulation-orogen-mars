@@ -118,6 +118,12 @@ namespace mars {
         iter->second->getBoundingBox(center,
                                      rotation,
                                      detectionArray->detections[i].bbox.size);
+        if (frame_id==FrameId::CAMERA) {
+          cameraStruct cs;
+          camera->getCameraInfo(&cs);
+          center = -(cs.rot.inverse() * cs.pos) + cs.rot.inverse() * center;
+          rotation = cs.rot.inverse() * rotation;
+        }
         detectionArray->detections[i].bbox.center.position = center;
         detectionArray->detections[i].bbox.center.orientation = rotation;
         //ObjectHypothesisWithPose
@@ -158,4 +164,3 @@ namespace mars {
   {
   }
 }
-
