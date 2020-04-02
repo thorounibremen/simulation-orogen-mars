@@ -4,7 +4,7 @@ include Orocos
 
 Orocos.initialize
 
-Orocos.run 'mars::Task' => 'mars', "valgrind" => false do
+Orocos.run 'mars::Task' => 'mars', :cmdline_args => {'no-qtapp' => '0'} do #, "valgrind" => false do
 
     mars = TaskContext.get 'mars'
 #    mars.controller_port = 1600

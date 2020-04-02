@@ -4,6 +4,8 @@ using_library "mars_interfaces", :typekit => false
 using_library "mars_gui", :typekit => false
 using_library "mars_app", :typekit => false
 using_library "mars_sim", :typekit => false
+using_library "main_gui", :typekit => false
+using_library "base-types", :typekit => false
 using_library "lib_manager", :typekit => false
 using_library "configmaps", :typekit => false
 
@@ -13,6 +15,7 @@ import_types_from "poseType.hpp"
 import_types_from "objectDetectionTypes.hpp"
 import_types_from "wrenchTypes.hpp"
 import_types_from "base"
+import_types_from "std"
 
 
 #Disable default deployments, most of the time stand_alone deployments are useless
@@ -31,6 +34,7 @@ import_types_from "base"
 # one deployment to be able to share their static resources.
 task_context "Task" do
 	needs_configuration
+	needs_global_initializer :qt
 
         operation("loadScene").
             argument("path","/std/string")
@@ -78,8 +82,8 @@ task_context "Task" do
         property('distributed_simulation', 'bool').
 	    doc('switch to active the distributed simulation if needed')
 
-        property('enable_gui', 'bool').
-	    doc('start the simulation graphical interface with this module')
+        #property('enable_gui', 'bool').
+	    #doc('start the simulation graphical interface with this module')
 
         property('controller_port', 'int').
             doc('set the controller port, e.g. 1600 for communication with monster')
