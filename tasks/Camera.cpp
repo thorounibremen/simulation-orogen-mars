@@ -48,8 +48,22 @@ bool Camera::startHook()
     
     if (! mars::CameraPlugin::startHook())
         return false;
-    
+    interfaces::cameraStruct cs; // Prepare camerastruct to store camera-parameters
+    mars::CameraPlugin::camera->getCameraInfo(&cs); // Write camera-parameters to camerstruct
     image = new base::samples::frame::Frame(width,height,8,base::samples::frame::MODE_RGB);
+    frame_helper::CameraCalibration cam_calib(
+        cs.center_x,
+        cs.center_y,
+        cs.scale_x,
+        cs.scale_y,
+        0,
+        0,
+        0,
+        0,
+        width,
+        height
+    ); // Prepare CamereCalibration object
+    cam_calib.toFrame(*image); // Apply calibration files to frame
     ro_ptr.reset(image);
     marsImage.resize(width * height);
     

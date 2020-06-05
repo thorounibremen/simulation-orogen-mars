@@ -4,6 +4,8 @@
 #define SIMULATION_MARSCAMERA_TASK_HPP
 
 #include "mars/CameraBase.hpp"
+#include <frame_helper/Calibration.h>
+#include <mars/interfaces/cameraStruct.h>
 
 namespace mars {
 
